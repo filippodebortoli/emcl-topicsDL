@@ -1,0 +1,321 @@
+\documentclass[]{llncs}
+
+\usepackage[T1]{fontenc}
+% \usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+%\usepackage[backend=biber,style=lncs]{biblatex}
+%  \addbibresource{seminar_further-DL.bib}
+\bibliographystyle{splncs03}
+\usepackage{csquotes}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage{todonotes}
+
+\DeclareMathOperator{\simi}{simi}
+
+\newcommand{\el}{\(\mathcal{EL}{}\)}
+\newcommand{\elh}{\(\mathcal{ELH}{}\)}
+\newcommand{\DeltaI}{\Delta^\mathcal{I}}
+\newcommand{\dotI}{\cdot^{\mathcal{I}}}
+\newcommand{\dl}{\textsc{dl}}
+\newcommand{\kb}{\textsc{kb}}
+\newcommand{\ria}{\textsc{ria}}
+\newcommand{\gci}{\textsc{gci}}
+\newcommand{\csm}{\textsc{csm}}
+\newcommand{\subsume}[1]{\sqsubseteq_{\mathcal{#1}}}
+
+\title{Concept Similarity Measures: a design framework w.r.t. \(\mathcal{ELH}\) Description Logic}
+\author{Filippo De Bortoli}
+\institute{European Master's Programme in Computational Logic, TU Dresden}% \and \email{filippo.de_bortoli@mailbox.tu-dresden.de}}
+
+\begin{document}
+  \maketitle
+
+  \begin{abstract}
+    Measuring similarity of concept descriptions in different Description Logics is a challenging task, especially in expressive \dl{}s.
+    Moreover, many of the measures devised in the past years had been often defined with respect of a particular cluster of instance data, or they only considered the syntactical aspects of the concept descriptions.
+
+    In this report, the \(\simi\) framework for designing concept similarity measures will be introduced and discussed, from desired properties of such functions to actual design choices.
+    Furthermore, a brief perspective into related work will be given, with concern to unsolved problems of \(\simi\) and general challenges for concept similarity measures.
+  \end{abstract}
+
+  \section{Introduction}
+
+  % Concept similarity measures play a fundamental role in the discovery of otherwise hidden relations between similar concepts in ontologies.
+  % Applications of such tools are various and different, from ontology alignment to discovery of functional similarities in genetics ontology.
+
+
+
+  \section{The \(\mathcal{ELH}\) Description Logic}
+  The description logics upon which the framework has been developed is the
+  DL \elh.
+  In this report, only the notions which are fundamental to understand the design of \(\simi\) are introduced. The interested reader can find further information in~\cite{DLbook}.
+
+  First, the syntax of our DL is introduced.
+  Let \(\mathbf{C}\) and \(\mathbf{R}\) be two disjoint sets of \emph{concept names} and \emph{role names}, respectively. The set \(\mathcal{C}\)(\elh) of \elh{} \emph{concept descriptions} over these sets is inductively defined as follows:
+  \begin{enumerate}
+    \item \(\top{}\) is an \elh{} concept description;
+    \item every concept name is an \elh{} concept description;
+    \item given arbitrary \elh{} concept descriptions \(C\) and \(D\), the \emph{conjunction} \(C \sqcap D\) is an \elh{} concept description;
+    \item if \(C\) is an \elh{} concept description, then so is the \emph{existential restriction} \(\exists{}r.C\) with respect to a role name \(r\).
+  \end{enumerate}
+  Thanks to this definition, it is possible to express each concept description as a conjunction of \emph{atoms}, which are defined as the elements of the set containing all concept names, \(\top{}\) and all the existential restrictions appearing in \(\mathcal{C}\)(\elh).
+  Such a syntactical feature is exploited by defining the mapping
+  \(\widehat{C} := \lbrace C_i\rbrace_{i=1}^n\) for
+  \(C = \sqcap_{i=1}^n C_i \in \mathbf{C}\).
+  Once a syntax has been defined, a semantical meaning is assigned to each concept by means of an \emph{interpretation}, which consists of a tuple \(\mathcal{I} = (\DeltaI,\dotI)\) such that \(\DeltaI \ne \emptyset\) is the \emph{interpretation domain} and \(\dotI\) is a mapping which assigns subsets of \(\DeltaI{}\) to each concept and binary relations over \(\DeltaI\) to roles.
+  Specifically, each interpretation maps \(\top{}\) to \(\DeltaI\) and is extended to so-called \emph{concept constructors} by putting
+  \({(C \sqcap D)}^\mathcal{I} := C^\mathcal{I} \cap D^\mathcal{I}\) and
+  \({(\exists{}r.C)}^\mathcal{I} :=
+    \lbrace d \in \DeltaI \mid \text{for some} \, e \in \DeltaI
+          \,\text{s.t}\, (d,e) \in r^\mathcal{I} \,\text{and}\, e \in
+          C^\mathcal{I} \rbrace\).
+
+  For the purposes of this work, terminological and role-hierarchical knowledge has been taken into account.
+  A \emph{knowledge base} (\kb) \(\mathcal{K}\) consists of:
+  \begin{description}
+    \item[\emph{TBox} \(\mathcal{T}\):] a finite set of \emph{general concept inclusions} (\textsc{gci}s) \(C \sqsubseteq D\) or \emph{concept definitions} \(C \equiv D\), where \(C\) is a concept name and \(D\) is a concept description;
+    an interpretation \(\mathcal{I}\) is a \emph{model} of \(\mathcal{T}\), \(\mathcal{I} \models \mathcal{T}\), if for all \gci{}s \(C \sqsubseteq D\) in it, \(C^\mathcal{I} \subseteq D^\mathcal{I}\) holds --- similarly, \(C^\mathcal{I} = D^\mathcal{I}\) for concept definitions.
+    The TBox is called \emph{unfoldable} when it is acyclic and every concept name occurs at most once on a left-hand side of an element of the TBox.
+    This kind of TBox can be normalised and expanded in an equivalent TBox containing exclusively concept definitions, where only primitive concept names appear on the right hand side of these concept definitions.
+    \item[\emph{RBox} \(\mathcal{R}\):] a finite set of \emph{role inclusion axioms} (\ria{}s) \(r \sqsubseteq s\), where \(r\), \(s\) are roles; an interpretation \(\mathcal{I}\) is a model of \(\mathcal{R}\), \(\mathcal{I} \models \mathcal{R}\), if for all \ria{}s \(r \sqsubseteq s\), \(r^\mathcal{I} \subseteq s^\mathcal{I}\) holds.
+  \end{description}
+
+  A reasoning service that is efficiently delivered by \elh{} \kb{}s is \emph{subsumption} of concepts: the concept \(C\) is \emph{subsumed} by \(D\) w.r.t.\ a \kb{} \(\mathcal{K}\) iff \(\mathcal{I} \models \mathcal{K}\) implies that \(C^\mathcal{I} \subseteq D^\mathcal{I}\) for all models \(\mathcal{I}\) of \(\mathcal{K}\), in symbols \(C \subsume{K} D\);
+  if \(C\) and \(D\) both subsume each other, then they are \emph{equivalent}, denoted by \(C \equiv_{\mathcal{K}} D\).
+  Similarly, \(r \subsume{R} s\) if \(r^\mathcal{I} \subseteq s^\mathcal{I}\) for all models \(\mathcal{I}\) of \(\mathcal{R}\).
+
+  The computation of a normal form for \el{} concepts is well described in~\cite{DLbook}; however, the addition of role hierarchy contribution made in~\cite{LeTu12} is the introduction of an \elh-normal form for concept descriptions, which can be computed in polynomial time.
+  Specifically, a choice function \(ch{}\) is devised such that every role is replaced by a picked representative of its \(\equiv_\mathcal{R}\)-equivalence class.
+  Then, we say that \(C \in \mathcal{C}\)(\elh) is in \emph{\elh-normal form} w.r.t. a RBox \(\mathcal{R}\) if each of its subconcepts are closed under the application of the following rules:
+  \begin{align*}
+    A \sqcap \top &\mapsto A & A \sqcap A &\mapsto A \tag{1--2}\\
+    \exists{}r.C^\prime &\mapsto \exists{}ch([r]).C^\prime &
+    \exists{}r.C^\prime \sqcap \exists{}s.D^\prime &\mapsto
+    \exists{}r.C^\prime\,\,\text{if}\,\,r\subsume{R}, C^\prime \sqsubseteq D^\prime \tag{3--4}
+  \end{align*}
+
+  \section{Measuring concept similarity}
+
+  How may one quantitatively measure the amount of similarity between two concepts?
+  In many real-world examples, ranging from cognitive sciences, biology, physics, to computer vision, the underlying mathematical structure is that of a \emph{metric space}, which is endowed with a \emph{metric}.
+  In particular, the similarity of two concepts can be interpreted as a relative measure: thus, it is possible to take normalised metric spaces, where distances are bound to live in the unit interval.
+  In this view, the metric distance between two concepts expresses their dissimilarity: thus, two totally similar concepts will be in the same position in the space, with dissimilar concepts being further and further.
+  Therefore, given a normalised metric space \((D,d)\), the similarity function \(s\) inducted by \(d\) corresponds to \(s(a,b) := 1 - d(a,b)\).
+  Generally speaking, a \emph{similarity function} \(s \colon D^2 \to [0,1]\) comply with following specification, where \(a,b,c \in D\):
+  \begin{enumerate}
+    \item \(s(a,b) = 1\) iff \(a = b\),
+    \item \(s(a,b) = s(b,a)\),
+    \item \(1 + s(a,b) \ge s(a,c) + s(c,b)\).
+  \end{enumerate}
+
+  Thus, a \emph{concept similarity measure} over \elh-concepts consists of a mapping \(\mathrm{sim} \colon {\mathcal{C}(\mathcal{ELH})}^2 \to [0,1]\).
+
+  How much can be directly embedded in this definition?
+  Which are the properties globally recognised as peculiar to measure concept similarity?
+  A \emph{property}, here, is seen as a formalism of the expected behaviour of the defined measure.
+  Unsurprisingly, almost all the features, that one can think of as desirable for such a tool, have encountered some criticism in different research fields.
+
+  \paragraph{Simmetry}, which is widely recognised to be an essential feature in similarity measures for \dl{}s, had been contested in fields which are more involved with the study of human reasoning, as seen in~\cite{Tve77}.
+  This is the only property that has been incorporated in the definition of a concept similarity measures in the original paper (\cite{LeTu12}).
+  Indeed, we extend what said so far, by calling \emph{concept similarity measure} a symmetric mapping \(\mathrm{sim} \colon {\mathcal{C}(\mathcal{ELH})}^2 \to [0,1]\), i.e. \(\mathrm{sim}(C,D) = \mathrm{sim}(D,C)\) for all \elh-concepts \(C\), \(D\).
+
+  \paragraph{Triangle inequality} is similarly acknowledged as being not an essential feature of human reasoning in the work by Tversky, while it is largely accepted in the context of description logics.
+  A context similarity measure \(s\) over the set \(D\) satisfies the triangle inequality if, for all \(a\), \(b\), \(c \in D\),
+  \(s(a,c) \le s(a,b) + s(b,c)\).
+  Strangely enough, none of the concept similarity measures found in the literature up until 2012 --- except for the Jaccard Index, which is \emph{not} meant to be such a measure --- fulfills the triangle inequality, nor did the original paper contributed a measure with that property.
+  Some advances in this direction can be found in~\cite{DAB14}, where a measure respecting the triangle inequality (but missing other properties) had been provided for the \el{} \dl.
+
+  \paragraph{Equivalence} and its related properties, closure and invariance, have found little to no criticism in the literature.
+  Indeed, it is regarded as necessary for two equivalent concepts to be totally similar, and equivalent concepts should share their similarity behaviour toward other concepts.
+  These properties can be formally stated as follows: for all concepts \(C\), \(D\) and \(E\), a concept similarity measure \(s\) is \emph{equivalence invariant} if \(C \equiv D\) implies that \(s(C,E) = s(D,E)\), while it is \emph{equivalence closed} if \(s(C,D) = 1\) is equivalent to \(C \equiv D\).
+
+  \paragraph{Subsumption} as an ordering over concepts can be abstracted to the level of a concept similarity measure. How?
+  Informally, if \(C\), \(D\) and \(E\) are \elh-concepts and \(C \subsume{K} D \subsume{K} E\), \(D\) is closer to \(E\) than \(C\), thus more similar;
+  also, it can be noticed that \(D\) is closer to \(C\) than \(E\).
+  These two insights can be captured as \emph{subsumption preserving} and \emph{reverse subsumption preserving}, where the concept similarity measure \(s\) obeys to the constraints \(s(C,E) \le s(D,E)\) (reverse subs.\ preserving) and \(s(C,D) \ge s(C,E)\) (direct subs.\ preserving).
+
+  \paragraph{Structural dependence} is the last property that had been introduced for concept similarity measures.
+  The idea behind structural dependence is that as the number of common \emph{features} of two concepts increases and the number of uncommon features is constant, then the similarity of these concepts must be increasing.
+  Such distinct features can be thought of as sequence of atoms such that no two atoms in the sequence are in subsumption relation.
+  Indeed, a \csm{} is \emph{structurally dependent} iff, given a sequence \({(C_k)}_{k=1}^n\) of atoms such that if \(1 \le i,j \le n\) and \(i \ne j\), then \(C_i \not\sqsubseteq C_j\), and defining \(D_n := \sqcap_{i=1}^n C_i \sqcap D\) for a given concept name, then \(\lim_{n \to \infty}s(D_n,E_n) = 1\) holds.
+
+  \section{\(\simi{}\): a blueprint for designing CSMs}
+
+  The concept similarity measure \(\simi\), which is going to be introduced in this chapter, is characterised as a \emph{structural measure}: it is defined according to the syntax of the concepts which it is intended to measure, rather than on their interpretations, as in \emph{interpretation-based} measures.
+
+  \paragraph{Preprocessing.}
+  The usage of \(\simi{}\) requires a preliminar processing of the involved knowledge base.
+  If the chosen TBox is unfoldable, it is possible to consider its \emph{expansion}, which is semantically equivalent to the non-expanded version and only contains primitive concept names on the right hand side of concept definitions.
+  Then, each concept is replaced by its \elh-normal form; being such a normal form unique up to associativity and commutativity, \emph{equivalence invariance} is ensured for any measure employed to test concept similarity on the \kb.
+
+  \paragraph{Directed and reverse similarity.}
+  To test out equivalence of two concepts \(C\) and \(D\), a possible way is to check whether subsumption holds in both directions, that is, \(C \sqsubseteq D\) and \(D \sqsubseteq C\).
+  This approach can be astracted to the mathematical level, by first defining a \emph{directed similarity} measure --- a generalisation of the subsumption operator ---, to later combine values in both directions by means of another operator.
+  The directed similarity measure \(\simi_d\) is going to be derived later in this section; finally, \(\simi\) is going to be defined as \(\simi(C,D) := \simi_d(C,D) \otimes \simi_d(D,C)\).
+  The chosen operator should fit certain conditions, which guarantee that the resulting measure complies with the desired properties.
+  This is achieved by considering a \emph{fuzzy connector} \(\otimes \colon {[0,1]}^2 \to [0,1]\), which is an operator that fulfills the following conditions, for all \(x, y \in [0,1]\):
+  \begin{itemize}
+    \item \(x \otimes y = y \otimes x\) --- \emph{commutativity};
+    \item \(x \otimes y = 1\) iff \(x = y = 1\) --- \emph{equivalence closure};
+    \item if \(x \le y\), then \(1 \otimes x \le 1 \otimes y\) --- \emph{weak monotonicity};
+    \item if \(x \otimes y = 0\), then at least one between \(x \ne 0\) or \(y \ne 0\) does not hold.
+  \end{itemize}
+  In the \(\simi{}\) framework, the choice of a fuzzy operator provides \emph{symmetry} --- thanks to commutativity ---, \emph{equivalence closure} and \emph{sumbsumption preserving}, which follows from weak monotonicity.
+
+  \paragraph{Measuring concept names.}
+  The function \(\simi_d\) had been first derived from the function
+  \[
+  d(C,D) :=
+  \frac{\lvert \widehat{C} \cap \widehat{D}\rvert}{\lvert \widehat{C} \rvert},
+  \]
+  inspired by the Jaccard Index, described in~\cite{Ja01}.
+  However, this function does not take into account existential restrictions.
+  This issue is partially solved by the following rewriting:
+  \[
+    \lvert \widehat{C} \cap \widehat{D}\rvert :=
+    \sum_{C^\prime \in \widehat{C}}\max_{D^\prime \in \widehat{D}}
+    \delta_{C^\prime}^{D^\prime},
+  \]
+  where \(\delta_{C^\prime}^{D^\prime}\) equals \(1\) when the two concepts are equal, \(0\) otherwise. Later, it will be shown how further modifications, made possible by this one, are going to allow incorporating existential restrictions.
+  Another issue arises, with this new definition: it is not possible to distinguish between totally dissimilar and not totally similar concepts, since \(\delta_{C^\prime}^{D^\prime}\) checks syntactical equality of two concepts, assuming that otherwise, they cannot be similar at all.
+  Again, the definition is refined by introducing a measure over concept and role name, such that, given adequate conditions, the desired properties for \(\simi\) are respected. A function \(pm \colon \mathbf{C}^2 \cup \mathbf{R}^2 \to [0,1]\) is a \emph{primitive measure} if:
+  \begin{enumerate}
+    \item for all concept names \(A\), \(B\), \(pm(A,B) = 1\) iff \(A = B\);
+    \item for given role names \(r\), \(s\), \(t\):
+    \begin{enumerate}
+      \item \(pm(r,s) = 1\) iff \(s \sqsubseteq r\),
+      \item if \(r \subsume{R} s\), then \(pm(r,s) > 0\),
+      \item if \(t \subsume{R} s\), then \(pm(r,s) \le pm(r,t)\).
+    \end{enumerate}
+  \end{enumerate}
+  This definition is sufficient to provide \emph{equivalence closure} and \emph{subsumption preserving} in \(\simi\).
+
+  To be able to deal with existential restrictions, all the possible cases should be covered:
+  \begin{enumerate}
+    \item When similarity between concept names is computed, the primitive measure \(pm\) is sufficient, since it handles this case directly.
+    \item If a concept name and an existential restriction are compared, the similarity will be \(0\).
+    \item In the final case, it would be needed two compute the similarity of two existential restrictions, namely \(\exists{}r.C^\star{}\) and \(\exists{}s.D^\star{}\).
+    To achieve this, both role names and concept names appearing should be considered.
+    While the roles are handled by \(pm\), a recursive call of the measure over \(C^\star\), \(D^\star\) is needed.
+    To combine these two values, and to establish how much influence does each one exert on the final measure, an affine combination is introduced, along with a value \(w \in (0,1)\):
+    \[
+    d(\exists{}r.C^\star,\exists{}s.D^\star) :=
+    pm(r,s) \cdot \left(w + (1-w)d(C^\star,D^\star)\right).
+    \]
+  \end{enumerate}
+  In this way, the case \(d(C^\star,D^\star) = 0\) allows one to understand whether the roles are similar --- then the similarity equals \(w\), otherwise it would be equal to \(0\).
+  What is a \emph{good} value for \(w\)? By default, \(w = 0.01\).
+  A feasible value for \(w\) may be proportionally decreasing with respect to the natural number \(n\) such that the two concepts \(C\), \(D\) of the form
+  \[
+  C = \overbrace{\exists{}r.\dotsb{}\exists{}r.}^{n\;\text{times}}A \quad
+  D = \overbrace{\exists{}r.\dotsb{}\exists{}r.}^{n\;\text{times}}B
+  \]
+  with \(pm(A,B) = 0\) are almost, if not totally similar.
+
+  \paragraph{Information on similarity.}
+  The last issue that was dealt with in~\cite{LeTu12} concerned the \(\max{}\) operator appearing in the definition of the similarity measure developed so far.
+  Indeed, the claim is that such an operator is not making full use of the available information, to compute the similarity of two concepts; that happens, because only the \emph{best matching} atom in the set \(\widehat{D}\) is kept, discarding all the others, which might still be similar to the considered atom of \(\widehat{C}\).
+
+  The maximum operator fits into a class of functions called \emph{triangular conorms};%, presented in \todo{Insert reference here.[14] on paper.};
+  in particular, it is an instance of a \emph{bounded \(t\)-conorm} \(\oplus{}\), thus it satisfies the condition: if \(x \oplus y = 1\), then \(x = 1\) or \(y = 1\).
+  Moreover, \(\max\) is the strongest \(t\)-conorm, which means that all the other \(t\)--conorms yield a value equal or greater than \(\max\); this, intuitively, reflects the fact that \(\max\) does not make good use of the available information.
+  Finally, \(0\) is the unit element of \(t\)-conorms: this implies that totally dissimilar concepts are not influencing the final value of the measure.
+  Thus, in the final definition of \(\simi_d\), \(\max\) will be replaced by a \emph{bounded \(t\)-conorm}, which is a parameter of the framework.
+
+  \paragraph{Relevance of concept names.}
+  Up until now, all the atoms of \(\mathcal{C}\)(\elh) had the same relevance, in determining how concepts differ from each other.
+  However, it is likely that some concepts might be prioritised in some use cases.
+  Hence, another parameter that has been added to the framework is a function that specifies how much an atom influences the similarity between concepts. Namely, a \emph{weighting function} has been introduced, defined as a mapping \(g \colon \mathbf{A} \to \mathbb{R}_+\), where \(\mathbf{A}\) is the set of \emph{atoms}.
+
+  \subsection{The measure of directed similarity: \(\simi_d\)}
+
+  The measure of \emph{directed similarity} \(\simi_d \colon {\mathcal{C}(\mathcal{ELH})}^2 \to [0,1]\), given the following parameters:
+  \begin{enumerate}
+    \item a bounded \(t\)-conorm \(\oplus\),
+    \item a primitive measure \(pm\),
+    \item a weighting function \(g\),
+    \item \(w \in (0,1)\),
+  \end{enumerate}
+  is defined as:
+  \begin{align*}
+    \simi_d(\top,D) &= 1 \quad
+    \text{for all}\; D \in \mathcal{C}(\mathcal{ELH}) \\
+    \simi_d(C,D) &=
+    \frac{\sum_{C^\prime \in \widehat{C}}\left(g(C^\prime) \cdot \bigoplus_{D^\prime \in \widehat{D}} \simi_d(C^\prime, D^\prime)\right)}%
+    {\sum_{C^\prime \in \widehat{C}}g(C^\prime)} \quad \text{if}\; C \ne \top \\
+    \simi_d(A,B) &= pm(A,B) \quad \text{for atoms}\; A,B \\
+    \simi_d(\exists{}r.C,\exists{}s.D) &=
+    pm(r,s) \cdot \left(w + (1-w)\simi_d(C,D)\right) \\
+    \simi_d(C,D) &= 0 \quad \text{otherwise}.
+  \end{align*}
+
+  The similarity measure \(\simi\) is finally defined as \(\simi(C,D) := \simi_d(C,D) \otimes \simi_d(D,C)\), where \(\otimes{}\) is a fuzzy connector.
+
+  The \csm \(\simi\) fulfills most of the desired properties.
+  Indeed, in~\cite{LeTu12}, it is shown that it is \emph{equivalence closed}, \emph{equivalence invariant}, \emph{symmetric} and \emph{subsumption preserving} for every choice of the parameters.
+  For adequates choice of the fuzzy connector and the weighting function, \emph{structural dependence} can be achieved.
+  The only properties that cannot be guaranteed by \(\simi\) are \emph{triangle inequality} and \emph{reverse subsumption preserving}, since similarity values between the atoms of the involved concepts are not taken into account, in the computation of the similarity value of the concepts.
+
+  Finally, the framework provides a \csm that can be efficiently computed: if the parameters can be computed in polynomial time, then \(\simi\) cna be computed in polynomial time as well, with respect to the size of the measured concepts.
+
+  \section{Related work}
+
+  \paragraph{The triangle inequality.} While the majority of similarity measures actually defined do not respect the triangle inequality, for \el-concept descriptions an alternative approach had been developed in~\cite{DAB14}, where concepts in \el{} normal form are translated into \emph{description trees}; then, the similarity measures in there defined, based on the description trees of the concepts, though being non monotone and not structurally dependent, respect triangle inequality.
+
+  \paragraph{Subsumption preservation} as a principle of similarity measures had been exploited in~\cite{Se16} as a way to improve evaluation methods, in which subsumption preservation is used to populate query inventories, which are then used to perform the evaluation of word embeddings.
+
+  \paragraph{General TBoxes}, in the context of similarity evaluation of relaxed instances of \el-concepts, had been included in a follow-up work, which introduces a treatment for both the general and the unfoldable case (\cite{Ec14}).
+
+  \paragraph{Approximation} grades induced by concept similarity measures and complexity of relative threshold \dl{}s are discussed in~\cite{Ba17}, where it is shown how \csm{}s for \el{} description logics can be employed to derive a grade membership function and consequently a threshold \dl.
+
+  \section{Conclusion}
+
+  \begin{thebibliography}{1}
+    \bibitem{DLbook}
+      Baader, Franz and Horrocks, Ian and Lutz, Carsten and Sattler, Uli.
+      \textit{An Introduction to Description Logic}.
+      Cambridge University Press, Cambridge, 2017.
+    \bibitem{Tve77}
+      Tversky, Amos.
+      \textit{Features of Similarity}.
+      Psychology review, 84(07):327-352, 1977.
+    \bibitem{LeTu12}
+      Lehmann, Karsten and Turhan, Anni-Yasmin.
+      \textit{A Framework for Semantic-based Similarity Measures for \elh-Concepts}.
+      Logics in Artificial Intelligence - 13th European Conference, (07):307-319, 2012.
+    \bibitem{Lae15}
+      Lätsch, Paul and Turhan, Anni-Yasmin.
+      \textit{Simi-Framework for Concept-Similarity-Measures: property analysis and expansion to more powerful Description Logics}.
+      Diplomarbeit, Technische Universität Dresden, 2015.
+    \bibitem{dSF08}
+      d’Amato, Claudia and Staab, Steffen and Fanizzi, Nicola.
+      \textit{On the Influence of Description Logics Ontologies on Conceptual Similarity}.
+      Knowledge Engineering: Practice and Patterns, 48-63, 2008.
+    \bibitem{DAB14}
+      Distel, Felix and Atif, Jamal and Bloch, Isabelle.
+      \textit{Concept dissimilarity based on tree edit  distance and morphological dilation}.
+      ECAI, 2014.
+    \bibitem{Ja01}
+      Jaccard, Paul.
+      \textit{\'Etude comparative de la distribution florale dans une portion des alpes et des jura}.
+      Bulletin de la Société Vaudoise des Sciences Naturelles, 37: 547–579, 1901.
+    \bibitem{Se16}
+      Seyed, A. Patrice.
+      \textit{Subsumption Preservation as a Comparative Measure for Evaluating Sense-Directed Embeddings}.
+      ACL 2016, 90, 2016.
+    \bibitem{Ec14}
+    Ecke, Andreas, Rafael Peñaloza, and Anni-Yasmin Turhan.
+    \textit{Similarity-Based Relaxed Instance Queries}.
+    PRUV, 101–113, 2014.
+    \bibitem{Ba17}
+    Baader, Franz, and Oliver Fernández Gil.
+    \textit{Decidability and Complexity of Threshold Description Logics Induced by Concept Similarity Measures}.
+    Proceedings of the Symposium on Applied Computing, 983–988, 2017.
+  \end{thebibliography}
+  \bibliography{seminar_further-DL}%
+
+\end{document}
