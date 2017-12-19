@@ -79,6 +79,8 @@
   \begin{description}
     \item[\emph{TBox} \(\mathcal{T}\):] a finite set of \emph{general concept inclusions} (\textsc{gci}s) \(C \sqsubseteq D\) or \emph{concept definitions} \(C \equiv D\), where \(C\) is a concept name and \(D\) is a concept description;
     an interpretation \(\mathcal{I}\) is a \emph{model} of \(\mathcal{T}\), \(\mathcal{I} \models \mathcal{T}\), if for all \gci{}s \(C \sqsubseteq D\) in it, \(C^\mathcal{I} \subseteq D^\mathcal{I}\) holds --- similarly, \(C^\mathcal{I} = D^\mathcal{I}\) for concept definitions.
+    \todo{Insert correct definition of \emph{unfoldable} TBox.}
+% Deﬁnition 9 (unfoldable TBox). A TBox T is called a unfoldable TBox iﬀ it is acyclic, consists of concept deﬁnitions and primitive concept deﬁnitions only and every concept name occurs at most once on a left-hand side of a concept axiom.
     The TBox is called \emph{unfoldable} when it is acyclic and every concept name occurs at most once on a left-hand side of an element of the TBox.
     This kind of TBox can be normalised and expanded in an equivalent TBox containing exclusively concept definitions, where only primitive concept names appear on the right hand side of these concept definitions.
     \item[\emph{RBox} \(\mathcal{R}\):] a finite set of \emph{role inclusion axioms} (\ria{}s) \(r \sqsubseteq s\), where \(r\), \(s\) are roles; an interpretation \(\mathcal{I}\) is a model of \(\mathcal{R}\), \(\mathcal{I} \models \mathcal{R}\), if for all \ria{}s \(r \sqsubseteq s\), \(r^\mathcal{I} \subseteq s^\mathcal{I}\) holds.
