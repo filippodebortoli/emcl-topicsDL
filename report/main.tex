@@ -85,7 +85,7 @@
     \item[\emph{RBox} \(\mathcal{R}\):] a finite set of \emph{role inclusion axioms} (\ria{}s) \(r \sqsubseteq s\), where \(r\), \(s\) are roles; an interpretation \(\mathcal{I}\) is a model of \(\mathcal{R}\), \(\mathcal{I} \models \mathcal{R}\), if for all \ria{}s \(r \sqsubseteq s\), \(r^\mathcal{I} \subseteq s^\mathcal{I}\) holds.
   \end{description}
 
-  A reasoning service that is efficiently delivered by \elh{} \kb{}s is \emph{subsumption} of concepts: the concept \(C\) is \emph{subsumed} by \(D\) w.r.t.\ a \kb{} \(\mathcal{K}\) iff \(\mathcal{I} \models \mathcal{K}\) implies that \(C^\mathcal{I} \subseteq D^\mathcal{I}\) for all models \(\mathcal{I}\) of \(\mathcal{K}\), in symbols \(C \subsume{K} D\);
+  Among the various reasoning services that can be applied over \elh{} \kb{}s, a useful one is the \emph{subsumption} of concepts: the concept \(C\) is \emph{subsumed} by \(D\) w.r.t.\ a \kb{} \(\mathcal{K}\) iff \(\mathcal{I} \models \mathcal{K}\) implies that \(C^\mathcal{I} \subseteq D^\mathcal{I}\) for all models \(\mathcal{I}\) of \(\mathcal{K}\), in symbols \(C \subsume{K} D\);
   if \(C\) and \(D\) both subsume each other, then they are \emph{equivalent}, denoted by \(C \equiv_{\mathcal{K}} D\).
   Similarly, \(r \subsume{R} s\) if \(r^\mathcal{I} \subseteq s^\mathcal{I}\) for all models \(\mathcal{I}\) of \(\mathcal{R}\).
 
