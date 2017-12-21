@@ -44,10 +44,30 @@
 
   \section{Introduction}
 
-  % Concept similarity measures play a fundamental role in the discovery of otherwise hidden relations between similar concepts in ontologies.
-  % Applications of such tools are various and different, from ontology alignment to discovery of functional similarities in genetics ontology.
+  Measuring the similarity of two or more concepts is a task that frequently occurs in many real-world cases, where ontologies are employed, ranging from exploration of knowledge bases for information discovery --- as done in~\cite{Gen13} --- to more technical activies, such as ontology alignment.
 
+  As important as a \emph{good} measure for concept similarity is, one has to deal with several issues during the specification, implementation and usage phases of a tool of this kind.
+  Most of these have been faced in the work done by Lehmann \& Turhan in~\cite{LeTu12}.
 
+  Which are the intended properties for a concept similarity measure?
+  The notion of similarity itself has been largely discussed in the literature (a remarkable reference is the work done in~\cite{Tve77}).
+  Among the many, possibly different, existing approaches to similarity, the one shows in [] has been followed in this work.
+  In particular, relevant properties of similarity have been described and formalised; some of these have been drawn from what has been already established in the literature, whereas others have been newly introduced.
+  These properties are either concerning the mathematical side of a measure or its relation with the underlying representation of the concepts.
+
+  Among description logics, a family of formal languages used to represent knowledge in ontologies, the one investigated and chosen as a base for the work herein reportes is the \elh{} description logic, which has a practical relevance --- for example, in medical ontologies --- and is part of important standards for semantic technologies\todo{insert reference}.
+  In this setting, it is shown how a similarity measure can be defined, such that it is powerful, yet flexible to edit and efficient to compute, given that one uses the right tools in its construction.
+
+  This work also attempts to address another issue: the \emph{portability} and \emph{reliability} of concept similarity measures, across different contexts.
+  Indeed, many existing measures are domain-related or depend too much on the dataset upon which they are first defined, assessed and evaluated.
+  The choice, here, is that of defining a framework, a general concept similarity measure which can be specifically instantiated, by means of several parameters; this allows the user to tailor the measure to her particular application, without losing the desired properties, guaranteed to hold by the way the introduce measure \(\simi\) has been specified.
+
+  The report has the following structure:
+  first, some notions concerning \dl{}s are introduced;
+  then, similarity measure are discussed, with their properties;
+  next, the framework devised in~\cite{LeTu12} is derived and explained;
+  finally, some results are shown, reguarding the properties of the new measure.
+  In the end, an overview of related works is presented, followed by a brief conclusion.
 
   \section{The \(\mathcal{ELH}\) Description Logic}
   The description logics upon which the framework has been developed is the
@@ -316,6 +336,11 @@
     Baader, Franz, and Oliver Fernández Gil.
     \textit{Decidability and Complexity of Threshold Description Logics Induced by Concept Similarity Measures}.
     Proceedings of the Symposium on Applied Computing, 983–988, 2017.
+    \bibitem{Gen13}
+    Gentleman, R.
+    \textit{Visualizing and Distances Using GO}.
+    2013.% This reference is unclear.
+}
   \end{thebibliography}
   \bibliography{seminar_further-DL}%
 
