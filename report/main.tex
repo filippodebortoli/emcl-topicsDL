@@ -392,6 +392,19 @@
 
   \section{Conclusion}
 
+  In this report, the concept similarity measure \(\simi\), which possess some interesting and useful properties, has been introduced.
+
+  Some of its properties have been explored, such as invariance and closure under equivalence or symmetry, and it has been shown how its computation can be considered efficient.
+
+  The path towards the definition of such a measure has been illustrated, with a focus on each single parameter, along with the motivations that justified their usage.
+  Most of the desired properties have been successfully incorporated, while others, like triangle inequality, have been not included, but may be possibly achieved.
+
+  While \elh{} is a good and widely used \dl{}, the question is whether a similar measure might be extended to more expressive description logics, without losing its peculiar features.
+  It would also be worthy to investigate the possibility of using general TBoxes, where cycles may break the behaviour of \(\simi\) as it is defined now.
+
+  Finally, it would be interesting to obtain a full implementation of \(\simi\), in order to be able to assess it against other existing measures, as well as to start using it to evaluate concept similarity in ontologies.
+
+
   \begin{thebibliography}{1}
     \bibitem{DLbook}
       Baader, Franz and Horrocks, Ian and Lutz, Carsten and Sattler, Uli.
@@ -426,6 +439,9 @@
       \textit{Subsumption Preservation as a Comparative Measure for Evaluating Sense-Directed Embeddings}.
       ACL 2016, 90, 2016.
     \bibitem{Ec14}
+    Ecke, Andreas, Rafael Peñaloza and Anni-Yasmin Turhan.
+    \textit{Similarity-based relaxed instance queries.}
+    Journal of Applied Logic, (13):480-508, 2015.
     Ecke, Andreas, Rafael Peñaloza, and Anni-Yasmin Turhan.
     \textit{Similarity-Based Relaxed Instance Queries}.
     PRUV, 101–113, 2014.
