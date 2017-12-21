@@ -11,6 +11,7 @@
 
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{amsthm}
 
 \usepackage{booktabs}
 \setlength{\tabcolsep}{7pt}
@@ -18,6 +19,9 @@
 \usepackage{todonotes}
 
 \DeclareMathOperator{\simi}{simi}
+
+\theoremstyle{remark}
+\newtheorem{exa}{Example}
 
 \newcommand{\el}{\(\mathcal{EL}{}\)}
 \newcommand{\elh}{\(\mathcal{ELH}{}\)}
@@ -133,7 +137,7 @@
 
   The computation of a normal form for \el{} concepts is well described in~\cite{DLbook}; however, the addition of role hierarchy contribution made in~\cite{LeTu12} is the introduction of an \elh-normal form for concept descriptions, which can be computed in polynomial time.
   Specifically, a choice function \(ch{}\) is devised such that every role is replaced by a picked representative of its \(\equiv_\mathcal{R}\)-equivalence class.
-  Then, we say that \(C \in \mathcal{C}\)(\elh) is in \emph{\elh-normal form} w.r.t. a RBox \(\mathcal{R}\) if each of its subconcepts are closed under the application of the following rules:
+  Then, we say that \(C \in \mathcal{C}\)(\elh) is in \emph{\elh-normal form} w.r.t. a RBox \(\mathcal{R}\) if all its subconcepts are closed under the application of the following rules:
   \begin{align*}
     A \sqcap \top &\mapsto A & A \sqcap A &\mapsto A \tag{1--2}\\
     \exists{}r.C^\prime &\mapsto \exists{}ch([r]).C^\prime &
@@ -207,6 +211,26 @@
     \item if \(x \le y\), then \(1 \otimes x \le 1 \otimes y\) --- \emph{weak monotonicity};
     \item if \(x \otimes y = 0\), then at least one between \(x \ne 0\) or \(y \ne 0\) does not hold.
   \end{itemize}
+
+  \begin{exa}[Fuzzy connector]
+    The operator \(\otimes \colon {[0,1]}^2 \to [0,1]\) defined as
+    \[
+    x \otimes y := \frac{x^2y + y^2x}{2} \qquad x,y \in [0,1]
+    \]
+    is a fuzzy operator.
+    The commutativity follows from the commutativity of the sum and the dot product over \([0,1]\). Weak monotonicity holds, because \(x \le y\) implies that \((x \cdot (x+1))/2 \le (y \cdot (y+1))/2\).
+
+    This operator is equivalence closed: assume that \(x \otimes y = 1\) and \(x \ne 1\), \(y \ne 1\), and \(x \le y\) without loss of generality.
+    Since \(x^2y = 2 - xy^2\) and \(x^2y \le xy^2\), it follows that \(2-xy^2 \le xy^2\), hence \(xy^2 \ge 1\); however, this is a contradiction to the hypothesis that \(x\), \(y \in [0,1]\), thus at least one between \(x\), \(y\) equals \(1\).
+    Suppose that \(y = 1\): then, from \((x^2 + x)/2 = 1\) follows that \(x = 1\); analogously, it can be proved that \(x = 1\) implies \(y = 1\).
+
+    Finally, it is possible to show that \(x = 0\) or \(y = 0\) when \(x \otimes y = 0\).
+    Indeed, from
+    \[
+    \frac{x^2y + y^2x}{2} = 0 \implies x^2y = - y^2x
+    \]
+    one can conclude that \(x^2y = y^2x = 0\), hence \(x = 0\) or \(y = 0\).
+  \end{exa}
   In the \(\simi{}\) framework, the choice of a fuzzy operator provides \emph{symmetry} --- thanks to commutativity ---, \emph{equivalence closure} and \emph{sumbsumption preserving}, which follows from weak monotonicity.
 
   \paragraph{Measuring concept names.}
@@ -263,7 +287,7 @@
   The last issue that was dealt with in~\cite{LeTu12} concerned the \(\max{}\) operator appearing in the definition of the similarity measure developed so far.
   Indeed, the claim is that such an operator is not making full use of the available information, to compute the similarity of two concepts; that happens, because only the \emph{best matching} atom in the set \(\widehat{D}\) is kept, discarding all the others, which might still be similar to the considered atom of \(\widehat{C}\).
 
-  The maximum operator fits into a class of functions called \emph{triangular conorms};%, presented in \todo{Insert reference here.[14] on paper.};
+  The maximum operator fits into a class of functions called \emph{triangular conorms}; %, presented in \todo{Insert reference here.[14] on paper.};
   in particular, it is an instance of a \emph{bounded \(t\)-conorm} \(\oplus{}\), thus it satisfies the condition: if \(x \oplus y = 1\), then \(x = 1\) or \(y = 1\).
   Moreover, \(\max\) is the strongest \(t\)-conorm, which means that all the other \(t\)--conorms yield a value equal or greater than \(\max\); this, intuitively, reflects the fact that \(\max\) does not make good use of the available information.
   Finally, \(0\) is the unit element of \(t\)-conorms: this implies that totally dissimilar concepts are not influencing the final value of the measure.
