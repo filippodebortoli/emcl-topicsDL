@@ -159,28 +159,32 @@
     \item \(1 + s(a,b) \ge s(a,c) + s(c,b)\).
   \end{enumerate}
 
-  Thus, a \emph{concept similarity measure} over \elh-concepts consists of a mapping \(\mathrm{sim} \colon {\mathcal{C}(\mathcal{ELH})}^2 \to [0,1]\).
+  Thus, a \emph{concept similarity measure} over \elh-concepts consists of a symmetric mapping \(\mathrm{sim} \colon {\mathcal{C}(\mathcal{ELH})}^2 \to [0,1]\).
 
   How much can be directly embedded in this definition?
   Which are the properties globally recognised as peculiar to measure concept similarity?
-  A \emph{property}, here, is seen as a formalisation\todo{Rephrase this sentence.} of the expected behaviour of the defined measure.
+  A \emph{property}, here, is seen as a formalisation of the expected behaviour of the defined measure.
   Unsurprisingly, almost all the features, that one can think of as desirable for such a tool, have encountered some criticism in different research fields.
 
-  \paragraph{Simmetry}, which is widely recognised to be an essential feature in similarity measures for \dl{}s, had been contested in fields which are more involved with the study of human reasoning, as seen in~\cite{Tve77}.
-  This is the only property that has been incorporated in the definition of a concept similarity measures in the original paper (\cite{LeTu12}).
-  Indeed, we extend what said so far, by calling \emph{concept similarity measure} a symmetric mapping \(\mathrm{sim} \colon {\mathcal{C}(\mathcal{ELH})}^2 \to [0,1]\), i.e. \(\mathrm{sim}(C,D) = \mathrm{sim}(D,C)\) for all \elh-concepts \(C\), \(D\).
+  \paragraph{Symmetry.} This property is one of the most widely recognised as an essential feature in similarity measures for \dl{}s, although it has been contested in fields which are more involved with the study of human reasoning, as seen in~\cite{Tve77}.
+  This is the only property that has been incorporated in the definition of a concept similarity measures in~\cite{LeTu12}.
+  % Indeed, we extend what said so far, by calling \emph{concept similarity measure} a symmetric mapping \(\mathrm{sim} \colon {\mathcal{C}(\mathcal{ELH})}^2 \to [0,1]\), i.e. \(\mathrm{sim}(C,D) = \mathrm{sim}(D,C)\) for all \elh-concepts \(C\), \(D\).
 
-  \paragraph{Triangle inequality} is similarly acknowledged as being not an essential feature of human reasoning in the work by Tversky, while it is largely accepted in the context of description logics.
+  \paragraph{Triangle inequality.} This is similarly acknowledged as being not an essential feature of human reasoning in the work by Tversky in~\cite{Tve77}, while it is largely accepted in the context of description logics.
   A context similarity measure \(s\) over the set \(D\) satisfies the triangle inequality if, for all \(a\), \(b\), \(c \in D\),
   \(s(a,c) \le s(a,b) + s(b,c)\).
-  Strangely enough, none of the concept similarity measures found in the literature up until 2012 --- except for the Jaccard Index, which is \emph{not} meant to be such a measure --- fulfills the triangle inequality, nor did the original paper contributed a measure with that property.
-  Some advances in this direction can be found in~\cite{DAB14}, where a measure respecting the triangle inequality (but missing other properties) had been provided for the \el{} \dl.
+  Strangely enough, almost none of the concept similarity measures found in the literature up until 2012 fulfills fulfills the triangle inequality.
+  The only exception is the Jaccard Index, which is \emph{not} meant to be such a measure.
+  The concept similarity measure \(\simi\), as defined later in this report, does not fulfill this condition.
 
-  \paragraph{Equivalence} and its related properties, closure and invariance, have found little to no criticism in the literature.
+  Some advances in the direction of defining a measure with this property can be found in~\cite{DAB14}, where a measure respecting the triangle inequality (but missing other properties) had been provided for the \el{} \dl.
+
+  \paragraph{Concept equivalence.} Equivalence closure and equivalence invariance have found little to no criticism in the literature.
   Indeed, it is regarded as necessary for two equivalent concepts to be totally similar, and equivalent concepts should share their similarity behaviour toward other concepts.
   These properties can be formally stated as follows: for all concepts \(C\), \(D\) and \(E\), a concept similarity measure \(s\) is \emph{equivalence invariant} if \(C \equiv D\) implies that \(s(C,E) = s(D,E)\), while it is \emph{equivalence closed} if \(s(C,D) = 1\) is equivalent to \(C \equiv D\).
 
-  \paragraph{Subsumption} as an ordering over concepts can be abstracted to the level of a concept similarity measure. How?
+  \paragraph{Subsumption.} The notion of subsumption can be exploited to obtain an ordering over concepts.
+  This, in turn, can be abstracted to the level of a concept similarity measure. How?
   Informally, if \(C\), \(D\) and \(E\) are \elh-concepts and \(C \subsume{K} D \subsume{K} E\), \(D\) is closer to \(E\) than \(C\), thus more similar;
   also, it can be noticed that \(D\) is closer to \(C\) than \(E\).
   These two insights can be captured as \emph{subsumption preserving} and \emph{reverse subsumption preserving}, where the concept similarity measure \(s\) obeys to the constraints \(s(C,E) \le s(D,E)\) (reverse subs.\ preserving) and \(s(C,D) \ge s(C,E)\) (direct subs.\ preserving).
@@ -200,7 +204,7 @@
   Then, each concept is replaced by its \elh-normal form; being such a normal form unique up to associativity and commutativity, \emph{equivalence invariance} is ensured for any measure employed to test concept similarity on the \kb.
 
   \paragraph{Directed and reverse similarity.}
-  To test out equivalence of two concepts \(C\) and \(D\), a possible way is to check whether subsumption holds in both directions, that is, \(C \sqsubseteq D\) and \(D \sqsubseteq C\).
+  To test equivalence of two concepts \(C\) and \(D\), a possible way is to check whether subsumption holds in both directions, that is, \(C \sqsubseteq D\) and \(D \sqsubseteq C\).
   This approach can be astracted to the mathematical level, by first defining a \emph{directed similarity} measure --- a generalisation of the subsumption operator ---, to later combine values in both directions by means of another operator.
   The directed similarity measure \(\simi_d\) is going to be derived later in this section; finally, \(\simi\) is going to be defined as \(\simi(C,D) := \simi_d(C,D) \otimes \simi_d(D,C)\).
   The chosen operator should fit certain conditions, which guarantee that the resulting measure complies with the desired properties.
