@@ -12,6 +12,9 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 
+\usepackage{booktabs}
+\setlength{\tabcolsep}{7pt}
+
 \usepackage{todonotes}
 
 \DeclareMathOperator{\simi}{simi}
@@ -27,7 +30,7 @@
 \newcommand{\csm}{\textsc{csm}}
 \newcommand{\subsume}[1]{\sqsubseteq_{\mathcal{#1}}}
 
-\title{A Framework for Semantic-based Similarity Measures for \mathcal{ELH}-Concepts}
+\title{A Framework for Semantic-based Similarity Measures for \elh-Concepts}
 \author{Filippo De Bortoli}
 \institute{European Master's Programme in Computational Logic, TU Dresden}% \and \email{filippo.de_bortoli@mailbox.tu-dresden.de}}
 
@@ -70,42 +73,61 @@
   In the end, an overview of related works is presented, followed by a brief conclusion.
 
   \section{The \(\mathcal{ELH}\) Description Logic}
-  The description logics upon which the framework has been developed is the
-  DL \elh.
-  In this report, only the notions which are fundamental to understand the design of \(\simi\) are introduced. The interested reader can find further information in~\cite{DLbook}.
+  Hereafter, the reader must assume that the \elh{} description logic is used where not differently specified.
+  For a detailed treatment of the notions here introduced, the interested reader can go to~\cite{DLbook}.
 
-  First, the syntax of our DL is introduced.
-  Let \(\mathbf{C}\) and \(\mathbf{R}\) be two disjoint sets of \emph{concept names} and \emph{role names}, respectively. The set \(\mathcal{C}\)(\elh) of \elh{} \emph{concept descriptions} over these sets is inductively defined as follows:
-  \begin{enumerate}
-    \item \(\top{}\) is an \elh{} concept description;
-    \item every concept name is an \elh{} concept description;
-    \item given arbitrary \elh{} concept descriptions \(C\) and \(D\), the \emph{conjunction} \(C \sqcap D\) is an \elh{} concept description;
-    \item if \(C\) is an \elh{} concept description, then so is the \emph{existential restriction} \(\exists{}r.C\) with respect to a role name \(r\).
-  \end{enumerate}
-  Thanks to this definition, it is possible to express each concept description as a conjunction of \emph{atoms}, which are defined as the elements of the set containing all concept names, \(\top{}\) and all the existential restrictions appearing in \(\mathcal{C}\)(\elh).
+  The syntax of a \dl makes use of two finite and disjoint sets of \emph{concept names}, \(\mathbf{C}\) and \emph{role names}, \(\mathbf{R}\) to build \emph{concept descriptions}, by means of \emph{concept constructors}.
+  The semantics of such descriptions is defined with an interpretation \(\mathcal{I} = (\DeltaI,\dotI)\), where \(\DeltaI \ne \emptyset\) is the \emph{interpretation domain} and \(\dotI\) is a mapping which assigns subsets of \(\DeltaI{}\) to each concept and binary relations over \(\DeltaI\) to roles.
+  The following table specifies how \emph{\elh-concept descriptions} are syntactically built and semantically interpreted, given an interpretation \(\mathcal{I} = (\DeltaI,\dotI)\), a concept name \(A\), a role name \(r\) and concept descriptions \(C\), \(D\).
+  \begin{center}
+    \begin{tabular}{lcc}
+      \toprule
+      Name & Syntax & Semantics \\
+      \midrule
+      Top & \(\top\) & \(\DeltaI\) \\
+      Concept name & \(A\) & \(A^\mathcal{I}\) \\
+      Conjunction & \(C \sqcap D\) & \(C^\mathcal{I} \cap D^\mathcal{I}\) \\
+      Existential restriction & \(\exists{}r.C\) &
+      \(\lbrace d \in \DeltaI \mid \exists e \in \DeltaI.
+      (d,e) \in r^\mathcal{I} \land e \in C^\mathcal{I} \rbrace\) \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  In the description logic \elh{}, each concept description can be expressed as a conjunction of other concepts, which are called its \emph{atoms}.
+  % Thanks to this definition, it is possible to express each concept description as a conjunction of \emph{atoms}, which are defined as the elements of the set containing all concept names, \(\top{}\) and all the existential restrictions appearing in \(\mathcal{C}\)(\elh).
   Such a syntactical feature is exploited by defining the mapping
   \(\widehat{C} := \lbrace C_i\rbrace_{i=1}^n\) for
   \(C = \sqcap_{i=1}^n C_i \in \mathcal{C}(\mathcal{ELH})\).
-  Once a syntax has been defined, a semantical meaning is assigned to each concept by means of an \emph{interpretation}, which consists of a tuple \(\mathcal{I} = (\DeltaI,\dotI)\) such that \(\DeltaI \ne \emptyset\) is the \emph{interpretation domain} and \(\dotI\) is a mapping which assigns subsets of \(\DeltaI{}\) to each concept and binary relations over \(\DeltaI\) to roles.
-  Specifically, each interpretation maps \(\top{}\) to \(\DeltaI\) and is extended to so-called \emph{concept constructors} by putting
-  \({(C \sqcap D)}^\mathcal{I} := C^\mathcal{I} \cap D^\mathcal{I}\) and
-  \({(\exists{}r.C)}^\mathcal{I} :=
-    \lbrace d \in \DeltaI \mid \text{for some} \, e \in \DeltaI
-          \,\text{s.t}\, (d,e) \in r^\mathcal{I} \,\text{and}\, e \in
-          C^\mathcal{I} \rbrace\).
 
   For the purposes of this work, terminological and role-hierarchical knowledge has been taken into account.
   A \emph{knowledge base} (\kb) \(\mathcal{K}\) consists of:
   \begin{description}
-    \item[\emph{TBox} \(\mathcal{T}\):] a finite set of \emph{general concept inclusions} (\textsc{gci}s) \(C \sqsubseteq D\) or \emph{concept definitions} \(C \equiv D\), where \(C\) is a concept name and \(D\) is a concept description;
-    an interpretation \(\mathcal{I}\) is a \emph{model} of \(\mathcal{T}\), \(\mathcal{I} \models \mathcal{T}\), if for all \gci{}s \(C \sqsubseteq D\) in it, \(C^\mathcal{I} \subseteq D^\mathcal{I}\) holds --- similarly, \(C^\mathcal{I} = D^\mathcal{I}\) for concept definitions.
-    \todo{Insert correct definition of \emph{unfoldable} TBox.}
-  A TBox T is called \emph{unfoldable} iff it is acyclic, consists of concept definitions and primitive concept definitions only and every concept name occurs at most once on a left-hand side of a concept axiom.
-    This kind of TBox can be normalised and expanded in an equivalent TBox containing exclusively concept definitions, where only primitive concept names appear on the right hand side of these concept definitions.
-    \item[\emph{RBox} \(\mathcal{R}\):] a finite set of \emph{role inclusion axioms} (\ria{}s) \(r \sqsubseteq s\), where \(r\), \(s\) are roles; an interpretation \(\mathcal{I}\) is a model of \(\mathcal{R}\), \(\mathcal{I} \models \mathcal{R}\), if for all \ria{}s \(r \sqsubseteq s\), \(r^\mathcal{I} \subseteq s^\mathcal{I}\) holds.
+    \item[\emph{TBox} \(\mathcal{T}\):] a finite set of a finite set of \emph{general concept inclusions} (\gci{}s) or \emph{concept definitions};
+  %   \item[\emph{TBox} \(\mathcal{T}\):] a finite set of \emph{general concept inclusions} (\textsc{gci}s) \(C \sqsubseteq D\) or \emph{concept definitions} \(C \equiv D\), where \(C\) is a concept name and \(D\) is a concept description;
+  %   an interpretation \(\mathcal{I}\) is a \emph{model} of \(\mathcal{T}\), \(\mathcal{I} \models \mathcal{T}\), if for all \gci{}s \(C \sqsubseteq D\) in it, \(C^\mathcal{I} \subseteq D^\mathcal{I}\) holds --- similarly, \(C^\mathcal{I} = D^\mathcal{I}\) for concept definitions.
+  % A TBox T is called \emph{unfoldable} iff it is acyclic, consists of concept definitions and primitive concept definitions only and every concept name occurs at most once on a left-hand side of a concept axiom.
+  %   This kind of TBox can be normalised and expanded in an equivalent TBox containing exclusively concept definitions, where only primitive concept names appear on the right hand side of these concept definitions.
+    \item[\emph{RBox} \(\mathcal{R}\):] a finite set of \emph{role inclusion axioms}, hereafter (\ria{}s).
+    % \item[\emph{RBox} \(\mathcal{R}\):] a finite set of \emph{role inclusion axioms} (\ria{}s) \(r \sqsubseteq s\), where \(r\), \(s\) are roles; an interpretation \(\mathcal{I}\) is a model of \(\mathcal{R}\), \(\mathcal{I} \models \mathcal{R}\), if for all \ria{}s \(r \sqsubseteq s\), \(r^\mathcal{I} \subseteq s^\mathcal{I}\) holds.
   \end{description}
 
-  Among the various reasoning services that can be applied over \elh{} \kb{}s, a useful one is the \emph{subsumption} of concepts: the concept \(C\) is \emph{subsumed} by \(D\) w.r.t.\ a \kb{} \(\mathcal{K}\) iff \(\mathcal{I} \models \mathcal{K}\) implies that \(C^\mathcal{I} \subseteq D^\mathcal{I}\) for all models \(\mathcal{I}\) of \(\mathcal{K}\), in symbols \(C \subsume{K} D\);
+  An interpretation \(\mathcal{I}\) is a \emph{model} for a TBox \(\mathcal{T}\) and a RBox \(\mathcal{R}\) if it satisfies the semantic conditions which are defined in the following table, along with the sintax of \gci{}s, concept definitions and \ria{}s; here, \(A\) is a concept name, \(C\), \(D\) are concept descriptions and \(r\), \(s\) are role names.
+  \begin{center}
+    \begin{tabular}{lcc}
+      \toprule
+      Name & Syntax & Semantics \\
+      \midrule
+      General concept inclusion & \(C \sqsubseteq D\) & \(C^\mathcal{I} \subseteq D^\mathcal{I}\) \\
+      Concept definition & \(A \equiv C\) & \(A^\mathcal{I} = C^\mathcal{I}\) \\
+      Role inclusion axiom & \(r \sqsubseteq s\) & \(r^\mathcal{I} \subseteq s^\mathcal{I}\) \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  A TBox T is called \emph{unfoldable} iff it is acyclic, consists of concept definitions and primitive concept definitions only and every concept name occurs at most once on a left-hand side of a concept axiom.
+  This kind of TBox can be normalised and expanded in an equivalent TBox containing exclusively concept definitions, where only primitive concept names appear on the right hand side of these concept definitions.
+
+  Among the various reasoning services that can be applied over \elh{} \kb{}s, a useful one is the \emph{subsumption} of concepts: the concept \(C\) is \emph{subsumed} by \(D\) w.r.t.\ a \kb{} \(\mathcal{K}\) iff \(C^\mathcal{I} \subseteq D^\mathcal{I}\) for all models \(\mathcal{I}\) of \(\mathcal{K}\), in symbols \(C \subsume{K} D\);
   if \(C\) and \(D\) both subsume each other, then they are \emph{equivalent}, denoted by \(C \equiv_{\mathcal{K}} D\).
   Similarly, \(r \subsume{R} s\) if \(r^\mathcal{I} \subseteq s^\mathcal{I}\) for all models \(\mathcal{I}\) of \(\mathcal{R}\).
 
@@ -340,7 +362,6 @@
     Gentleman, R.
     \textit{Visualizing and Distances Using GO}.
     2013.% This reference is unclear.
-}
   \end{thebibliography}
   \bibliography{seminar_further-DL}%
 
