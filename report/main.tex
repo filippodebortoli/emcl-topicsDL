@@ -11,7 +11,6 @@
 
 \usepackage{amsmath}
 \usepackage{amssymb}
-\usepackage{amsthm}
 
 \usepackage{booktabs}
 \setlength{\tabcolsep}{7pt}
@@ -19,9 +18,6 @@
 \usepackage{todonotes}
 
 \DeclareMathOperator{\simi}{simi}
-
-\theoremstyle{remark}
-\newtheorem{exa}{Example}
 
 \newcommand{\el}{\(\mathcal{EL}{}\)}
 \newcommand{\elh}{\(\mathcal{ELH}{}\)}
@@ -62,7 +58,7 @@
   In particular, relevant properties of similarity have been described and formalised; some of these have been drawn from what has been already established in the literature, whereas others have been newly introduced.
   These properties are either concerning the mathematical side of a measure or its relation with the underlying representation of the concepts.
 
-  Among description logics, a family of formal languages used to represent knowledge in ontologies, the one investigated and chosen as a base for the work herein reportes is the \elh{} description logic, which has a practical relevance --- for example, in medical ontologies --- and is part of important standards for semantic technologies\todo{insert reference}.
+  Among description logics, a family of formal languages used to represent knowledge in ontologies, the one investigated and chosen as a base for the work herein reportes is the \elh{} description logic, which has a practical relevance --- for example, in medical ontologies, as in~\cite{Gen13} --- and is part of important standards for semantic technologies.
   In this setting, it is shown how a similarity measure can be defined, such that it is powerful, yet flexible to edit and efficient to compute, given that one uses the right tools in its construction.
 
   This work also attempts to address another issue: the \emph{portability} and \emph{reliability} of concept similarity measures, across different contexts.
@@ -216,7 +212,7 @@
     \item if \(x \otimes y = 0\), then at least one between \(x \ne 0\) or \(y \ne 0\) does not hold.
   \end{itemize}
 
-  \begin{exa}[Fuzzy connector]
+  \begin{example}[Fuzzy connector]
     The operator \(\otimes \colon {[0,1]}^2 \to [0,1]\) defined as
     \[
     x \otimes y := \frac{x^2y + y^2x}{2} \qquad x,y \in [0,1]
@@ -234,7 +230,7 @@
     \frac{x^2y + y^2x}{2} = 0 \implies x^2y = - y^2x
     \]
     one can conclude that \(x^2y = y^2x = 0\), hence \(x = 0\) or \(y = 0\).
-  \end{exa}
+  \end{example}
   In the \(\simi{}\) framework, the choice of a fuzzy operator provides \emph{symmetry} --- thanks to commutativity ---, \emph{equivalence closure} and \emph{sumbsumption preserving}, which follows from weak monotonicity.
 
   \paragraph{Measuring concept names.}
@@ -304,44 +300,95 @@
 
   \subsection{The measure of directed similarity: \(\simi_d\)}
 
-  The measure of \emph{directed similarity} \(\simi_d \colon {\mathcal{C}(\mathcal{ELH})}^2 \to [0,1]\), given the following parameters:
-  \begin{enumerate}
-    \item a bounded \(t\)-conorm \(\oplus\),
-    \item a primitive measure \(pm\),
-    \item a weighting function \(g\),
-    \item \(w \in (0,1)\),
-  \end{enumerate}
-  is defined as:
-  \begin{align*}
-    \simi_d(\top,D) &= 1 \quad
-    \text{for all}\; D \in \mathcal{C}(\mathcal{ELH}) \\
-    \simi_d(C,D) &=
-    \frac{\sum_{C^\prime \in \widehat{C}}\left(g(C^\prime) \cdot \bigoplus_{D^\prime \in \widehat{D}} \simi_d(C^\prime, D^\prime)\right)}%
-    {\sum_{C^\prime \in \widehat{C}}g(C^\prime)} \quad \text{if}\; C \ne \top \\
-    \simi_d(A,B) &= pm(A,B) \quad \text{for atoms}\; A,B \\
-    \simi_d(\exists{}r.C,\exists{}s.D) &=
-    pm(r,s) \cdot \left(w + (1-w)\simi_d(C,D)\right) \\
-    \simi_d(C,D) &= 0 \quad \text{otherwise}.
-  \end{align*}
+  \begin{definition}[\(\simi_d\)]\label{simi-d}
+    The measure of \emph{directed similarity} \(\simi_d \colon {\mathcal{C}(\mathcal{ELH})}^2 \to [0,1]\), given the following parameters:
+    \begin{enumerate}
+      \item a bounded \(t\)-conorm \(\oplus\),
+      \item a primitive measure \(pm\),
+      \item a weighting function \(g\),
+      \item \(w \in (0,1)\),
+    \end{enumerate}
+    is defined as:
+    \begin{align}
+      \simi_d(\top,D) &= 1 \quad
+      \text{for all}\; D \in \mathcal{C}(\mathcal{ELH}) \\
+      \simi_d(C,D) &=
+      \frac{\sum_{C^\prime \in \widehat{C}}\left(g(C^\prime) \cdot \bigoplus_{D^\prime \in \widehat{D}} \simi_d(C^\prime, D^\prime)\right)}%
+      {\sum_{C^\prime \in \widehat{C}}g(C^\prime)} \quad \text{if}\; C \ne \top \label{simi:general}\\
+      \simi_d(A,B) &= pm(A,B) \quad \text{for atoms}\; A,B \\
+      \simi_d(\exists{}r.C,\exists{}s.D) &=
+      pm(r,s) \cdot \left(w + (1-w)\simi_d(C,D)\right) \\
+      \simi_d(C,D) &= 0 \quad \text{otherwise}.
+    \end{align}
+  \end{definition}
 
-  The similarity measure \(\simi\) is finally defined as \(\simi(C,D) := \simi_d(C,D) \otimes \simi_d(D,C)\), where \(\otimes{}\) is a fuzzy connector.
+  \begin{definition}[\(\simi\)]
+    The similarity measure \(\simi\) is defined as \(\simi(C,D) := \simi_d(C,D) \otimes \simi_d(D,C)\), where \(\otimes{}\) is a fuzzy connector.
+  \end{definition}
 
-  The \csm \(\simi\) fulfills most of the desired properties.
+  The following lemma shows an interesting property of \(\simi_d\), which can be used to prove some of its important features.
+
+  \begin{lemma}
+    Let \(C\), \(D\) and \(E\) be \elh-concept descriptions.
+    Then,
+    \begin{enumerate}
+      \item \(\simi_d(C,D) = 1\) iff \(D \sqsubseteq C\);
+      \item if \(D \sqsubseteq E\), then \(\simi_d(C,E) \le \simi_d(C,D)\).
+    \end{enumerate}
+  \end{lemma}
+  \begin{proof}
+    The proof of this theorem can be found in~\cite{LeTu12}.
+  \end{proof}
+  \begin{theorem}
+    The \csm{} \(\simi\) is symmetric, closed and invariant under equivalence and preserves subsumption, for each instantiation of its parameters.
+  \end{theorem}
+  \begin{proof}
+    Let \(C\), \(D\) and \(E\) be \elh-concept descriptions.
+
+    The symmetry of \(\simi\) follows from the commutativity of the fuzzy connector.
+
+    The invariance under equivalence of \(\simi\) is guaranteed by the preprocessing step.
+    Indeed, two semantically equivalent \elh-concepts are transformed into the same \elh-normal form.
+    By assuming that \(C \equiv D\), this insight allows the conclusion \(\simi(C,E) = \simi(D,E)\).
+
+    The closure under equivalence is proved by the following equivalence chain:
+    \begin{equation*}
+      \begin{split}
+        C \equiv D &\iff C \sqsubseteq D \land D \sqsubseteq C \iff
+        \simi_d(C,D) = 1 \land \simi_d(D,C) = 1 \\ &\iff
+        \simi(C,D) = \simi_d(C,D) \otimes \simi_d(D,C) = 1.
+      \end{split}
+    \end{equation*}
+
+    In a similar way, subsumption preserving can be proved.
+  \end{proof}
+  The \csm{} \(\simi\) fulfills most of the desired properties.
   Indeed, in~\cite{LeTu12}, it is shown that it is \emph{equivalence closed}, \emph{equivalence invariant}, \emph{symmetric} and \emph{subsumption preserving} for every choice of the parameters.
   For adequates choice of the fuzzy connector and the weighting function, \emph{structural dependence} can be achieved.
   The only properties that cannot be guaranteed by \(\simi\) are \emph{triangle inequality} and \emph{reverse subsumption preserving}, since similarity values between the atoms of the involved concepts are not taken into account, in the computation of the similarity value of the concepts.
 
-  Finally, the framework provides a \csm that can be efficiently computed: if the parameters can be computed in polynomial time, then \(\simi\) cna be computed in polynomial time as well, with respect to the size of the measured concepts.
+  \begin{proposition}
+    The concept similarity measure \(\simi\) can be computed efficiently: if the provided fuzzy connector, bounded \(t\)--conorm, primitive measure and weighting function can be computed in polytime, so can \(\simi\), with time polynomial in the size of the measured concepts.
+  \end{proposition}
+  \begin{proof}
+    From the assumption that the fuzzy connector can be computed in polytime, it suffices to show that \(\simi_d\) can be computed in polytime.
+    The assumption that the primitive measure can be computed in polytime allows to conclude that all the cases of \(\simi\) where \emph{atoms} are measured run in polynomial time.
+
+    In the most general case~\eqref{simi:general}, the number of similarity values that have to be computed amounts to \(\lvert \widehat{C} \rvert \cdot \lvert \widehat{D} \rvert\).
+    Moreover, the depth of the recursion tree is bounded by the size of the concepts \(C\) and \(D\).
+    Thus, we can conclude that \(\simi\) runs in polynomial time, in the size of the measured concepts.
+  \end{proof}
 
   \section{Related work}
 
   \paragraph{The triangle inequality.} While the majority of similarity measures actually defined do not respect the triangle inequality, for \el-concept descriptions an alternative approach had been developed in~\cite{DAB14}, where concepts in \el{} normal form are translated into \emph{description trees}; then, the similarity measures in there defined, based on the description trees of the concepts, though being non monotone and not structurally dependent, respect triangle inequality.
 
-  \paragraph{Subsumption preservation} as a principle of similarity measures had been exploited in~\cite{Se16} as a way to improve evaluation methods, in which subsumption preservation is used to populate query inventories, which are then used to perform the evaluation of word embeddings.
+  \paragraph{Subsumption preservation.} An exploit of subsumption preservation as a guiding principle of similarity measures had been adopted in~\cite{Se16},
+  as a way to improve evaluation methods, in which subsumption preservation is used to populate query inventories, which are then used to perform the evaluation of word embeddings.
 
-  \paragraph{General TBoxes}, in the context of similarity evaluation of relaxed instances of \el-concepts, had been included in a follow-up work, which introduces a treatment for both the general and the unfoldable case (\cite{Ec14}).
+  \paragraph{General TBoxes.} A general treatment of TBoxes in the context of similarity evaluation of relaxed instances of \el-concepts, had been included in a follow-up work, which introduces a treatment for both the general and the unfoldable case (\cite{Ec14}).
 
-  \paragraph{Approximation} grades induced by concept similarity measures and complexity of relative threshold \dl{}s are discussed in~\cite{Ba17}, where it is shown how \csm{}s for \el{} description logics can be employed to derive a grade membership function and consequently a threshold \dl.
+  \paragraph{Approximation.} Approximation grades, induced by concept similarity measures and complexity of relative threshold \dl{}s, are discussed in~\cite{Ba17}, where it is shown how \csm{}s for \el{} description logics can be employed to derive a grade membership function and consequently a threshold \dl.
 
   \section{Conclusion}
 
