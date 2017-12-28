@@ -16,6 +16,7 @@
 \setlength{\tabcolsep}{7pt}
 
 \usepackage{todonotes}
+\usepackage{microtype}
 
 \DeclareMathOperator{\simi}{simi}
 
@@ -296,7 +297,7 @@
 
   The maximum operator fits into a class of functions called \emph{triangular conorms}; %, presented in \todo{Insert reference here.[14] on paper.};
   in particular, it is an instance of a \emph{bounded \(t\)-conorm}.
-  \begin{definition}[Bounded t-conorm]
+  \begin{definition}%[Bounded t-conorm]
     An operator \(\oplus \colon {[0,1]}^2 \to [0,1]\) is a \emph{bounded t-conorm} if it satisfies the following conditions: \(\oplus\) is commutative, associative, \(0\) is the neutral element and for all \(x\), \(y\), \(z\), \(w \in [0,1]\),
     \begin{itemize}
       \item if \(x \le z\) and \(y \le w\), then \(x \oplus y \le z \oplus w\), i.e. \(\oplus{}\) is \emph{monotonic};
@@ -311,7 +312,7 @@
   Up until now, all the atoms of \(\mathcal{C}\)(\elh) had the same relevance, in determining how concepts differ from each other.
   However, it is likely that some concepts might be prioritised in some use cases.
   Hence, another parameter that has been added to the framework is a function that specifies how much an atom influences the similarity between concepts.
-  \begin{definition}[Weighting function]
+  \begin{definition}%[Weighting function]
     A \emph{weighting function} is a mapping \(g \colon \mathbf{A} \to \mathbb{R}_+\), where \(\mathbf{A}\) is the set of \emph{atoms}.
   \end{definition}
 
@@ -352,6 +353,7 @@
     Thus, it is possible to conclude that \(g(C) = h(C)\) for all \(C \in \mathbf{A}\).
   \end{proof}
   This approach can be further refined, for example, by substituting the \(\max\) function with another, perhaps more suitable function.
+  Notice that, given a primitive weighting function, this extension to a weighting function can be computed in polynomial time (this last claim needs to be verified).
 
 \subsection{The measure of directed similarity: \(\simi_d\)}
 
@@ -423,7 +425,7 @@
   The only properties that cannot be guaranteed by \(\simi\) are \emph{triangle inequality} and \emph{reverse subsumption preserving}, since similarity values between the atoms of the involved concepts are not taken into account, in the computation of the similarity value of the concepts.
 
   \begin{proposition}
-    The concept similarity measure \(\simi\) can be computed efficiently: if the provided fuzzy connector, bounded \(t\)--conorm, primitive measure and weighting function can be computed in polytime, so can \(\simi\), with time polynomial in the size of the measured concepts.
+    The \csm{} \(\simi\) can be computed efficiently: if the provided fuzzy connector, bounded \(t\)--conorm, primitive measure and weighting function can be computed in polytime, so can \(\simi\), with time polynomial in the size of the measured concepts.
   \end{proposition}
   \begin{proof}
     From the assumption that the fuzzy connector can be computed in polytime, it suffices to show that \(\simi_d\) can be computed in polytime.
