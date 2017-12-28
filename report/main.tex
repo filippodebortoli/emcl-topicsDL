@@ -96,9 +96,14 @@
 
   In the description logic \elh{}, each concept description can be expressed as a conjunction of other concepts, which are called its \emph{atoms}.
   % Thanks to this definition, it is possible to express each concept description as a conjunction of \emph{atoms}, which are defined as the elements of the set containing all concept names, \(\top{}\) and all the existential restrictions appearing in \(\mathcal{C}\)(\elh).
-  Such a syntactical feature is exploited by defining the mapping
-  \(\widehat{C} := \lbrace C_i\rbrace_{i=1}^n\) for
-  \(C = \sqcap_{i=1}^n C_i \in \mathcal{C}(\mathcal{ELH})\).
+  \begin{definition}[Atoms]
+    Given concept names \(\mathbf{C}\) and role names \(\mathbf{R}\), the set of \emph{\elh-atoms} \(\mathbf{A}\) is defined as
+    \begin{equation}
+      \mathbf{A} := \mathbf{C} \cup \lbrace \top \rbrace \cup \lbrace \exists{}r.D \mid r \in \mathbf{R}, D \in \mathcal{C}(\mathcal{elh}) \rbrace.
+    \end{equation}
+    Moreover, for \(C = \sqcap_{i=1}^n C_i \in \mathcal{C}(\mathcal{ELH})\), the mapping
+    \(\widehat{C} := \lbrace C_i\rbrace_{i=1}^n\) is defined.
+  \end{definition}
 
   For the purposes of this work, terminological and role-hierarchical knowledge has been taken into account.
   A \emph{knowledge base} (\kb) \(\mathcal{K}\) consists of:
@@ -305,7 +310,12 @@
   \paragraph{Relevance of concept names.}
   Up until now, all the atoms of \(\mathcal{C}\)(\elh) had the same relevance, in determining how concepts differ from each other.
   However, it is likely that some concepts might be prioritised in some use cases.
-  Hence, another parameter that has been added to the framework is a function that specifies how much an atom influences the similarity between concepts. Namely, a \emph{weighting function} has been introduced, defined as a mapping \(g \colon \mathbf{A} \to \mathbb{R}_+\), where \(\mathbf{A}\) is the set of \emph{atoms}.
+  Hence, another parameter that has been added to the framework is a function that specifies how much an atom influences the similarity between concepts.
+  \begin{definition}[Weighting function]
+    A \emph{weighting function} is a mapping \(g \colon \mathbf{A} \to \mathbb{R}_+\), where \(\mathbf{A}\) is the set of \emph{atoms}.
+  \end{definition}
+
+
 
 \subsection{The measure of directed similarity: \(\simi_d\)}
 
