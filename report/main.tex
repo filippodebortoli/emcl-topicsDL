@@ -100,7 +100,7 @@
   \begin{definition}[Atoms]
     Given concept names \(\mathbf{C}\) and role names \(\mathbf{R}\), the set of \emph{\elh-atoms} \(\mathbf{A}\) is defined as
     \begin{equation}
-      \mathbf{A} := \mathbf{C} \cup \lbrace \top \rbrace \cup \lbrace \exists{}r.D \mid r \in \mathbf{R}, D \in \mathcal{C}(\mathcal{elh}) \rbrace.
+      \mathbf{A} := \mathbf{C} \cup \lbrace \top \rbrace \cup \lbrace \exists{}r.D \mid r \in \mathbf{R}, D \in \mathcal{C}(\mathcal{ELH}) \rbrace.
     \end{equation}
     Moreover, for \(C = \sqcap_{i=1}^n C_i \in \mathcal{C}(\mathcal{ELH})\), the mapping
     \(\widehat{C} := \lbrace C_i\rbrace_{i=1}^n\) is defined.
@@ -350,7 +350,7 @@
       \item if \(C \equiv D\) is the \emph{unique} definition of \(C\) in the TBox \(\mathcal{T}\), then
       \(g(C) = \max_{D^\prime \in \widehat{D}}f(D) = h(C)\).
     \end{enumerate}
-    Thus, it is possible to conclude that \(g(C) = h(C)\) for all \(C \in \mathbf{A}\).
+    Thus, it is possible to conclude that \(g(C) = h(C)\) for all \(C \in \mathbf{A} \setminus \lbrace \top \rbrace\).
   \end{proof}
   This approach can be further refined, for example, by substituting the \(\max\) function with another, perhaps more suitable function.
   Notice that, given a primitive weighting function, this extension to a weighting function can be computed in polynomial time (this last claim needs to be verified).
