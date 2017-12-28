@@ -133,13 +133,15 @@
 
   The computation of a normal form for \el{} concepts is well described in~\cite{DLbook}; however, the addition of role hierarchy contribution made in~\cite{LeTu12} is the introduction of an \elh-normal form for concept descriptions, which can be computed in polynomial time.
   Specifically, a choice function \(ch{}\) is devised such that every role is replaced by a picked representative of its \(\equiv_\mathcal{R}\)-equivalence class.
-  Then, we say that \(C \in \mathcal{C}\)(\elh) is in \emph{\elh-normal form} w.r.t. a RBox \(\mathcal{R}\) if all its subconcepts are closed under the application of the following rules:
-  \begin{align*}
-    A \sqcap \top &\mapsto A & A \sqcap A &\mapsto A \tag{1--2}\\
-    \exists{}r.C^\prime &\mapsto \exists{}ch([r]).C^\prime &
-    \exists{}r.C^\prime \sqcap \exists{}s.D^\prime &\mapsto
-    \exists{}r.C^\prime\,\,\text{if}\,\,r\subsume{R}, C^\prime \sqsubseteq D^\prime \tag{3--4}
-  \end{align*}
+  \begin{definition}
+    A concept \(C \in \mathcal{C}\)(\elh) is in \emph{\elh-normal form} w.r.t. a RBox \(\mathcal{R}\) if all its subconcepts are closed under the application of the following rules:
+    \begin{align*}
+      A \sqcap \top &\mapsto A & A \sqcap A &\mapsto A \tag{1--2}\\
+      \exists{}r.C^\prime &\mapsto \exists{}ch([r]).C^\prime &
+      \exists{}r.C^\prime \sqcap \exists{}s.D^\prime &\mapsto
+      \exists{}r.C^\prime\,\,\text{if}\,\,r\subsume{R}s, C^\prime \sqsubseteq D^\prime \tag{3--4}
+    \end{align*}
+  \end{definition}
 
   \section{Measuring concept similarity}
 
@@ -288,7 +290,14 @@
   Indeed, the claim is that such an operator is not making full use of the available information, to compute the similarity of two concepts; that happens, because only the \emph{best matching} atom in the set \(\widehat{D}\) is kept, discarding all the others, which might still be similar to the considered atom of \(\widehat{C}\).
 
   The maximum operator fits into a class of functions called \emph{triangular conorms}; %, presented in \todo{Insert reference here.[14] on paper.};
-  in particular, it is an instance of a \emph{bounded \(t\)-conorm} \(\oplus{}\), thus it satisfies the condition: if \(x \oplus y = 1\), then \(x = 1\) or \(y = 1\).
+  in particular, it is an instance of a \emph{bounded \(t\)-conorm}.
+  \begin{definition}[Bounded t-conorm]
+    An operator \(\oplus \colon {[0,1]}^2 \to [0,1]\) is a \emph{bounded t-conorm} if it satisfies the following conditions: \(\oplus\) is commutative, associative, \(0\) is the neutral element and for all \(x\), \(y\), \(z\), \(w \in [0,1]\),
+    \begin{itemize}
+      \item if \(x \le z\) and \(y \le w\), then \(x \oplus y \le z \oplus w\), i.e. \(\oplus{}\) is \emph{monotonic};
+      \item if \(x \oplus y = 1\), then \(x = 1\) or \(y = 1\), i.e. \(\oplus{}\) is \emph{bounded}.
+    \end{itemize}
+  \end{definition}
   Moreover, \(\max\) is the strongest \(t\)-conorm, which means that all the other \(t\)--conorms yield a value equal or greater than \(\max\); this, intuitively, reflects the fact that \(\max\) does not make good use of the available information.
   Finally, \(0\) is the unit element of \(t\)-conorms: this implies that totally dissimilar concepts are not influencing the final value of the measure.
   Thus, in the final definition of \(\simi_d\), \(\max\) will be replaced by a \emph{bounded \(t\)-conorm}, which is a parameter of the framework.
@@ -298,7 +307,7 @@
   However, it is likely that some concepts might be prioritised in some use cases.
   Hence, another parameter that has been added to the framework is a function that specifies how much an atom influences the similarity between concepts. Namely, a \emph{weighting function} has been introduced, defined as a mapping \(g \colon \mathbf{A} \to \mathbb{R}_+\), where \(\mathbf{A}\) is the set of \emph{atoms}.
 
-  \subsection{The measure of directed similarity: \(\simi_d\)}
+\subsection{The measure of directed similarity: \(\simi_d\)}
 
   \begin{definition}[\(\simi_d\)]\label{simi-d}
     The measure of \emph{directed similarity} \(\simi_d \colon {\mathcal{C}(\mathcal{ELH})}^2 \to [0,1]\), given the following parameters:
