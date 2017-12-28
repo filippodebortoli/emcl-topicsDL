@@ -315,7 +315,43 @@
     A \emph{weighting function} is a mapping \(g \colon \mathbf{A} \to \mathbb{R}_+\), where \(\mathbf{A}\) is the set of \emph{atoms}.
   \end{definition}
 
+  Since \(\mathbf{A}\) can contain infinitely many elements, it would be desirable to find a way to define a weighting function by using only some "essential" information.
 
+  \paragraph{Primitive weighting.}
+  Thanks to the preprocessing phase, each concept in \elh-normal form does not contain any instance of \(\top\): hence, it is not needed to weigh it.
+  Another aspect of this normal form is that it is possible to weigh just a subset of \(\mathbf{R}\), that is the image of the function \(ch\) used to compute the \elh-normal form; in this way, at most \(\lvert \mathbf{R} \rvert\) roles would need to be weighted.
+  In this case, all the role names are used.
+  Finally, concept names can be either primitive or defined:
+  in the latter case, thanks to preprocessing again, a unique definition can be find in the expanded TBox, which right side contains exclusively primitive concept names.
+
+  Using these facts, the following definition is introduced.
+  \begin{definition}[Primitive weighting function]
+    A \emph{primitive weighting function} is a mapping \(f \colon \mathbf{P} \cup \mathbf{R} \to \mathbb{R}_+\), where \(\mathbf{P}\) is the subset of \(\mathbf{C}\) of \emph{primitive} concept names.
+  \end{definition}
+  Given a weighting primitive function, it is possible to extend it to a weighting function \(g\) in the following way:
+  \begin{equation}\label{prim-weigh}
+    g(C) :=
+    \begin{cases}
+      f(C) & C \in \mathbf{P} \\
+      f(r) & C = \exists{}r.D, D \in \mathcal{C}(\mathcal{ELH}) \\
+      \max_{D^\prime \in \widehat{D}}f(D) & C \equiv D \; \text{appears in the expanded TBox.}
+    \end{cases}
+  \end{equation}
+  \begin{proposition}
+    With the expansion given in~\eqref{prim-weigh}, every primitive weighting function uniquely determines a weighting function.
+  \end{proposition}
+  \begin{proof}
+    Assume that the weighting functions \(g\), \(h\) are both derived from \(f\) as in~\eqref{prim-weigh}.
+    \begin{enumerate}
+      \item If \(C \in \mathbf{P}\), then
+      \(g(C) = f(C) = h(C)\) by definition;
+      \item if \(C =  \exists{}r.D, D \in \mathcal{C}(\mathcal{ELH})\), then \(g(C) = f(r) = h(C)\);
+      \item if \(C \equiv D\) is the \emph{unique} definition of \(C\) in the TBox \(\mathcal{T}\), then
+      \(g(C) = \max_{D^\prime \in \widehat{D}}f(D) = h(C)\).
+    \end{enumerate}
+    Thus, it is possible to conclude that \(g(C) = h(C)\) for all \(C \in \mathbf{A}\).
+  \end{proof}
+  This approach can be further refined, for example, by substituting the \(\max\) function with another, perhaps more suitable function.
 
 \subsection{The measure of directed similarity: \(\simi_d\)}
 
