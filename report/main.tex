@@ -1,25 +1,28 @@
 \let\oldvec\vec%
-\documentclass[]{llncs}
+\documentclass{llncs}
 \let\vec\oldvec
 
 \usepackage[T1]{fontenc}
-% \usepackage[utf8]{inputenc}
+\usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
+\usepackage{microtype}
 
 %\usepackage[backend=biber,style=lncs]{biblatex}
 %  \addbibresource{seminar_further-DL.bib}
 \bibliographystyle{splncs03}
 \usepackage{csquotes}
+\usepackage{xspace}
 
 \usepackage{amsmath}
 \usepackage{amssymb}
+
 
 \usepackage{booktabs}
 \setlength{\tabcolsep}{7pt}
 
 \usepackage{todonotes}
-\usepackage{microtype}
-\usepackage{xspace}
+
+\usepackage{hyperref}
 
 \DeclareMathOperator{\simi}{simi}
 
@@ -51,7 +54,7 @@
 
   \section{Introduction}
 
-  Measuring the similarity of two or more concepts is a task that frequently occurs in many real-world cases, where ontologies are employed, ranging from exploration of knowledge bases for information discovery --- as done in~\cite{Gen13} --- to more technical activies, such as ontology alignment.
+  Measuring the similarity of two or more concepts is a task that frequently occurs in many real-world cases, where ontologies are employed, ranging from exploration of knowledge bases for information discovery --- as done in~\cite{GF13} --- to more technical activies, such as ontology alignment.
 
   As important as a \emph{good} measure for concept similarity is, one has to deal with several issues during the specification, implementation and usage phases of a tool of this kind.
   Most of these have been faced in the work done by Lehmann \& Turhan in~\cite{LeTu12}.
@@ -62,7 +65,7 @@
   In particular, relevant properties of similarity have been described and formalised; some of these have been drawn from what has been already established in the literature, whereas others have been newly introduced.
   These properties are either concerning the mathematical side of a measure or its relation with the underlying representation of the concepts.
 
-  Among description logics, a family of formal languages used to represent knowledge in ontologies, the one investigated and chosen as a base for the work herein reportes is the \elh description logic, which has a practical relevance --- for example, in medical ontologies, as in~\cite{Gen13} --- and is part of important standards for semantic technologies.
+  Among description logics, a family of formal languages used to represent knowledge in ontologies, the one investigated and chosen as a base for the work herein reportes is the \elh description logic, which has a practical relevance --- for example, in medical ontologies, as in~\cite{GF13} --- and is part of important standards for semantic technologies.
   In this setting, it is shown how a similarity measure can be defined, such that it is powerful, yet flexible to edit and efficient to compute, given that one uses the right tools in its construction.
 
   This work also attempts to address another issue: the \emph{portability} and \emph{reliability} of concept similarity measures, across different contexts.
@@ -464,56 +467,12 @@
 
   Finally, it would be interesting to obtain a full implementation of \(\simi\), in order to be able to assess it against other existing measures, as well as to start using it to evaluate concept similarity in ontologies.
 
-
-  \begin{thebibliography}{1}
-    \bibitem{DLbook}
-      Baader, Franz and Horrocks, Ian and Lutz, Carsten and Sattler, Uli.
-      \textit{An Introduction to Description Logic}.
-      Cambridge University Press, Cambridge, 2017.
-    \bibitem{Tve77}
-      Tversky, Amos.
-      \textit{Features of Similarity}.
-      Psychology review, 84(07):327-352, 1977.
-    \bibitem{LeTu12}
-      Lehmann, Karsten and Turhan, Anni-Yasmin.
-      \textit{A Framework for Semantic-based Similarity Measures for \elh-Concepts}.
-      Logics in Artificial Intelligence - 13th European Conference, (07):307-319, 2012.
-    \bibitem{Lae15}
-      Lätsch, Paul and Turhan, Anni-Yasmin.
-      \textit{Simi-Framework for Concept-Similarity-Measures: property analysis and expansion to more powerful Description Logics}.
-      Diplomarbeit, Technische Universität Dresden, 2015.
-    \bibitem{dSF08}
-      d’Amato, Claudia and Staab, Steffen and Fanizzi, Nicola.
-      \textit{On the Influence of Description Logics Ontologies on Conceptual Similarity}.
-      Knowledge Engineering: Practice and Patterns, 48-63, 2008.
-    \bibitem{DAB14}
-      Distel, Felix and Atif, Jamal and Bloch, Isabelle.
-      \textit{Concept dissimilarity based on tree edit  distance and morphological dilation}.
-      ECAI, 2014.
-    \bibitem{Ja01}
-      Jaccard, Paul.
-      \textit{\'Etude comparative de la distribution florale dans une portion des alpes et des jura}.
-      Bulletin de la Société Vaudoise des Sciences Naturelles, 37: 547–579, 1901.
-    \bibitem{Se16}
-      Seyed, A. Patrice.
-      \textit{Subsumption Preservation as a Comparative Measure for Evaluating Sense-Directed Embeddings}.
-      ACL 2016, 90, 2016.
-    \bibitem{Ec14}
-    Ecke, Andreas, Rafael Peñaloza and Anni-Yasmin Turhan.
-    \textit{Similarity-based relaxed instance queries.}
-    Journal of Applied Logic, (13):480-508, 2015.
-    Ecke, Andreas, Rafael Peñaloza, and Anni-Yasmin Turhan.
-    \textit{Similarity-Based Relaxed Instance Queries}.
-    PRUV, 101–113, 2014.
-    \bibitem{Ba17}
-    Baader, Franz, and Oliver Fernández Gil.
-    \textit{Decidability and Complexity of Threshold Description Logics Induced by Concept Similarity Measures}.
-    Proceedings of the Symposium on Applied Computing, 983–988, 2017.
-    \bibitem{Gen13}
-    Gentleman, R.
-    \textit{Visualizing and Distances Using GO}.
-    2013.% This reference is unclear.
-  \end{thebibliography}
-  %\bibliography{seminar_further-DL}%
+  % \begin{thebibliography}{1}
+  %   \bibitem{Lae15}
+  %     Lätsch, Paul and Turhan, Anni-Yasmin.
+  %     \textit{Simi-Framework for Concept-Similarity-Measures: property analysis and expansion to more powerful Description Logics}.
+  %     Diplomarbeit, Technische Universität Dresden, 2015.
+  % \end{thebibliography}
+  \bibliography{seminar_further-DL}%
 
 \end{document}
