@@ -19,18 +19,19 @@
 
 \usepackage{todonotes}
 \usepackage{microtype}
+\usepackage{xspace}
 
 \DeclareMathOperator{\simi}{simi}
 
-\newcommand{\el}{\(\mathcal{EL}{}\)}
-\newcommand{\elh}{\(\mathcal{ELH}{}\)}
+\newcommand{\el}{\(\mathcal{EL}\)\xspace}
+\newcommand{\elh}{\(\mathcal{ELH}\)\xspace}
 \newcommand{\DeltaI}{\Delta^\mathcal{I}}
 \newcommand{\dotI}{\cdot^{\mathcal{I}}}
-\newcommand{\dl}{\textsc{dl}}
-\newcommand{\kb}{\textsc{kb}}
-\newcommand{\ria}{\textsc{ria}}
-\newcommand{\gci}{\textsc{gci}}
-\newcommand{\csm}{\textsc{csm}}
+\newcommand{\dl}{\textsc{dl}\xspace}
+\newcommand{\kb}{\textsc{kb}\xspace}
+\newcommand{\ria}{\textsc{ria}\xspace}
+\newcommand{\gci}{\textsc{gci}\xspace}
+\newcommand{\csm}{\textsc{csm}\xspace}
 \newcommand{\subsume}[1]{\sqsubseteq_{\mathcal{#1}}}
 
 \title{A Framework for Semantic-based Similarity Measures for \elh-Concepts}
@@ -61,7 +62,7 @@
   In particular, relevant properties of similarity have been described and formalised; some of these have been drawn from what has been already established in the literature, whereas others have been newly introduced.
   These properties are either concerning the mathematical side of a measure or its relation with the underlying representation of the concepts.
 
-  Among description logics, a family of formal languages used to represent knowledge in ontologies, the one investigated and chosen as a base for the work herein reportes is the \elh{} description logic, which has a practical relevance --- for example, in medical ontologies, as in~\cite{Gen13} --- and is part of important standards for semantic technologies.
+  Among description logics, a family of formal languages used to represent knowledge in ontologies, the one investigated and chosen as a base for the work herein reportes is the \elh description logic, which has a practical relevance --- for example, in medical ontologies, as in~\cite{Gen13} --- and is part of important standards for semantic technologies.
   In this setting, it is shown how a similarity measure can be defined, such that it is powerful, yet flexible to edit and efficient to compute, given that one uses the right tools in its construction.
 
   This work also attempts to address another issue: the \emph{portability} and \emph{reliability} of concept similarity measures, across different contexts.
@@ -76,7 +77,7 @@
   In the end, an overview of related works is presented, followed by a brief conclusion.
 
   \section{The \(\mathcal{ELH}\) Description Logic}
-  Hereafter, the reader must assume that the \elh{} description logic is used where not differently specified.
+  Hereafter, the reader must assume that the \elh description logic is used where not differently specified.
   For a detailed treatment of the notions here introduced, the interested reader can go to~\cite{DLbook}.
 
   The syntax of a \dl makes use of two finite and disjoint sets of \emph{concept names}, \(\mathbf{C}\) and \emph{role names}, \(\mathbf{R}\) to build \emph{concept descriptions}, by means of \emph{concept constructors}.
@@ -97,7 +98,7 @@
     \end{tabular}
   \end{center}
 
-  In the description logic \elh{}, each concept description can be expressed as a conjunction of other concepts, which are called its \emph{atoms}.
+  In the description logic \elh, each concept description can be expressed as a conjunction of other concepts, which are called its \emph{atoms}.
   % Thanks to this definition, it is possible to express each concept description as a conjunction of \emph{atoms}, which are defined as the elements of the set containing all concept names, \(\top{}\) and all the existential restrictions appearing in \(\mathcal{C}\)(\elh).
   \begin{definition}[Atoms]
     Given concept names \(\mathbf{C}\) and role names \(\mathbf{R}\), the set of \emph{\elh-atoms} \(\mathbf{A}\) is defined as
@@ -135,11 +136,11 @@
   A TBox T is called \emph{unfoldable} iff it is acyclic, consists of concept definitions and primitive concept definitions only and every concept name occurs at most once on a left-hand side of a concept axiom.
   This kind of TBox can be normalised and expanded in an equivalent TBox containing exclusively concept definitions, where only primitive concept names appear on the right hand side of these concept definitions.
 
-  Among the various reasoning services that can be applied over \elh{} \kb{}s, a useful one is the \emph{subsumption} of concepts: the concept \(C\) is \emph{subsumed} by \(D\) w.r.t.\ a \kb{} \(\mathcal{K}\) iff \(C^\mathcal{I} \subseteq D^\mathcal{I}\) for all models \(\mathcal{I}\) of \(\mathcal{K}\), in symbols \(C \subsume{K} D\);
+  Among the various reasoning services that can be applied over \elh \kb{}s, a useful one is the \emph{subsumption} of concepts: the concept \(C\) is \emph{subsumed} by \(D\) w.r.t.\ a \kb \(\mathcal{K}\) iff \(C^\mathcal{I} \subseteq D^\mathcal{I}\) for all models \(\mathcal{I}\) of \(\mathcal{K}\), in symbols \(C \subsume{K} D\);
   if \(C\) and \(D\) both subsume each other, then they are \emph{equivalent}, denoted by \(C \equiv_{\mathcal{K}} D\).
   Similarly, \(r \subsume{R} s\) if \(r^\mathcal{I} \subseteq s^\mathcal{I}\) for all models \(\mathcal{I}\) of \(\mathcal{R}\).
 
-  The computation of a normal form for \el{} concepts is well described in~\cite{DLbook}; however, the addition of role hierarchy contribution made in~\cite{LeTu12} is the introduction of an \elh-normal form for concept descriptions, which can be computed in polynomial time.
+  The computation of a normal form for \el concepts is well described in~\cite{DLbook}; however, the addition of role hierarchy contribution made in~\cite{LeTu12} is the introduction of an \elh-normal form for concept descriptions, which can be computed in polynomial time.
   Specifically, a choice function \(ch{}\) is devised such that every role is replaced by a picked representative of its \(\equiv_\mathcal{R}\)-equivalence class.
   \begin{definition}
     A concept \(C \in \mathcal{C}\)(\elh) is in \emph{\elh-normal form} w.r.t. a RBox \(\mathcal{R}\) if all its subconcepts are closed under the application of the following rules:
@@ -183,7 +184,7 @@
   The only exception is the Jaccard Index, which is \emph{not} meant to be such a measure.
   The concept similarity measure \(\simi\), as defined later in this report, does not fulfill this condition.
 
-  Some advances in the direction of defining a measure with this property can be found in~\cite{DAB14}, where a measure respecting the triangle inequality (but missing other properties) had been provided for the \el{} \dl.
+  Some advances in the direction of defining a measure with this property can be found in~\cite{DAB14}, where a measure respecting the triangle inequality (but missing other properties) had been provided for the \el \dl.
 
   \paragraph{Concept equivalence.} Equivalence closure and equivalence invariance have found little to no criticism in the literature.
   Indeed, it is regarded as necessary for two equivalent concepts to be totally similar, and equivalent concepts should share their similarity behaviour toward other concepts.
@@ -198,7 +199,7 @@
   \paragraph{Structural dependence} is the last property that had been introduced for concept similarity measures.
   The idea behind structural dependence is that as the number of common \emph{features} of two concepts increases and the number of uncommon features is constant, then the similarity of these concepts must be increasing.
   Such distinct features can be thought of as sequence of atoms such that no two atoms in the sequence are in subsumption relation.
-  Indeed, a \csm{} is \emph{structurally dependent} iff, given a sequence \({(C_k)}_{k=1}^n\) of atoms such that if \(1 \le i,j \le n\) and \(i \ne j\), then \(C_i \not\sqsubseteq C_j\), and defining \(D_n := \sqcap_{i=1}^n C_i \sqcap D\) for a given concept name, then \(\lim_{n \to \infty}s(D_n,E_n) = 1\) holds.
+  Indeed, a \csm is \emph{structurally dependent} iff, given a sequence \({(C_k)}_{k=1}^n\) of atoms such that if \(1 \le i,j \le n\) and \(i \ne j\), then \(C_i \not\sqsubseteq C_j\), and defining \(D_n := \sqcap_{i=1}^n C_i \sqcap D\) for a given concept name, then \(\lim_{n \to \infty}s(D_n,E_n) = 1\) holds.
 
   \section{\(\simi{}\): a blueprint for designing CSMs}
 
@@ -399,7 +400,7 @@
     The proof of this theorem can be found in~\cite{LeTu12}.
   \end{proof}
   \begin{theorem}
-    The \csm{} \(\simi\) is symmetric, closed and invariant under equivalence and preserves subsumption, for each instantiation of its parameters.
+    The \csm \(\simi\) is symmetric, closed and invariant under equivalence and preserves subsumption, for each instantiation of its parameters.
   \end{theorem}
   \begin{proof}
     Let \(C\), \(D\) and \(E\) be \elh-concept descriptions.
@@ -421,13 +422,13 @@
 
     In a similar way, subsumption preserving can be proved.
   \end{proof}
-  The \csm{} \(\simi\) fulfills most of the desired properties.
+  The \csm \(\simi\) fulfills most of the desired properties.
   Indeed, in~\cite{LeTu12}, it is shown that it is \emph{equivalence closed}, \emph{equivalence invariant}, \emph{symmetric} and \emph{subsumption preserving} for every choice of the parameters.
   For adequates choice of the fuzzy connector and the weighting function, \emph{structural dependence} can be achieved.
   The only properties that cannot be guaranteed by \(\simi\) are \emph{triangle inequality} and \emph{reverse subsumption preserving}, since similarity values between the atoms of the involved concepts are not taken into account, in the computation of the similarity value of the concepts.
 
   \begin{proposition}
-    The \csm{} \(\simi\) can be computed efficiently: if the provided fuzzy connector, bounded \(t\)--conorm, primitive measure and weighting function can be computed in polytime, so can \(\simi\), with time polynomial in the size of the measured concepts.
+    The \csm \(\simi\) can be computed efficiently: if the provided fuzzy connector, bounded \(t\)--conorm, primitive measure and weighting function can be computed in polytime, so can \(\simi\), with time polynomial in the size of the measured concepts.
   \end{proposition}
   \begin{proof}
     From the assumption that the fuzzy connector can be computed in polytime, it suffices to show that \(\simi_d\) can be computed in polytime.
@@ -440,14 +441,14 @@
 
   \section{Related work}
 
-  \paragraph{The triangle inequality.} While the majority of similarity measures actually defined do not respect the triangle inequality, for \el-concept descriptions an alternative approach had been developed in~\cite{DAB14}, where concepts in \el{} normal form are translated into \emph{description trees}; then, the similarity measures in there defined, based on the description trees of the concepts, though being non monotone and not structurally dependent, respect triangle inequality.
+  \paragraph{The triangle inequality.} While the majority of similarity measures actually defined do not respect the triangle inequality, for \el-concept descriptions an alternative approach had been developed in~\cite{DAB14}, where concepts in \el normal form are translated into \emph{description trees}; then, the similarity measures in there defined, based on the description trees of the concepts, though being non monotone and not structurally dependent, respect triangle inequality.
 
   \paragraph{Subsumption preservation.} An exploit of subsumption preservation as a guiding principle of similarity measures had been adopted in~\cite{Se16},
   as a way to improve evaluation methods, in which subsumption preservation is used to populate query inventories, which are then used to perform the evaluation of word embeddings.
 
   \paragraph{General TBoxes.} A general treatment of TBoxes in the context of similarity evaluation of relaxed instances of \el-concepts, had been included in a follow-up work, which introduces a treatment for both the general and the unfoldable case (\cite{Ec14}).
 
-  \paragraph{Approximation.} Approximation grades, induced by concept similarity measures and complexity of relative threshold \dl{}s, are discussed in~\cite{Ba17}, where it is shown how \csm{}s for \el{} description logics can be employed to derive a grade membership function and consequently a threshold \dl.
+  \paragraph{Approximation.} Approximation grades, induced by concept similarity measures and complexity of relative threshold \dl{}s, are discussed in~\cite{Ba17}, where it is shown how \csm{}s for \el description logics can be employed to derive a grade membership function and consequently a threshold \dl.
 
   \section{Conclusion}
 
@@ -458,7 +459,7 @@
   The path towards the definition of such a measure has been illustrated, with a focus on each single parameter, along with the motivations that justified their usage.
   Most of the desired properties have been successfully incorporated, while others, like triangle inequality, have been not included, but may be possibly achieved.
 
-  While \elh{} is a good and widely used \dl{}, the question is whether a similar measure might be extended to more expressive description logics, without losing its peculiar features.
+  While \elh is a good and widely used \dl, the question is whether a similar measure might be extended to more expressive description logics, without losing its peculiar features.
   It would also be worthy to investigate the possibility of using general TBoxes, where cycles may break the behaviour of \(\simi\) as it is defined now.
 
   Finally, it would be interesting to obtain a full implementation of \(\simi\), in order to be able to assess it against other existing measures, as well as to start using it to evaluate concept similarity in ontologies.
