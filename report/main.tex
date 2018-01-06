@@ -24,18 +24,7 @@
 
 \usepackage{hyperref}
 
-\DeclareMathOperator{\simi}{simi}
-
-\newcommand{\el}{\(\mathcal{EL}\)\xspace}
-\newcommand{\elh}{\(\mathcal{ELH}\)\xspace}
-\newcommand{\DeltaI}{\Delta^\mathcal{I}}
-\newcommand{\dotI}{\cdot^{\mathcal{I}}}
-\newcommand{\dl}{\textsc{dl}\xspace}
-\newcommand{\kb}{\textsc{kb}\xspace}
-\newcommand{\ria}{\textsc{ria}\xspace}
-\newcommand{\gci}{\textsc{gci}\xspace}
-\newcommand{\csm}{\textsc{csm}\xspace}
-\newcommand{\subsume}[1]{\sqsubseteq_{\mathcal{#1}}}
+\usepackage{notation}
 
 \title{A Framework for Semantic-based Similarity Measures for \elh-Concepts}
 \author{Filippo De Bortoli}
@@ -54,7 +43,7 @@
 
   \section{Introduction}
 
-  Measuring the similarity of two or more concepts is a task that frequently occurs in many real-world cases, where ontologies are employed, ranging from exploration of knowledge bases for information discovery --- as done in~\cite{GF13} --- to more technical activies, such as ontology alignment.
+  Measuring the similarity of two or more concepts is a task that frequently occurs in many real-world cases, where ontologies are employed, ranging from exploration of knowledge bases for information discovery --- as done in~\cite{GF13} --- to more technical activies, such as ontology alignment, as in~\cite{CHu11}.
 
   As important as a \emph{good} measure for concept similarity is, one has to deal with several issues during the specification, implementation and usage phases of a tool of this kind.
   Most of these have been faced in the work done by Lehmann \& Turhan in~\cite{LeTu12}.

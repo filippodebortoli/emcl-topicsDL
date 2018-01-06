@@ -1,4 +1,8 @@
 \documentclass{beamer}
+
+\usepackage{xcolor}
+\usepackage{notation}
+
 \usetheme[numbering=fraction,%
        block=fill%
        ]{metropolis} % Use metropolis theme
@@ -9,8 +13,72 @@
 \date{January 18th, 2018}
 \begin{document}
 \maketitle
+
+\begin{frame}
+  \frametitle{Similarity measures and the real world}
+  \begin{enumerate}
+    \item \emph{KB exploration}, e.g. discovery of genetic functionality;
+    \item \emph{Ontology alignment}, i.e. how to match different ontologies.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Overview}
+  \begin{enumerate}
+    \item Some preliminaries
+    \item Similarity measures and intended properties
+    \item Conception of \(\simi\)
+    \item Conclusion
+  \end{enumerate}
+\end{frame}
+
+\section{Preliminaries}
+
+\begin{frame}
+  \frametitle{The \elh{} Description Logic}
+\end{frame}
+
 \section{First Section}
 \begin{frame}{First Frame}
 Hello, world!
+\end{frame}
+
+\begin{frame}{Preprocessing}
+  % EL-normal form here.
+\end{frame}
+
+\begin{frame}{Definition of \(\simi_d\)}
+  \begin{align}
+    \simi_d(\top,D) &= 1 \quad
+    \text{for all}\; D \in \mathcal{C}(\mathcal{ELH}) \\
+    \simi_d(C,D) &=
+    \frac{\sum_{C^\prime \in \widehat{C}}\left(\textcolor{blue}{g}(C^\prime) \cdot \textcolor{green}{\bigoplus_{D^\prime \in \widehat{D}}} \simi_d(C^\prime, D^\prime)\right)}%
+    {\sum_{C^\prime \in \widehat{C}}\textcolor{blue}{g}(C^\prime)} \quad \text{if}\; C \ne \top \label{simi:general}\\
+    \simi_d(A,B) &= \textcolor{red}{pm}(A,B) \quad \text{for atoms}\; A,B \\
+    \simi_d(\exists{}r.C,\exists{}s.D) &=
+    \textcolor{red}{pm}(r,s) \cdot \left(\textcolor{orange}{w} + (1-\textcolor{orange}{w})\simi_d(C,D)\right) \\
+    \simi_d(C,D) &= 0 \quad \text{otherwise}.
+  \end{align}
+  % \begin{definition}[\(\simi_d\)]\label{simi-d}
+  %   The measure of \emph{directed similarity} \(\simi_d \colon {\mathcal{C}(\mathcal{ELH})}^2 \to [0,1]\), given the following parameters:
+  %   \begin{enumerate}
+  %     \item a bounded \(t\)-conorm \(\oplus\),
+  %     \item a primitive measure \(pm\),
+  %     \item a weighting function \(g\),
+  %     \item \(w \in (0,1)\),
+  %   \end{enumerate}
+  %   is defined as:
+  %   \begin{align}
+  %     \simi_d(\top,D) &= 1 \quad
+  %     \text{for all}\; D \in \mathcal{C}(\mathcal{ELH}) \\
+  %     \simi_d(C,D) &=
+  %     \frac{\sum_{C^\prime \in \widehat{C}}\left(g(C^\prime) \cdot \bigoplus_{D^\prime \in \widehat{D}} \simi_d(C^\prime, D^\prime)\right)}%
+  %     {\sum_{C^\prime \in \widehat{C}}g(C^\prime)} \quad \text{if}\; C \ne \top \label{simi:general}\\
+  %     \simi_d(A,B) &= pm(A,B) \quad \text{for atoms}\; A,B \\
+  %     \simi_d(\exists{}r.C,\exists{}s.D) &=
+  %     pm(r,s) \cdot \left(w + (1-w)\simi_d(C,D)\right) \\
+  %     \simi_d(C,D) &= 0 \quad \text{otherwise}.
+  %   \end{align}
+  % \end{definition}
 \end{frame}
 \end{document}
