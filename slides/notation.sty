@@ -1,4 +1,5 @@
 \DeclareMathOperator{\simi}{\mathbf{simi}}
+\DeclareMathOperator{\sme}{\mathbf{sim}}
 
 \newcommand{\el}{\(\mathcal{EL}\)\xspace}
 \newcommand{\elh}{\(\mathcal{ELH}\)\xspace}
@@ -10,3 +11,18 @@
 \newcommand{\gci}{\textsc{gci}\xspace}
 \newcommand{\csm}{\textsc{csm}\xspace}
 \newcommand{\subsume}[1]{\sqsubseteq_{\mathcal{#1}}}
+\newcommand{\A}{\mathbf{A}}
+\newcommand{\I}{\mathcal{I}}
+\newcommand{\Conc}{\mathbf{C}}
+\newcommand{\R}{\mathbf{R}}
+\newcommand{\atom}[1]{\widehat{#1}}
+\newcommand{\abs}[1]{\lvert #1 \rvert}
+
+\providecommand{\bigsqcap}{%
+  \mathop{%
+    \mathpalette\@updown\bigsqcup
+  }%
+}
+\newcommand*{\@updown}[2]{%
+  \rotatebox[origin=c]{180}{$\m@th#1#2$}%
+}

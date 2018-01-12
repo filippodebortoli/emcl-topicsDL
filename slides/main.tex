@@ -1,33 +1,89 @@
+%\documentclass[handout]{beamer}
 \documentclass{beamer}
 
-\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{xcolor,xspace}
+\usepackage{appendixnumberbeamer}
 \usepackage{notation}
 
-\usetheme[numbering=fraction,%
-       block=fill%
-       ]{metropolis} % Use metropolis theme
-\usecolortheme{spruce}
+%\usetheme[numbering=fraction,%
+%       block=fill,%
+%       progressbar=foot%
+%       ]{metropolis} % Use metropolis theme
+\useoutertheme[numbering=fraction]{metropolis}
+\useinnertheme{metropolis}
+\usefonttheme{metropolis}
+\usecolortheme{metropolis}
+%\usecolortheme{spruce}
+\setbeamercovered{transparent}
 \title{A Framework for Semantic-based Similarity Measures for ELH-Concepts}
 \author{Filippo De Bortoli}
 \institute{European Master's Programme in Computational Logic, TU Dresden}
 \date{January 18th, 2018}
+
 \begin{document}
 \maketitle
 
 \begin{frame}
-  \frametitle{Similarity measures and the real world}
-  \begin{enumerate}
-    \item \emph{KB exploration}, e.g. discovery of genetic functionality;
-    \item \emph{Ontology alignment}, i.e. how to match different ontologies.
-  \end{enumerate}
+  \frametitle{Something about the original work\ldots}
+  This presentation originates from:
+  \begin{thebibliography}
+    \bibitem{}
+     Lehmann, K. \& Turhan, A.
+	   \newblock{\em A Framework for Semantic-Based Similarity Measures for ELH-Concepts}.
+	   \newblock{\bf Logics in Artificial Intelligence - 13th European Conference}, {JELIA} , 2012.
+  \end{thebibliography}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Motivation for a new concept similarity measure}
+  
+  \begin{columns}
+    \begin{column}{0.61\textwidth}
+      \begin{enumerate}[<+->]
+        \item Would you claim that \(Mother\) and
+        \(Woman \sqcap \exists{}parentOf.Person\) are similar?
+        \item Are \(Mother\) and \(Father\) as similar
+        as \(Woman \sqcap Parent\) and \(Father\) are?
+      \end{enumerate}
+      \begin{itemize}[<+->]
+        \item Equivalence \alert{invariance} and \alert{closure}
+        of concept similarity measures (\csm)
+        recognised as important properties\ldots
+        \item \ldots yet, many existing
+        \csm{}s fail to accomplish them!
+        %\footnote{Despite claiming those properties to hold.}
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.39\textwidth}
+      \begin{align*}
+        Parent &\equiv \exists{}parentOf.Person \\
+        Mother &\equiv Woman \sqcap Parent \\
+        Woman &\sqsubseteq Person \\
+        &\vdots         
+      \end{align*}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 \begin{frame}
   \frametitle{Overview}
   \begin{enumerate}
-    \item Some preliminaries
-    \item Similarity measures and intended properties
-    \item Conception of \(\simi\)
+    \item Preliminaries
+    \begin{enumerate}
+      \item The \elh Description Logic
+      \item \elh-normal form
+    \end{enumerate}
+    \item Similarity in Description Logic
+    \begin{enumerate}
+      \item Properties of a similarity measure
+    \end{enumerate}
+    \item A new concept similarity measure
+    \begin{enumerate}
+      \item Derivation of \(\simi\)
+      \item Definition of \(\simi\)
+      \item Properties of \(\simi\)
+    \end{enumerate}
     \item Conclusion
   \end{enumerate}
 \end{frame}
@@ -36,49 +92,333 @@
 
 \begin{frame}
   \frametitle{The \elh{} Description Logic}
+  \elh = \el + \alert{role hierarchy}
+  \begin{itemize}[<+->]
+    \item \alert{Role inclusion axioms} (\ria{}s) \(r \sqsubseteq s\)
+    \item \alert{RBox} as a finite set of \ria{}s
+    \item \(\I \models r \sqsubseteq s\) iff \(r^\I \subseteq s^\I\)
+  \end{itemize}
+  \textbf{Assumption:} The TBox is \alert{unfoldable}.
+  \begin{itemize}[<+->]
+    \item It is acyclic
+    \item It only contains axioms of the form
+    \(A \sqsubseteq C\) or \(A \equiv C\), with \(A \in \Conc\)
+    \item Each concept name at most once in LHS of an axiom.
+    \item This allows to operate without the TBox!
+  \end{itemize}
 \end{frame}
 
-\section{First Section}
-\begin{frame}{First Frame}
-Hello, world!
+\begin{frame}
+  \frametitle{Concepts, atoms and normal form}
+  For a \elh-concept in conjunction form
+  \(C = \bigsqcap_{i \le n} C_i\), define
+  \(
+    \atom{C} := \lbrace C_1,\dotsc,C_n \rbrace
+  \)
+  as the set of its \alert{atoms}.
+  Intuitively, atoms are concepts not in
+  conjunction form.
+
+  \elh-concepts admit an essentially unique \alert{normal form}!
+
+  This is obtained by applying exhaustively:
+  \begin{itemize}[<+->]
+    \item \(A \sqcap \top \mapsto A\)
+    \item \(A \sqcap A \mapsto A\)
+    \item \(\exists{}r.C^\prime \mapsto%
+           \exists{}ch([r]).C^\prime\),
+           where \(ch\) is a role choice function
+    \item \(\exists{}r.C^\prime \sqcap%
+           \exists{}s.D^\prime \mapsto%
+          \exists{}r.C^\prime\) if
+          \(r\subsume{K}s\) and
+          \(C^\prime \subsume{K} D^\prime\)
+  \end{itemize}
 \end{frame}
 
-\begin{frame}{Preprocessing}
-  % EL-normal form here.
+
+\section{What is similarity?}
+
+\begin{frame}
+  \frametitle{Metric spaces and similarity}
+  \begin{enumerate}
+    \item Metric spaces arise in many practical
+    applications!
+    \item Metrics as \alert{dissimilarity} measures!
+    \item Given a metric \(d\) over a normalized space,
+    the corresponding \alert{similarity} measure is
+    \(
+      s(a,b) := 1 - d(a,b)
+    \).
+  \end{enumerate}  
 \end{frame}
 
-\begin{frame}{Definition of \(\simi_d\)}
-  \begin{align}
-    \simi_d(\top,D) &= 1 \quad
-    \text{for all}\; D \in \mathcal{C}(\mathcal{ELH}) \\
-    \simi_d(C,D) &=
-    \frac{\sum_{C^\prime \in \widehat{C}}\left(\textcolor{blue}{g}(C^\prime) \cdot \textcolor{green}{\bigoplus_{D^\prime \in \widehat{D}}} \simi_d(C^\prime, D^\prime)\right)}%
-    {\sum_{C^\prime \in \widehat{C}}\textcolor{blue}{g}(C^\prime)} \quad \text{if}\; C \ne \top \label{simi:general}\\
-    \simi_d(A,B) &= \textcolor{red}{pm}(A,B) \quad \text{for atoms}\; A,B \\
-    \simi_d(\exists{}r.C,\exists{}s.D) &=
-    \textcolor{red}{pm}(r,s) \cdot \left(\textcolor{orange}{w} + (1-\textcolor{orange}{w})\simi_d(C,D)\right) \\
-    \simi_d(C,D) &= 0 \quad \text{otherwise}.
-  \end{align}
-  % \begin{definition}[\(\simi_d\)]\label{simi-d}
-  %   The measure of \emph{directed similarity} \(\simi_d \colon {\mathcal{C}(\mathcal{ELH})}^2 \to [0,1]\), given the following parameters:
-  %   \begin{enumerate}
-  %     \item a bounded \(t\)-conorm \(\oplus\),
-  %     \item a primitive measure \(pm\),
-  %     \item a weighting function \(g\),
-  %     \item \(w \in (0,1)\),
-  %   \end{enumerate}
-  %   is defined as:
-  %   \begin{align}
-  %     \simi_d(\top,D) &= 1 \quad
-  %     \text{for all}\; D \in \mathcal{C}(\mathcal{ELH}) \\
-  %     \simi_d(C,D) &=
-  %     \frac{\sum_{C^\prime \in \widehat{C}}\left(g(C^\prime) \cdot \bigoplus_{D^\prime \in \widehat{D}} \simi_d(C^\prime, D^\prime)\right)}%
-  %     {\sum_{C^\prime \in \widehat{C}}g(C^\prime)} \quad \text{if}\; C \ne \top \label{simi:general}\\
-  %     \simi_d(A,B) &= pm(A,B) \quad \text{for atoms}\; A,B \\
-  %     \simi_d(\exists{}r.C,\exists{}s.D) &=
-  %     pm(r,s) \cdot \left(w + (1-w)\simi_d(C,D)\right) \\
-  %     \simi_d(C,D) &= 0 \quad \text{otherwise}.
-  %   \end{align}
-  % \end{definition}
+\begin{frame}
+  \frametitle{Properties of similarity}
+  What are possible properties for a
+  \alert{similarity measure} \(\sme\)?
+
+  In the following, \(C,D,E\) are \elh-concepts.
+
+  Which properties were already in the literature?
+
+  \begin{description}[<+->]
+    \item[Symmetric] \(\sme(C,D) = \sme(D,C)\)
+    \item[Triangle inequality]
+      \(1 + \sme(D,E) \ge \sme(D,C) + \sme(C,E)\)
+    \item[Equivalence invariant]
+      if \(C \equiv D\), then
+      \(\sme(C,E) = \sme(D,E)\)
+    \item[Equivalence closed]
+      \(\sme(C,D) = 1\) iff \(C \equiv D\)
+  \end{description}
+  The last two properties are the one that should
+  be guaranteed!
 \end{frame}
+
+\begin{frame}
+  \frametitle{Properties of similarity, ctd.}
+
+  Which properties had been newly introduced?
+  \begin{description}[<+->]
+    \item[\(\sqsubseteq\)-preserving] if \(C \sqsubseteq D \sqsubseteq E\),
+    then \(\sme(C,D) \ge \sme(C,E)\)
+    \item[Reverse \(\sqsubseteq\)-preserving]
+    \(\sme(C,E) \le \sme(D,E)\) if
+    \(C \sqsubseteq D \sqsubseteq E\)
+    \item[Structurally dependent]
+    Let \({(C_n)}_n \subseteq \A\) of mutually
+    non-subsuming atoms. Then, the concepts
+    \(D_n\), \(E_n\) satisfy
+    \(\lim_{n \to \infty} \sme(D_n,E_n) = 1\)
+    \begin{equation*}
+      D_n := \bigsqcap_{i \le n} C_i \sqcap D \qquad
+      E_n := \bigsqcap_{i \le n} C_i \sqcap E
+    \end{equation*}
+  \end{description}
+  \begin{itemize}[<+->]
+    \item Intuitively, the more \alert{features}
+    two concepts share, the more similar they are.
+  \end{itemize}
+\end{frame}
+
+\section{Deriving simi}
+
+\begin{frame}
+  \frametitle{Starting point for the derivation of \(\simi\)}
+  First, introduce a variation of the \alert{Jaccard Index}:
+  \begin{equation}
+    d(C,D) := \frac{\abs{\atom{C} \cap \atom{D}}}%
+                   {\abs{\atom{C}}}
+  \end{equation}
+  What about the numerator?
+  \begin{equation}
+    \abs{\atom{C} \cap \atom{D}} =
+    \sum_{C^\prime \in \atom{C}}%
+      \textcolor{cyan}{\max_{D^\prime \in \atom{D}}}%
+      (\textcolor{red}{\delta}_{C^\prime}^{D^\prime})
+  \end{equation}
+  Here, \(\textcolor{red}{\delta}_{C^\prime}^{D^\prime} = 1\) if
+  \(C^\prime = D^\prime\), \(0\) otherwise.
+  \pause
+  \begin{enumerate}[<+->]
+    \item Are different concept names totally dissimilar?
+    \item Does \(\textcolor{red}{\delta}\) say something about roles?
+    \item Does it take into account existential restrictions?
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Generalizing \(\delta{}\) to a primitive measure for names}
+  \begin{definition}[Primitive measure]
+    Mapping \(\textcolor{red}{pm} \colon {(\Conc \cup \R)}^2 \to [0,1]\)
+    satisfying:
+    \begin{enumerate}[<+->]
+      \item\label{pm:1} \(\textcolor{red}{pm}(A,B) = 1\) iff \(A = B\)
+      \item\label{pm:2} \(\textcolor{red}{pm}(r,s) = 1\) iff \(s \sqsubseteq r\)
+      \item\label{pm:3} if \(r \subsume{R} s\), then \(\textcolor{red}{pm}(r,s) > 0\),
+      \item\label{pm:4} if \(t \subsume{R} s\), then \(\textcolor{red}{pm}(r,s) \le \textcolor{red}{pm}(r,t)\).
+    \end{enumerate}
+    for \(A,B \in \Conc\) and \(r,s,t \in \R\).
+  \end{definition}
+  \begin{itemize}[<+->]
+    \item Rules~\ref{pm:1} and~\ref{pm:2} will 
+    ensure equivalence closure
+    \item Rule~\ref{pm:4} guarantees
+    \(\subsume{}\)-preserving
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{How should one handle existential restrictions?}
+  It is possible to make a case analysis about
+  concepts which similarity one wants to compute.
+  \begin{enumerate}[<+->]
+    \item \(d(A,B) = \textcolor{red}{pm}(A,B)\)
+    \item \(d(\exists{}r.C,D) = d(D,\exists{}r.C) = 0\)
+    \item \(d(\exists{}r.C,\exists{}s.D) =
+    \textcolor{red}{pm}(r,s) \cdot \left(w + (1-w) \cdot d(C,D)\right)\)
+  \end{enumerate}
+  for \(A,B \in \Conc\),
+  \(C,D \in \mathcal{C}(\mathcal{ELH})\),
+  \(r \in \R\).
+
+  Here, \(\textcolor{magenta}{w} \in (0,1)\) is a parameter which allows
+  to choose whether roles or concepts account more
+  in the similarity measure.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Does ``max'' perform well w.r.t. similarity?}
+  The \(\textcolor{cyan}{\max}\) operator is the weakest \alert{t-conorm}.
+  \begin{itemize}
+    \item It is possible to make better use of
+          the given information!
+  \end{itemize}
+  \pause
+  \begin{definition}[Bounded t-conorm]
+    An operator \(\oplus \colon {[0,1]}^2 \to [0,1]\) which is
+    commutative, associative and for all
+    \(x, y, z, w \in [0,1]\):
+    \begin{description}[<+->]
+      \item[Unit element] \(0 \oplus x = x = x \oplus 0\)
+      \item[Monotonicity] if \(x \le z\) and \(y \le w\), then \(x \oplus y \le z \oplus w\)
+      \item[Boundedness] if \(x \oplus y = 1\), then \(x = 1\) or \(y = 1\).
+    \end{description}
+  \end{definition}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Which concepts are more relevant?}
+  One may want to impose that some atoms are
+  more important than others, in measuring similarity!
+  \begin{definition}[Weighting function]
+    A \emph{weighting function} is a mapping 
+    \(\textcolor{blue}{g} \colon \mathbf{A} \to \mathbb{R}_+\),
+     where \(\mathbf{A}\) is the set of \emph{atoms}.
+  \end{definition}
+  With this definition, it is possible to partially
+  ensure structural dependence for the similarity
+  measure.
+\end{frame}
+
+\section{Definition of simi}
+
+\begin{frame}
+  \frametitle{Directed similarity}
+  Finally, a measure of \alert{directed similarity} is defined.
+  \begin{equation}
+    \simi_d \colon {\mathcal{C}(\mathcal{ELH})}^2%
+    \to [0,1]
+  \end{equation}
+  How does \(\simi_d\) behave?
+  \begin{equation}
+    \simi_d(\top,D) = 1 \qquad D \in \mathcal{C}(\mathcal{ELH})
+  \end{equation}
+  This captures the following fact: \(D \sqsubseteq \top\)
+  for all \elh-concepts.
+  \begin{equation}
+    \simi_d(A,B) = \textcolor{red}{pm}(A,B) \qquad A,B \in \Conc
+  \end{equation}
+  Concept names are measured according to \(\textcolor{red}{pm}\).
+\end{frame}
+
+\begin{frame}
+  \frametitle{Directed similarity, ctd.}
+  \begin{equation}
+    \simi_d(\exists{}r.C,\exists{}s.D) =
+    \textcolor{red}{pm}(r,s) \cdot 
+    \left(\textcolor{magenta}{w} + 
+    (1-\textcolor{magenta}{w})\simi_d(C,D)\right)
+  \end{equation}
+  Existential restrictions are measured in an
+  appropriate way.
+
+  The general case, for \(C,D \ne \top\), is
+  \begin{equation}
+    \simi_d(C,D) =
+    \frac{\sum_{C^\prime \in \widehat{C}}\left(\textcolor{blue}{g}(C^\prime) \cdot \textcolor{cyan}{\bigoplus_{D^\prime \in \widehat{D}}} \simi_d(C^\prime, D^\prime)\right)}%
+    {\sum_{C^\prime \in \widehat{C}}\textcolor{blue}{g}(C^\prime)}
+  \end{equation}
+  Otherwise, \(\simi_d(C,D) = 0\).
+\end{frame}
+
+\begin{frame}
+  \frametitle{Fuzzy connectors and simi}
+  Recall that \(C \equiv D\) iff \(C \subsume{} D\)
+  and \(D \subsume{} C\).
+  Mathematically, this is reflected on...
+  \begin{definition}[Fuzzy connector]
+    Commutative operator
+    \(\otimes \colon%
+    {[0,1]}^2 \to [0,1]\) s.t. for all
+    \(x, y \in [0,1]\),
+    \begin{description}[<+->]
+      \item[Equivalence closed]\label{fu:1}
+      \(x \otimes y = 1\) iff \(x = y = 1\)
+      \item[Weak monotonic]\label{fu:2}
+      if \(x \le y\), then
+      \(1 \otimes x \le 1 \otimes y\) 
+      \item[Bounded]\label{fu:3}
+      if \(x \otimes y = 0\), then
+      \(x = 0\) or \(y = 0\)
+      \item[Grounded]\label{fu:4}
+      \(0 \otimes 0 = 0\)
+    \end{description}
+  \end{definition}
+  Then, \(\simi\) is defined as
+\(\simi(C,D) := \simi_d(C,D) \otimes \simi_d(D,C)\).
+\end{frame}
+
+\begin{frame}
+  \frametitle{Properties of simi}
+  \begin{theorem}[Properties of \(\simi\)]
+    The function \(\simi\) is
+    symmetric,
+    equivalence invariant,
+    equivalence closed and
+    \(\subsume{}\)-preserving
+    for all choices of its parameters.
+  \end{theorem}
+  \begin{theorem}[Computation of \(\simi\)]
+    The function \(\simi\) can be computed in time
+    polynomial to the size of the measured concepts,
+    if all its parameters can be computed in polynomial time.
+  \end{theorem}
+  \begin{itemize}
+    \item The similarity measure \(\simi\)
+    achieved a large number of desired properties
+    (but not all of them\ldots)
+    \item Moreover, it can be computed efficiently!
+  \end{itemize}
+\end{frame}
+
+\section{Conclusion}
+
+\begin{frame}
+  \frametitle{How to go on from here?}
+  \begin{enumerate}[<+->]
+    \item Can the \(\simi\) approach be generalized
+    (e.g. general TBoxes)?
+    \item Can it be extended to
+    more expressive \dl{}s?
+    \item Can one guarantee more properties
+    (e.g. triangle inequality) without losing
+    equivalence-related ones?
+    \item How can \(\simi\) be implemented?
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}[standout]
+  Thank you!
+\end{frame}
+%
+%\begin{frame}
+%  \frametitle{Similarity measures and the real world}
+%  \begin{enumerate}
+%    \item \emph{KB exploration}, e.g. discovery of genetic functionality;
+%    \item \emph{Ontology alignment}, i.e. how to match different ontologies.
+%  \end{enumerate}
+%\end{frame}
+%
 \end{document}
