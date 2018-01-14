@@ -1,0 +1,48 @@
+\section{Measuring concept similarity}
+
+  How may one quantitatively measure the amount of similarity between two concepts?
+  In many real-world examples, ranging from cognitive sciences, biology, physics, to computer vision, the underlying mathematical structure is that of a \emph{metric space}, which is endowed with a \emph{metric}.
+  In particular, the similarity of two concepts can be interpreted as a relative measure: thus, it is possible to take normalised metric spaces, where distances are bound to live in the unit interval.
+  In this view, the metric distance between two concepts expresses their dissimilarity: thus, two totally similar concepts will be in the same position in the space, with dissimilar concepts being further and further.
+  Therefore, given a normalised metric space \((D,d)\), the similarity function \(s\) inducted by \(d\) corresponds to \(s(a,b) := 1 - d(a,b)\).
+  Generally speaking, a \emph{similarity function} \(s \colon D^2 \to [0,1]\) comply with following specification, where \(a,b,c \in D\):
+  \begin{enumerate}
+    \item \(s(a,b) = 1\) iff \(a = b\),
+    \item \(s(a,b) = s(b,a)\),
+    \item \(1 + s(a,b) \ge s(a,c) + s(c,b)\).
+  \end{enumerate}
+
+  Thus, a \emph{concept similarity measure} over \elh-concepts consists of a symmetric mapping \(\mathrm{sim} \colon {\mathcal{C}(\mathcal{ELH})}^2 \to [0,1]\).
+
+  How much can be directly embedded in this definition?
+  Which are the properties globally recognised as peculiar to measure concept similarity?
+  A \emph{property}, here, is seen as a formalisation of the expected behaviour of the defined measure.
+  Unsurprisingly, almost all the features, that one can think of as desirable for such a tool, have encountered some criticism in different research fields.
+
+  \paragraph{Symmetry.} This property is one of the most widely recognised as an essential feature in similarity measures for \dl{}s, although it has been contested in fields which are more involved with the study of human reasoning, as seen in~\cite{Tve77}.
+  This is the only property that has been incorporated in the definition of a concept similarity measures in~\cite{LeTu12}.
+  % Indeed, we extend what said so far, by calling \emph{concept similarity measure} a symmetric mapping \(\mathrm{sim} \colon {\mathcal{C}(\mathcal{ELH})}^2 \to [0,1]\), i.e. \(\mathrm{sim}(C,D) = \mathrm{sim}(D,C)\) for all \elh-concepts \(C\), \(D\).
+
+  \paragraph{Triangle inequality.} This is similarly acknowledged as being not an essential feature of human reasoning in the work by Tversky in~\cite{Tve77}, while it is largely accepted in the context of description logics.
+  A context similarity measure \(s\) over the set \(D\) satisfies the triangle inequality if, for all \(a\), \(b\), \(c \in D\),
+  \(s(a,c) \le s(a,b) + s(b,c)\).
+  Strangely enough, almost none of the concept similarity measures found in the literature up until 2012 fulfills fulfills the triangle inequality.
+  The only exception is the Jaccard Index, which is \emph{not} meant to be such a measure.
+  The concept similarity measure \(\simi\), as defined later in this report, does not fulfill this condition.
+
+  Some advances in the direction of defining a measure with this property can be found in~\cite{DAB14}, where a measure respecting the triangle inequality (but missing other properties) had been provided for the \el \dl.
+
+  \paragraph{Concept equivalence.} Equivalence closure and equivalence invariance have found little to no criticism in the literature.
+  Indeed, it is regarded as necessary for two equivalent concepts to be totally similar, and equivalent concepts should share their similarity behaviour toward other concepts.
+  These properties can be formally stated as follows: for all concepts \(C\), \(D\) and \(E\), a concept similarity measure \(s\) is \emph{equivalence invariant} if \(C \equiv D\) implies that \(s(C,E) = s(D,E)\), while it is \emph{equivalence closed} if \(s(C,D) = 1\) is equivalent to \(C \equiv D\).
+
+  \paragraph{Subsumption.} The notion of subsumption can be exploited to obtain an ordering over concepts.
+  This, in turn, can be abstracted to the level of a concept similarity measure. How?
+  Informally, if \(C\), \(D\) and \(E\) are \elh-concepts and \(C \subsume{K} D \subsume{K} E\), \(D\) is closer to \(E\) than \(C\), thus more similar;
+  also, it can be noticed that \(D\) is closer to \(C\) than \(E\).
+  These two insights can be captured as \emph{subsumption preserving} and \emph{reverse subsumption preserving}, where the concept similarity measure \(s\) obeys to the constraints \(s(C,E) \le s(D,E)\) (reverse subs.\ preserving) and \(s(C,D) \ge s(C,E)\) (direct subs.\ preserving).
+
+  \paragraph{Structural dependence} is the last property that had been introduced for concept similarity measures.
+  The idea behind structural dependence is that as the number of common \emph{features} of two concepts increases and the number of uncommon features is constant, then the similarity of these concepts must be increasing.
+  Such distinct features can be thought of as sequence of atoms such that no two atoms in the sequence are in subsumption relation.
+  Indeed, a \csm is \emph{structurally dependent} iff, given a sequence \({(C_k)}_{k=1}^n\) of atoms such that if \(1 \le i,j \le n\) and \(i \ne j\), then \(C_i \not\sqsubseteq C_j\), and defining \(D_n := \sqcap_{i=1}^n C_i \sqcap D\) for a given concept name, then \(\lim_{n \to \infty}s(D_n,E_n) = 1\) holds.

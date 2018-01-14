@@ -1,0 +1,24 @@
+\section{Related work}
+
+  \paragraph{The triangle inequality.} While the majority of similarity measures actually defined do not respect the triangle inequality, for \el-concept descriptions an alternative approach had been developed in~\cite{DAB14}, where concepts in \el normal form are translated into \emph{description trees}; then, the similarity measures in there defined, based on the description trees of the concepts, though being non monotone and not structurally dependent, respect triangle inequality.
+
+  \paragraph{Subsumption preservation.} An exploit of subsumption preservation as a guiding principle of similarity measures had been adopted in~\cite{Se16},
+  as a way to improve evaluation methods, in which subsumption preservation is used to populate query inventories, which are then used to perform the evaluation of word embeddings.
+
+  \paragraph{General TBoxes.} A general treatment of TBoxes in the context of similarity evaluation of relaxed instances of \el-concepts, had been included in a follow-up work, which introduces a treatment for both the general and the unfoldable case (\cite{Ec14}).
+
+  \paragraph{Approximation.} Approximation grades, induced by concept similarity measures and complexity of relative threshold \dl{}s, are discussed in~\cite{Ba17}, where it is shown how \csm{}s for \el description logics can be employed to derive a grade membership function and consequently a threshold \dl.
+
+  \section{Conclusion}
+
+  In this report, the concept similarity measure \(\simi\), which possess some interesting and useful properties, has been introduced.
+
+  Some of its properties have been explored, such as invariance and closure under equivalence or symmetry, and it has been shown how its computation can be considered efficient.
+
+  The path towards the definition of such a measure has been illustrated, with a focus on each single parameter, along with the motivations that justified their usage.
+  Most of the desired properties have been successfully incorporated, while others, like triangle inequality, have been not included, but may be possibly achieved.
+
+  While \elh is a good and widely used \dl, the question is whether a similar measure might be extended to more expressive description logics, without losing its peculiar features.
+  It would also be worthy to investigate the possibility of using general TBoxes, where cycles may break the behaviour of \(\simi\) as it is defined now.
+
+  Finally, it would be interesting to obtain a full implementation of \(\simi\), in order to be able to assess it against other existing measures, as well as to start using it to evaluate concept similarity in ontologies.

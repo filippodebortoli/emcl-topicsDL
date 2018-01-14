@@ -1,0 +1,75 @@
+\section{The \(\mathcal{ELH}\) Description Logic}
+  Hereafter, the reader must assume that the \elh description logic is used where not differently specified.
+  For a detailed treatment of the notions here introduced, the interested reader can go to~\cite{DLbook}.
+
+  The syntax of a \dl makes use of two finite and disjoint sets of \emph{concept names}, \(\mathbf{C}\) and \emph{role names}, \(\mathbf{R}\) to build \emph{concept descriptions}, by means of \emph{concept constructors}.
+  The semantics of such descriptions is defined with an interpretation \(\I = (\DeltaI,\dotI)\), where \(\DeltaI \ne \emptyset\) is the \emph{interpretation domain} and \(\dotI\) is a mapping which assigns subsets of \(\DeltaI{}\) to each concept and binary relations over \(\DeltaI\) to roles.
+  The following table specifies how \emph{\elh-concept descriptions} are syntactically built and semantically interpreted, given an interpretation \(\I = (\DeltaI,\dotI)\), a concept name \(A\), a role name \(r\) and concept descriptions \(C\), \(D\).
+  \begin{center}
+    \begin{tabular}{lcc}
+      \toprule
+      Name & Syntax & Semantics \\
+      \midrule
+      Top & \(\top\) & \(\DeltaI\) \\
+      Concept name & \(A\) & \(A^\I\) \\
+      Conjunction & \(C \sqcap D\) & \(C^\I \cap D^\I\) \\
+      Existential restriction & \(\exists{}r.C\) &
+      \(\lbrace d \in \DeltaI \mid \exists e \in \DeltaI.
+      (d,e) \in r^\I \land e \in C^\I \rbrace\) \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  In the description logic \elh, each concept description can be expressed as a conjunction of other concepts, which are called its \emph{atoms}.
+  % Thanks to this definition, it is possible to express each concept description as a conjunction of \emph{atoms}, which are defined as the elements of the set containing all concept names, \(\top{}\) and all the existential restrictions appearing in \(\mathcal{C}\)(\elh).
+  \begin{definition}[Atoms]
+    Given concept names \(\mathbf{C}\) and role names \(\mathbf{R}\), the set of \emph{\elh-atoms} \(\mathbf{A}\) is defined as
+    \begin{equation}
+      \mathbf{A} := \mathbf{C} \cup \lbrace \top \rbrace \cup \lbrace \exists{}r.D \mid r \in \mathbf{R}, D \in \mathcal{C}(\mathcal{ELH}) \rbrace.
+    \end{equation}
+    Moreover, for \(C = \sqcap_{i=1}^n C_i \in \mathcal{C}(\mathcal{ELH})\), the mapping
+    \(\widehat{C} := \lbrace C_i\rbrace_{i=1}^n\) is defined.
+  \end{definition}
+
+  For the purposes of this work, terminological and role-hierarchical knowledge has been taken into account.
+  A \emph{knowledge base} (\kb) \(\mathcal{K}\) consists of:
+  \begin{description}
+    \item[\emph{TBox} \(\mathcal{T}\):] a finite set of a finite set of \emph{general concept inclusions} (\gci{}s) or \emph{concept definitions};
+  %   \item[\emph{TBox} \(\mathcal{T}\):] a finite set of \emph{general concept inclusions} (\textsc{gci}s) \(C \sqsubseteq D\) or \emph{concept definitions} \(C \equiv D\), where \(C\) is a concept name and \(D\) is a concept description;
+  %   an interpretation \(\I\) is a \emph{model} of \(\mathcal{T}\), \(\I \models \mathcal{T}\), if for all \gci{}s \(C \sqsubseteq D\) in it, \(C^\I \subseteq D^\I\) holds --- similarly, \(C^\I = D^\I\) for concept definitions.
+  % A TBox T is called \emph{unfoldable} iff it is acyclic, consists of concept definitions and primitive concept definitions only and every concept name occurs at most once on a left-hand side of a concept axiom.
+  %   This kind of TBox can be normalised and expanded in an equivalent TBox containing exclusively concept definitions, where only primitive concept names appear on the right hand side of these concept definitions.
+    \item[\emph{RBox} \(\mathcal{R}\):] a finite set of \emph{role inclusion axioms}, hereafter (\ria{}s).
+    % \item[\emph{RBox} \(\mathcal{R}\):] a finite set of \emph{role inclusion axioms} (\ria{}s) \(r \sqsubseteq s\), where \(r\), \(s\) are roles; an interpretation \(\I\) is a model of \(\mathcal{R}\), \(\I \models \mathcal{R}\), if for all \ria{}s \(r \sqsubseteq s\), \(r^\I \subseteq s^\I\) holds.
+  \end{description}
+
+  An interpretation \(\I\) is a \emph{model} for a TBox \(\mathcal{T}\) and a RBox \(\mathcal{R}\) if it satisfies the semantic conditions which are defined in the following table, along with the sintax of \gci{}s, concept definitions and \ria{}s; here, \(A\) is a concept name, \(C\), \(D\) are concept descriptions and \(r\), \(s\) are role names.
+  \begin{center}
+    \begin{tabular}{lcc}
+      \toprule
+      Name & Syntax & Semantics \\
+      \midrule
+      General concept inclusion & \(C \sqsubseteq D\) & \(C^\I \subseteq D^\I\) \\
+      Concept definition & \(A \equiv C\) & \(A^\I = C^\I\) \\
+      Role inclusion axiom & \(r \sqsubseteq s\) & \(r^\I \subseteq s^\I\) \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  A TBox T is called \emph{unfoldable} iff it is acyclic, consists of concept definitions and primitive concept definitions only and every concept name occurs at most once on a left-hand side of a concept axiom.
+  This kind of TBox can be normalised and expanded in an equivalent TBox containing exclusively concept definitions, where only primitive concept names appear on the right hand side of these concept definitions.
+
+  Among the various reasoning services that can be applied over \elh \kb{}s, a useful one is the \emph{subsumption} of concepts: the concept \(C\) is \emph{subsumed} by \(D\) w.r.t.\ a \kb \(\mathcal{K}\) iff \(C^\I \subseteq D^\I\) for all models \(\I\) of \(\mathcal{K}\), in symbols \(C \subsume{K} D\);
+  if \(C\) and \(D\) both subsume each other, then they are \emph{equivalent}, denoted by \(C \equiv_{\mathcal{K}} D\).
+  Similarly, \(r \subsume{R} s\) if \(r^\I \subseteq s^\I\) for all models \(\I\) of \(\mathcal{R}\).
+
+  The computation of a normal form for \el concepts is well described in~\cite{DLbook}; however, the addition of role hierarchy contribution made in~\cite{LeTu12} is the introduction of an \elh-normal form for concept descriptions, which can be computed in polynomial time.
+  Specifically, a choice function \(ch{}\) is devised such that every role is replaced by a picked representative of its \(\equiv_\mathcal{R}\)-equivalence class.
+  \begin{definition}
+    A concept \(C \in \mathcal{C}\)(\elh) is in \emph{\elh-normal form} w.r.t. a RBox \(\mathcal{R}\) if all its subconcepts are closed under the application of the following rules:
+    \begin{align*}
+      A \sqcap \top &\mapsto A & A \sqcap A &\mapsto A \tag{1--2}\\
+      \exists{}r.C^\prime &\mapsto \exists{}ch([r]).C^\prime &
+      \exists{}r.C^\prime \sqcap \exists{}s.D^\prime &\mapsto
+      \exists{}r.C^\prime\,\,\text{if}\,\,r\subsume{R}s, C^\prime \sqsubseteq D^\prime \tag{3--4}
+    \end{align*}
+  \end{definition}
