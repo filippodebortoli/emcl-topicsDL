@@ -1,9 +1,16 @@
 \section{Related work}
 
-  \paragraph{The triangle inequality.} While the majority of similarity measures actually defined do not respect the triangle inequality, for \el-concept descriptions an alternative approach had been developed in~\cite{DAB14}, where concepts in \el normal form are translated into \emph{description trees}; then, the similarity measures in there defined, based on the description trees of the concepts, though being non monotone and not structurally dependent, respect triangle inequality.
+\paragraph{Improving performances.}
+Another \csm for \elh has been investigated in~\cite{simEL}, that outperforms \(\simi\), while maintaining the same similarity properties.
+The approach adopted by the authors involves the usage of the so-called \emph{\elh-concept description trees} as a preprocessing step, and its motivated by the homomorphism-based structural subsumption characterisation.
+Despite looking similar to \(\simi\) in its definition, this \csm takes a bottom-up approach, which allows for rejection of exceeding recursive calls and the reuse of partial solutions to subproblems.
+\(\simi\), with its top-down approach, can potentially have an increasing amount of repeated subroutines which are avoided by this new measure.
 
-  \paragraph{Subsumption preservation.} An exploit of subsumption preservation as a guiding principle of similarity measures had been adopted in~\cite{Se16},
-  as a way to improve evaluation methods, in which subsumption preservation is used to populate query inventories, which are then used to perform the evaluation of word embeddings.
+\paragraph{The triangle inequality.}
+Among the desired properties for a \csm, triangle inequality is the least achieved.
+Can this be obtained, without sacrificing other, more relevant properties?
+In~\cite{TriEq}, the translation of \el-concepts to description trees is also employed. Then, a dissimilarity measure based on \emph{concept relaxations} is defined. A \emph{concept relaxation} can be intuitively understood as a stepwise generalization of a concept.
+This new dissimilarity measure respects the triangle inequality and fulfills all the other desired properties, except for structural dependency.
 
   \paragraph{General TBoxes.} A general treatment of TBoxes in the context of similarity evaluation of relaxed instances of \el-concepts, had been included in a follow-up work, which introduces a treatment for both the general and the unfoldable case (\cite{Ec14}).
 

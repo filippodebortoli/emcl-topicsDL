@@ -1,6 +1,8 @@
-\section{\(\simi{}\): a blueprint for designing CSMs}
+\section{simi: a parametric concept similarity measure}
+\label{sec:simi}
 
-  The concept similarity measure \(\simi\), which is going to be introduced in this chapter, is characterised as a \emph{structural measure}: it is defined according to the syntax of the concepts which it is intended to measure, rather than on their interpretations, as in \emph{interpretation-based} measures.
+In this section, the concept similarity measure (\csm) \(\simi\) is introduced.
+It belongs to the family of \emph{structural} measure, which are those measures defined according to the syntax of the concepts; they differ from \emph{interpretation-based} measures, where the definition relies on the interpretation of concepts (an example is the \emph{Semantic Similarity Measure} defined in~\cite{SemSim}).
 
   \paragraph{Preprocessing.}
   The usage of \(\simi{}\) requires a preliminar processing of the involved knowledge base.
@@ -12,52 +14,54 @@
   This approach can be astracted to the mathematical level, by first defining a \emph{directed similarity} measure --- a generalisation of the subsumption operator ---, to later combine values in both directions by means of another operator.
   The directed similarity measure \(\simi_d\) is going to be derived later in this section; finally, \(\simi\) is going to be defined as \(\simi(C,D) := \simi_d(C,D) \otimes \simi_d(D,C)\).
   The chosen operator should fit certain conditions, which guarantee that the resulting measure complies with the desired properties.
-  This is achieved by considering a \emph{fuzzy connector} \(\otimes \colon {[0,1]}^2 \to [0,1]\), which is an operator that fulfills the following conditions, for all \(x, y \in [0,1]\):
-  \begin{itemize}
-    \item \(x \otimes y = y \otimes x\) --- \emph{commutativity};
-    \item \(x \otimes y = 1\) iff \(x = y = 1\) --- \emph{equivalence closure};
-    \item if \(x \le y\), then \(1 \otimes x \le 1 \otimes y\) --- \emph{weak monotonicity};
-    \item if \(x \otimes y = 0\), then at least one between \(x \ne 0\) or \(y \ne 0\) does not hold.
-  \end{itemize}
+  \begin{definition}[Fuzzy connector]
+    A \emph{fuzzy connector} \(\otimes \colon {[0,1]}^2 \to [0,1]\) is an operator that fulfills the following conditions, for all \(x, y \in [0,1]\):
+    \begin{itemize}
+      \item \(x \otimes y = y \otimes x\) --- \emph{commutativity};
+      \item \(x \otimes y = 1\) iff \(x = y = 1\) --- \emph{equivalence closure};
+      \item if \(x \le y\), then \(1 \otimes x \le 1 \otimes y\) --- \emph{weak monotonicity};
+      \item if \(x \otimes y = 0\), then at least one between \(x \ne 0\) or \(y \ne 0\) does not hold.
+    \end{itemize}
+  \end{definition}
 
-  \begin{example}[Fuzzy connector]
-    The operator \(\otimes \colon {[0,1]}^2 \to [0,1]\) defined as
+  \begin{example}
+    The operator \(\otimes_{ex} \colon {[0,1]}^2 \to [0,1]\) defined as
     \[
-    x \otimes y := \frac{x^2y + y^2x}{2} \qquad x,y \in [0,1]
+    x \otimes_{ex} y := \frac{x^2y + y^2x}{2} \qquad x,y \in [0,1]
     \]
     is a fuzzy operator.
-    The commutativity follows from the commutativity of the sum and the dot product over \([0,1]\). Weak monotonicity holds, because \(x \le y\) implies that \((x \cdot (x+1))/2 \le (y \cdot (y+1))/2\).
+    The commutativity follows from the commutativity of the sum and the multiplication over \([0,1]\). Weak monotonicity holds, because \(x \le y\) implies that \((x \cdot (x+1))/2 \le (y \cdot (y+1))/2\).
 
-    This operator is equivalence closed: assume that \(x \otimes y = 1\) and \(x \ne 1\), \(y \ne 1\), and \(x \le y\) without loss of generality.
+    This operator is equivalence closed: assume that \(x \otimes_{ex} y = 1\) and \(x \ne 1\), \(y \ne 1\), and \(x \le y\) without loss of generality.
     Since \(x^2y = 2 - xy^2\) and \(x^2y \le xy^2\), it follows that \(2-xy^2 \le xy^2\), hence \(xy^2 \ge 1\); however, this is a contradiction to the hypothesis that \(x\), \(y \in [0,1]\), thus at least one between \(x\), \(y\) equals \(1\).
     Suppose that \(y = 1\): then, from \((x^2 + x)/2 = 1\) follows that \(x = 1\); analogously, it can be proved that \(x = 1\) implies \(y = 1\).
+  Finally, from \((x^2y + y^2x)/2 = 0\) it follows that \(x^2y = - y^2x\); then, one can conclude that \(x^2y = y^2x = 0\), hence \(x = 0\) or \(y = 0\).
+\end{example}
+  
+In the \(\simi{}\) framework, the choice of a fuzzy operator provides \emph{symmetry} --- thanks to commutativity ---, \emph{equivalence closure} and \emph{sumbsumption preserving}, which follows from weak monotonicity.
 
-    Finally, it is possible to show that \(x = 0\) or \(y = 0\) when \(x \otimes y = 0\).
-    Indeed, from
-    \[
-    \frac{x^2y + y^2x}{2} = 0 \implies x^2y = - y^2x
-    \]
-    one can conclude that \(x^2y = y^2x = 0\), hence \(x = 0\) or \(y = 0\).
-  \end{example}
-  In the \(\simi{}\) framework, the choice of a fuzzy operator provides \emph{symmetry} --- thanks to commutativity ---, \emph{equivalence closure} and \emph{sumbsumption preserving}, which follows from weak monotonicity.
-
-  \paragraph{Measuring concept names.}
-  The function \(\simi_d\) had been first derived from the function
-  \[
+\paragraph{The need of a primitive measure.}
+The inspiration for \(\simi_d\) comes from the Jaccard Index, described in~\cite{Ja01};
+indeed, the starting point of its derivation is the function
+\begin{equation}
+  \label{simid:start}
   d(C,D) :=
-  \frac{\lvert \widehat{C} \cap \widehat{D}\rvert}{\lvert \widehat{C} \rvert},
-  \]
-  inspired by the Jaccard Index, described in~\cite{Ja01}.
-  However, this function does not take into account existential restrictions.
-  This issue is partially solved by the following rewriting:
-  \[
-    \lvert \widehat{C} \cap \widehat{D}\rvert :=
-    \sum_{C^\prime \in \widehat{C}}\max_{D^\prime \in \widehat{D}}
-    \delta_{C^\prime}^{D^\prime},
-  \]
-  where \(\delta_{C^\prime}^{D^\prime}\) equals \(1\) when the two concepts are equal, \(0\) otherwise. Later, it will be shown how further modifications, made possible by this one, are going to allow incorporating existential restrictions.
-  Another issue arises, with this new definition: it is not possible to distinguish between totally dissimilar and not totally similar concepts, since \(\delta_{C^\prime}^{D^\prime}\) checks syntactical equality of two concepts, assuming that otherwise, they cannot be similar at all.
-  Again, the definition is refined by introducing a measure over concept and role name, such that, given adequate conditions, the desired properties for \(\simi\) are respected. A function \(pm \colon \mathbf{C}^2 \cup \mathbf{R}^2 \to [0,1]\) is a \emph{primitive measure} if:
+\frac{\abs{\atom{C} \cap \atom{D}}}{\abs{\atom{C}}}.
+\end{equation}
+The definition given in~\eqref{simid:start} can be rephrased to take into account the way \(C\) and \(D\) are built as concept descriptions, by making use of their atoms:
+\begin{equation}
+  \label{simid:rewr}
+  \abs{\atom{C} \cap \atom{D}} := \sum_{C^\prime \in \atom{C}}\max_{D^\prime \in \atom{D}}
+                                  \delta_{C^\prime}^{D^\prime},
+\end{equation}
+where \(\delta_{C^\prime}^{D^\prime}\) is \(1\) when \(C^\prime = D^\prime\), \(0\) otherwise.
+Several issues are now rising, with the expression given in~\eqref{simid:rewr}:
+existential restrictions are dealt in a poor way and, in general, this formalisation makes it impossible to distinguish the degree of similarity of two concept descriptions, since \(\delta_{C^\prime}^{D^\prime}\) checks syntactical equality of two concepts, assuming that otherwise, they cannot be similar at all.
+
+To solve these problems, the function \(\delta\) is generalised to a function over concept names and role names, with adequate conditions, that will guarantee some desired properties for \(\simi\).
+\begin{definition}[Primitive measure]
+  \label{dfn:pm}
+  A function \(pm \colon \mathbf{C}^2 \cup \mathbf{R}^2 \to [0,1]\) is a \emph{primitive measure} if:
   \begin{enumerate}
     \item for all concept names \(A\), \(B\), \(pm(A,B) = 1\) iff \(A = B\);
     \item for given role names \(r\), \(s\), \(t\):
@@ -67,8 +71,9 @@
       \item if \(t \subsume{R} s\), then \(pm(r,s) \le pm(r,t)\).
     \end{enumerate}
   \end{enumerate}
-  This definition is sufficient to provide \emph{equivalence closure} and \emph{subsumption preserving} in \(\simi\).
-
+\end{definition}
+The Definition~\ref{dfn:pm} is sufficient to ensure that \(\simi\) will be \emph{equivalence closed} and \emph{subsumption preserving}.
+\todo{Go on from here.}
   To be able to deal with existential restrictions, all the possible cases should be covered:
   \begin{enumerate}
     \item When similarity between concept names is computed, the primitive measure \(pm\) is sufficient, since it handles this case directly.
