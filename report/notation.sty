@@ -1,14 +1,33 @@
-\DeclareMathOperator{\simi}{\mathbf{simi}}
-
+% Description Logics
 \newcommand{\el}{\(\mathcal{EL}\)\xspace}
 \newcommand{\elh}{\(\mathcal{ELH}\)\xspace}
+\newcommand{\celh}{\mathcal{C}(\mathcal{ELH})}
+\newcommand{\A}{\mathbf{A}}
+\newcommand{\Conc}{\mathbf{C}}
+\newcommand{\I}{\mathcal{I}}
+\newcommand{\R}{\mathbf{R}}
+\newcommand{\atom}[1]{\widehat{#1}}
 \newcommand{\DeltaI}{\Delta^\mathcal{I}}
 \newcommand{\dotI}{\cdot^{\mathcal{I}}}
+
+% Acronyms
 \newcommand{\dl}{\textsc{dl}\xspace}
 \newcommand{\kb}{\textsc{kb}\xspace}
 \newcommand{\ria}{\textsc{ria}\xspace}
 \newcommand{\gci}{\textsc{gci}\xspace}
 \newcommand{\csm}{\textsc{csm}\xspace}
 \newcommand{\subsume}[1]{\sqsubseteq_{\mathcal{#1}}}
-\newcommand{\I}{\mathcal{I}}
 
+% Mathematics
+\DeclareMathOperator{\simi}{\mathbf{simi}}
+\DeclareMathOperator{\sme}{\mathbf{sim}}
+\newcommand{\abs}[1]{\lvert #1 \rvert}
+
+\providecommand{\bigsqcap}{%
+  \mathop{%
+    \mathpalette\@updown\bigsqcup
+  }%
+}
+\newcommand*{\@updown}[2]{%
+  \rotatebox[origin=c]{180}{$\m@th#1#2$}%
+}

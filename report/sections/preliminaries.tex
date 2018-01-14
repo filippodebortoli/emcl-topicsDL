@@ -1,34 +1,38 @@
 \section{The \(\mathcal{ELH}\) Description Logic}
-  Hereafter, the reader must assume that the \elh description logic is used where not differently specified.
-  For a detailed treatment of the notions here introduced, the interested reader can go to~\cite{DLbook}.
 
-  The syntax of a \dl makes use of two finite and disjoint sets of \emph{concept names}, \(\mathbf{C}\) and \emph{role names}, \(\mathbf{R}\) to build \emph{concept descriptions}, by means of \emph{concept constructors}.
-  The semantics of such descriptions is defined with an interpretation \(\I = (\DeltaI,\dotI)\), where \(\DeltaI \ne \emptyset\) is the \emph{interpretation domain} and \(\dotI\) is a mapping which assigns subsets of \(\DeltaI{}\) to each concept and binary relations over \(\DeltaI\) to roles.
-  The following table specifies how \emph{\elh-concept descriptions} are syntactically built and semantically interpreted, given an interpretation \(\I = (\DeltaI,\dotI)\), a concept name \(A\), a role name \(r\) and concept descriptions \(C\), \(D\).
-  \begin{center}
-    \begin{tabular}{lcc}
-      \toprule
-      Name & Syntax & Semantics \\
-      \midrule
-      Top & \(\top\) & \(\DeltaI\) \\
-      Concept name & \(A\) & \(A^\I\) \\
-      Conjunction & \(C \sqcap D\) & \(C^\I \cap D^\I\) \\
-      Existential restriction & \(\exists{}r.C\) &
-      \(\lbrace d \in \DeltaI \mid \exists e \in \DeltaI.
-      (d,e) \in r^\I \land e \in C^\I \rbrace\) \\
-      \bottomrule
-    \end{tabular}
-  \end{center}
+Hereafter, the reader must assume that the \elh description logic (\dl) is used where not differently specified.
+For a detailed treatment of the notions here introduced, the interested reader can go to~\cite{DLbook}.
 
-  In the description logic \elh, each concept description can be expressed as a conjunction of other concepts, which are called its \emph{atoms}.
-  % Thanks to this definition, it is possible to express each concept description as a conjunction of \emph{atoms}, which are defined as the elements of the set containing all concept names, \(\top{}\) and all the existential restrictions appearing in \(\mathcal{C}\)(\elh).
-  \begin{definition}[Atoms]
-    Given concept names \(\mathbf{C}\) and role names \(\mathbf{R}\), the set of \emph{\elh-atoms} \(\mathbf{A}\) is defined as
-    \begin{equation}
-      \mathbf{A} := \mathbf{C} \cup \lbrace \top \rbrace \cup \lbrace \exists{}r.D \mid r \in \mathbf{R}, D \in \mathcal{C}(\mathcal{ELH}) \rbrace.
-    \end{equation}
-    Moreover, for \(C = \sqcap_{i=1}^n C_i \in \mathcal{C}(\mathcal{ELH})\), the mapping
-    \(\widehat{C} := \lbrace C_i\rbrace_{i=1}^n\) is defined.
+The syntax of a \dl makes use of two finite and disjoint sets of \emph{concept names}, \(\Conc\) and \emph{role names}, \(\R\) to build \emph{concept descriptions}, by means of \emph{concept constructors}.
+The semantics of such descriptions is defined with an interpretation \(\I = (\DeltaI,\dotI)\), where \(\DeltaI \ne \emptyset\) is the \emph{interpretation domain} and \(\dotI\) is a mapping which assigns subsets of \(\DeltaI{}\) to each concept and binary relations over \(\DeltaI\) to roles.
+The syntax and the semantics of the elements of the set of \emph{\elh-concept descriptions} \(\celh\) are introduced in the Table~\ref{tbl:el}.
+
+\begin{table}
+  \caption{Constructors of the \dl \el, along with their syntax and semantics w.r.t. an interpretation \(\I = (\DeltaI,\dotI)\). Here, \(A \in \Conc\), \(r \in \R\) and \(C, D \in \celh\).}
+  \label{tbl:el}
+  \centering
+  \begin{tabular}{lcc}
+    \toprule
+    Name & Syntax & Semantics \\
+    \midrule
+    Top & \(\top\) & \(\DeltaI\) \\
+    Concept name & \(A\) & \(A^\I\) \\
+    Conjunction & \(C \sqcap D\) & \(C^\I \cap D^\I\)\\
+    Existential restriction & \(\exists{}r.C\) &
+    \(\lbrace d \in \DeltaI \mid \exists e \in \DeltaI.
+    (d,e) \in r^\I \land e \in C^\I \rbrace\) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+In \elh, each concept description can be expressed in conjunctive form.
+This feature will be later exploited to compute the value of \(\simi\) by means of the so-called \emph{atoms} of the concepts there compared.
+\begin{definition}[Atoms]
+  If \(\Conc\) and \(\R\) are the set of concept and role names (resp.), the set \(\A\) of \emph{\elh-atoms} (or \emph{atoms}) is defined as
+  \begin{equation}
+    \A := \Conc \cup \lbrace \top \rbrace \cup \lbrace \exists{}r.D \mid r \in \R, D \in \mathcal{C}(\mathcal{ELH}) \rbrace.
+  \end{equation}
+  Moreover, the mapping \(\widehat{\cdot} \colon \celh \to 2^{\celh}\) is defined as \(\widehat{C} := \lbrace C_i\rbrace_{i=1}^n\), where \(C = \bigsqcap_{i=1}^n C_i \in \celh\).
   \end{definition}
 
   For the purposes of this work, terminological and role-hierarchical knowledge has been taken into account.
