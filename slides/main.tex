@@ -1,3 +1,6 @@
+% arara: xelatex
+% arara: xelatex
+
 %\documentclass[handout]{beamer}
 \documentclass[smaller]{beamer}
 
@@ -5,6 +8,9 @@
 \usepackage{xcolor,xspace}
 \usepackage{appendixnumberbeamer}
 \usepackage{notation}
+\usepackage{textcomp}
+\usepackage{tcolorbox}
+\tcbuselibrary{theorems}
 
 \usetheme[numbering=fraction,%
        block=fill,%
@@ -199,12 +205,12 @@
   New properties are introduced:
   \begin{enumerate}[<+->]
     \propplay
-    \item \(\sqsubseteq\)-preserving if \(C \sqsubseteq D \sqsubseteq E\),
+    \item \alert{\(\subsume{}\)-preserving}: if \(C \subsume{} D \subsume{} E\),
     then \(\sme(C,D) \ge \sme(C,E)\)
-    \item Reverse \(\sqsubseteq\)-preserving 
+    \item \alert{Reverse \(\sqsubseteq\)-preserving}: 
     \(\sme(C,E) \le \sme(D,E)\) if
-    \(C \sqsubseteq D \sqsubseteq E\)
-    \item Structurally dependent
+    \(C \subsume{} D \subsume{} E\)
+    \item \alert{Structurally dependent}: 
     Let \({(C_n)}_n \subseteq \A\) of mutually
     non-subsuming atoms. Then, the concepts
     \(D_n\), \(E_n\) satisfy
@@ -213,17 +219,15 @@
       D_n := \bigsqcap_{i \le n} C_i \sqcap D \qquad
       E_n := \bigsqcap_{i \le n} C_i \sqcap E
     \end{equation*}
-  \end{enumerate}
-  \begin{itemize}[<+->]
-    \item Intuitively, the more \alert{features}
+    Intuitively, the more \alert{features}
     two concepts share, the more similar they are.
-  \end{itemize}
+  \end{enumerate}
 \end{frame}
 
 \section{Deriving simi}
 
 \begin{frame}
-  \frametitle{Starting point for the derivation of \(\simi\)}
+  \frametitle{Starting point for the derivation of \(\simi\): a set measure}
   First, introduce a variation of the \alert{Jaccard Index}:
   \begin{equation}
     d(C,D) := \frac{\abs{\atom{C} \cap \atom{D}}}%
@@ -235,14 +239,17 @@
     \sum_{C^\prime \in \atom{C}}%
       \textcolor{cyan}{\max_{D^\prime \in \atom{D}}}%
       (\textcolor{red}{\delta}_{C^\prime}^{D^\prime})
+    \qquad \textcolor{red}{\delta}_{C^\prime}^{D^\prime}
+    = \begin{cases}
+      1 & C^\prime = D^\prime \\ 0 & C^\prime \ne D^\prime
+    \end{cases}
   \end{equation}
-  Here, \(\textcolor{red}{\delta}_{C^\prime}^{D^\prime} = 1\) if
-  \(C^\prime = D^\prime\), \(0\) otherwise.
   \pause
+  The function \(\textcolor{red}{\delta}\) can be improved:
   \begin{enumerate}[<+->]
-    \item Are different concept names totally dissimilar?
-    \item Does \(\textcolor{red}{\delta}\) say something about roles?
-    \item Does it take into account existential restrictions?
+    \item Treats different concept names as totally dissimilar
+    \item Does not take into account role names
+    \item Cannot properly treat existential restrictions
   \end{enumerate}
 \end{frame}
 
@@ -260,28 +267,25 @@
     for \(A,B \in \Conc\) and \(r,s,t \in \R\).
   \end{definition}
   \begin{itemize}[<+->]
-    \item Rules~\ref{pm:1} and~\ref{pm:2} will 
-    ensure equivalence closure
+    \item \ref{pm:1} +~\ref{pm:2} \textrightarrow Eq. closure
     \item Rule~\ref{pm:4} guarantees
     \(\subsume{}\)-preserving
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{How should one handle existential restrictions?}
-  It is possible to make a case analysis about
-  concepts which similarity one wants to compute.
+  \frametitle{Handling existential restrictions}
+  Case analysis (here, \(A,B \in \Conc\),
+  \(C,D \in \mathcal{C}(\mathcal{ELH})\),
+  \(r \in \R\)):
   \begin{enumerate}[<+->]
     \item \(d(A,B) = \textcolor{red}{pm}(A,B)\)
     \item \(d(\exists{}r.C,D) = d(D,\exists{}r.C) = 0\)
     \item \(d(\exists{}r.C,\exists{}s.D) =
     \textcolor{red}{pm}(r,s) \cdot \left(w + (1-w) \cdot d(C,D)\right)\)
   \end{enumerate}
-  for \(A,B \in \Conc\),
-  \(C,D \in \mathcal{C}(\mathcal{ELH})\),
-  \(r \in \R\).
 
-  Here, \(\textcolor{magenta}{w} \in (0,1)\) is a parameter which allows
+  Parameter \(\textcolor{magenta}{w} \in (0,1)\) allows
   to choose whether roles or concepts account more
   in the similarity measure.
 \end{frame}
@@ -295,21 +299,24 @@
   \end{itemize}
   \pause
   \begin{definition}[Bounded t-conorm]
-    An operator \(\oplus \colon {[0,1]}^2 \to [0,1]\) which is
+    Operator \(\textcolor{cyan}{\oplus} \colon {[0,1]}^2 \to [0,1]\) which is
     commutative, associative and for all
     \(x, y, z, w \in [0,1]\):
     \begin{description}[<+->]
-      \item[Unit element] \(0 \oplus x = x = x \oplus 0\)
-      \item[Monotonicity] if \(x \le z\) and \(y \le w\), then \(x \oplus y \le z \oplus w\)
-      \item[Boundedness] if \(x \oplus y = 1\), then \(x = 1\) or \(y = 1\).
+      \item[Unit element] \(0 \textcolor{cyan}{\oplus} x = x = x \textcolor{cyan}{\oplus} 0\)
+      \item[Monotonicity] if \(x \le z\) and \(y \le w\), then \(x \textcolor{cyan}{\oplus} y \le z \textcolor{cyan}{\oplus} w\)
+      \item[Boundedness] if \(x \textcolor{cyan}{\oplus} y = 1\), then \(x = 1\) or \(y = 1\).
     \end{description}
   \end{definition}
 \end{frame}
 
 \begin{frame}
   \frametitle{Which concepts are more relevant?}
-  One may want to impose that some atoms are
-  more important than others, in measuring similarity!
+  Some atoms \textit{may be} more important than others
+  \begin{itemize}
+    \item Contextualization
+    \item Priority assignment
+  \end{itemize}
   \begin{definition}[Weighting function]
     A \emph{weighting function} is a mapping 
     \(\textcolor{blue}{g} \colon \mathbf{A} \to \mathbb{R}_+\),
@@ -324,17 +331,19 @@
 
 \begin{frame}
   \frametitle{Directed similarity}
-  Finally, a measure of \alert{directed similarity} is defined.
+  \alert{Directed similarity} as a measure of subsumption
+  \begin{itemize}
+    \item if \(\sme_d\) measures directed similarity and \(\sme_d(C,D) = 1\), then \(D \subsume{} C\).
+  \end{itemize}
+  Introducing a measure of directed similarity:
   \begin{equation}
-    \simi_d \colon {\mathcal{C}(\mathcal{ELH})}^2%
-    \to [0,1]
+  \tcboxmath{\simi_d \colon {\mathcal{C}(\mathcal{ELH})}^2 \to [0,1]}
   \end{equation}
   How does \(\simi_d\) behave?
   \begin{equation}
     \simi_d(\top,D) = 1 \qquad D \in \mathcal{C}(\mathcal{ELH})
   \end{equation}
-  This captures the following fact: \(D \sqsubseteq \top\)
-  for all \elh-concepts.
+  Thus, \(D \sqsubseteq \top\) for all \elh-concepts.
   \begin{equation}
     \simi_d(A,B) = \textcolor{red}{pm}(A,B) \qquad A,B \in \Conc
   \end{equation}
@@ -349,8 +358,6 @@
     \left(\textcolor{magenta}{w} + 
     (1-\textcolor{magenta}{w})\simi_d(C,D)\right)
   \end{equation}
-  Existential restrictions are measured in an
-  appropriate way.
 
   The general case, for \(C,D \ne \top\), is
   \begin{equation}
@@ -363,29 +370,29 @@
 
 \begin{frame}
   \frametitle{Fuzzy connectors and simi}
+  \begin{equation}
+    \tcboxmath{\simi(C,D) := \simi_d(C,D) \otimes \simi_d(D,C)}
+  \end{equation}
   Recall that \(C \equiv D\) iff \(C \subsume{} D\)
   and \(D \subsume{} C\).
-  Mathematically, this is reflected on...
   \begin{definition}[Fuzzy connector]
     Commutative operator
     \(\otimes \colon%
     {[0,1]}^2 \to [0,1]\) s.t. for all
     \(x, y \in [0,1]\),
-    \begin{description}[<+->]
-      \item[Equivalence closed]\label{fu:1}
+    \begin{enumerate}[<+->]
+      \item\label{fu:1} \alert{Equivalence closed}:
       \(x \otimes y = 1\) iff \(x = y = 1\)
-      \item[Weak monotonic]\label{fu:2}
+      \item\label{fu:2} \alert{Weak monotonic}:
       if \(x \le y\), then
       \(1 \otimes x \le 1 \otimes y\) 
-      \item[Bounded]\label{fu:3}
+      \item\label{fu:3} \alert{Bounded}:
       if \(x \otimes y = 0\), then
       \(x = 0\) or \(y = 0\)
-      \item[Grounded]\label{fu:4}
+      \item\label{fu:4} \alert{Grounded}:
       \(0 \otimes 0 = 0\)
-    \end{description}
+    \end{enumerate}
   \end{definition}
-  Then, \(\simi\) is defined as
-\(\simi(C,D) := \simi_d(C,D) \otimes \simi_d(D,C)\).
 \end{frame}
 
 \begin{frame}
