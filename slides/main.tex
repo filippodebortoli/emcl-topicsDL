@@ -6,15 +6,10 @@
 \usepackage{appendixnumberbeamer}
 \usepackage{notation}
 
-%\usetheme[numbering=fraction,%
-%       block=fill,%
-%       progressbar=foot%
-%       ]{metropolis} % Use metropolis theme
-\useoutertheme[numbering=fraction]{metropolis}
-\useinnertheme{metropolis}
-\usefonttheme{metropolis}
-\usecolortheme{metropolis}
-%\usecolortheme{spruce}
+\usetheme[numbering=fraction,%
+       block=fill,%
+       progressbar=foot%
+       ]{metropolis} % Use metropolis theme
 \setbeamercovered{transparent}
 \title{A Framework for Semantic-based Similarity Measures for ELH-Concepts}
 \author{Filippo De Bortoli}
@@ -25,14 +20,31 @@
 \maketitle
 
 \begin{frame}
-  \frametitle{Something about the original work\ldots}
-  This presentation originates from:
+  \frametitle{Covered paper}
+  Assigned paper:
   \begin{thebibliography}
     \bibitem{}
      Lehmann, K. \& Turhan, A.
 	   \newblock{\em A Framework for Semantic-Based Similarity Measures for ELH-Concepts}.
 	   \newblock{\bf Logics in Artificial Intelligence - 13th European Conference}, {JELIA} , 2012.
   \end{thebibliography}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Concept similarity measures (\csm)}
+  \begin{itemize}
+    \item Functions that assess similarity between concept descriptions
+    \item Several applications, including:
+    \begin{itemize}
+      \item Bioinformatics: Gene Ontology
+      \note{Bioinformatics: Semantic similarity measures employed to compare genes and proteins wrt to their functions, rather than their sequence similarity.}
+      \item Geoinformatics: \textsc{sim-dl}
+      \note{Geoinformatics: Similarity measures used to improving information retrieval and integration of heterogeneous spatial data sources.}
+      \item Ontology alignment
+      \note{Ontology alignment: similarity measures used to determine corrispondences between concepts in different ontologies.}
+    \end{itemize}
+    \item Based on concept structure or concept semantics
+  \end{itemize}
 \end{frame}
 
 \begin{frame}
