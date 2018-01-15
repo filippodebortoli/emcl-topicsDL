@@ -116,13 +116,29 @@
 
 \begin{frame}
   \frametitle{The \elh{} Description Logic}
-  \elh = \el + \alert{role hierarchy}
-  \begin{itemize}[<+->]
-    \item \alert{Role inclusion axioms} (\ria{}s) \(r \sqsubseteq s\)
-    \item \alert{RBox} as a finite set of \ria{}s
-    \item Given an interpretation \(\I\), \(\I \models r \sqsubseteq s\) iff \(r^\I \subseteq s^\I\)
-  \end{itemize}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \el concept descriptions
+      \begin{itemize}[<+->]
+        \item \(\Conc\) \alert{concept names}, \(\R\) \alert{roles}
+        \item \(C ::= \top \mid A \mid C \sqcap D \mid \exists{}r.C\)
+        \item \alert{TBox} a finite set of axioms \(A \subsume{} C\), \(C \equiv D\)
+        \item \(\I \models C \subsume{} D\) iff \(C^\I \subseteq D^\I\)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \elh = \el + \alert{role hierarchy}
+      \begin{itemize}[<+->]
+        \item \alert{Role inclusion axioms} (\ria{}s) \(r \sqsubseteq s\)
+        \item \alert{RBox} as a finite set of \ria{}s
+        \item Given an interpretation \(\I\), \(\I \models r \sqsubseteq s\) iff \(r^\I \subseteq s^\I\)
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \pause
   \textbf{Knowledge base} \(\mathcal{K} = (\mathcal{T}, \mathcal{R})\), with \(\mathcal{T}\) a TBox, \(\mathcal{R}\) an RBox.
+  
+  \pause
   \textbf{Assumption:} The TBox is \alert{unfoldable}.
   \begin{itemize}[<+->]
     \item Acyclic
@@ -238,14 +254,14 @@
     \abs{\atom{C} \cap \atom{D}} =
     \sum_{C^\prime \in \atom{C}}%
       \textcolor{cyan}{\max_{D^\prime \in \atom{D}}}%
-      (\textcolor{red}{\delta}_{C^\prime}^{D^\prime})
-    \qquad \textcolor{red}{\delta}_{C^\prime}^{D^\prime}
+      (\mydelta_{C^\prime}^{D^\prime})
+    \qquad \mydelta_{C^\prime}^{D^\prime}
     = \begin{cases}
       1 & C^\prime = D^\prime \\ 0 & C^\prime \ne D^\prime
     \end{cases}
   \end{equation}
   \pause
-  The function \(\textcolor{red}{\delta}\) can be improved:
+  The function \(\mydelta\) can be improved:
   \begin{enumerate}[<+->]
     \item Treats different concept names as totally dissimilar
     \item Does not take into account role names
@@ -254,15 +270,15 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Generalizing \(\delta{}\) to a primitive measure for names}
+  \frametitle{Generalizing \(\delta\) to a primitive measure for names}
   \begin{definition}[Primitive measure]
-    Mapping \(\textcolor{red}{pm} \colon {(\Conc \cup \R)}^2 \to [0,1]\)
+    Mapping \(\mypm \colon {(\Conc \cup \R)}^2 \to [0,1]\)
     satisfying:
     \begin{enumerate}[<+->]
-      \item\label{pm:1} \(\textcolor{red}{pm}(A,B) = 1\) iff \(A = B\)
-      \item\label{pm:2} \(\textcolor{red}{pm}(r,s) = 1\) iff \(s \sqsubseteq r\)
-      \item\label{pm:3} if \(r \subsume{R} s\), then \(\textcolor{red}{pm}(r,s) > 0\),
-      \item\label{pm:4} if \(t \subsume{R} s\), then \(\textcolor{red}{pm}(r,s) \le \textcolor{red}{pm}(r,t)\).
+      \item\label{pm:1} \(\mypm(A,B) = 1\) iff \(A = B\)
+      \item\label{pm:2} \(\mypm(r,s) = 1\) iff \(s \subsume{K} r\)
+      \item\label{pm:3} if \(r \subsume{K} s\), then \(\mypm(r,s) > 0\),
+      \item\label{pm:4} if \(t \subsume{K} s\), then \(\mypm(r,s) \le \mypm(r,t)\).
     \end{enumerate}
     for \(A,B \in \Conc\) and \(r,s,t \in \R\).
   \end{definition}
@@ -276,16 +292,16 @@
 \begin{frame}
   \frametitle{Handling existential restrictions}
   Case analysis (here, \(A,B \in \Conc\),
-  \(C,D \in \mathcal{C}(\mathcal{ELH})\),
+  \(C,D \in \celh\),
   \(r \in \R\)):
   \begin{enumerate}[<+->]
-    \item \(d(A,B) = \textcolor{red}{pm}(A,B)\)
+    \item \(d(A,B) = \mypm(A,B)\)
     \item \(d(\exists{}r.C,D) = d(D,\exists{}r.C) = 0\)
     \item \(d(\exists{}r.C,\exists{}s.D) =
-    \textcolor{red}{pm}(r,s) \cdot \left(w + (1-w) \cdot d(C,D)\right)\)
+    \mypm(r,s) \cdot \left(\myw + (1-\myw) \cdot d(C,D)\right)\)
   \end{enumerate}
 
-  Parameter \(\textcolor{magenta}{w} \in (0,1)\) allows
+  Parameter \(\myw \in (0,1)\) allows
   to choose whether roles or concepts account more
   in the similarity measure.
 \end{frame}
@@ -299,14 +315,14 @@
   \end{itemize}
   \pause
   \begin{definition}[Bounded t-conorm]
-    Operator \(\textcolor{cyan}{\oplus} \colon {[0,1]}^2 \to [0,1]\) which is
+    Operator \(\myconorm \colon {[0,1]}^2 \to [0,1]\) which is
     commutative, associative and for all
     \(x, y, z, w \in [0,1]\):
-    \begin{description}[<+->]
-      \item[Unit element] \(0 \textcolor{cyan}{\oplus} x = x = x \textcolor{cyan}{\oplus} 0\)
-      \item[Monotonicity] if \(x \le z\) and \(y \le w\), then \(x \textcolor{cyan}{\oplus} y \le z \textcolor{cyan}{\oplus} w\)
-      \item[Boundedness] if \(x \textcolor{cyan}{\oplus} y = 1\), then \(x = 1\) or \(y = 1\).
-    \end{description}
+    \begin{enumerate}[<+->]
+      \item \alert{Unit element}: \(0 \myconorm x = x = x \myconorm 0\)
+      \item \alert{Monotonicity}: if \(x \le z\) and \(y \le w\), then \(x \myconorm y \le z \myconorm w\)
+      \item \alert{Boundedness}: if \(x \myconorm y = 1\), then \(x = 1\) or \(y = 1\).
+    \end{enumerate}
   \end{definition}
 \end{frame}
 
@@ -319,7 +335,7 @@
   \end{itemize}
   \begin{definition}[Weighting function]
     A \emph{weighting function} is a mapping 
-    \(\textcolor{blue}{g} \colon \mathbf{A} \to \mathbb{R}_+\),
+    \(\myg \colon \mathbf{A} \to \mathbb{R}_+\),
      where \(\mathbf{A}\) is the set of \emph{atoms}.
   \end{definition}
   With this definition, it is possible to partially
@@ -331,39 +347,38 @@
 
 \begin{frame}
   \frametitle{Directed similarity}
-  \alert{Directed similarity} as a measure of subsumption
-  \begin{itemize}
-    \item if \(\sme_d\) measures directed similarity and \(\sme_d(C,D) = 1\), then \(D \subsume{} C\).
-  \end{itemize}
+  \alert{Directed similarity} as a measure of subsumption:
+  if \(\sme_d\) measures directed similarity and \(\sme_d(C,D) = 1\), then \(D \subsume{} C\).
+
   Introducing a measure of directed similarity:
   \begin{equation}
-  \tcboxmath{\simi_d \colon {\mathcal{C}(\mathcal{ELH})}^2 \to [0,1]}
+  \tcboxmath{\simi_d \colon \celh^2 \to [0,1]}
   \end{equation}
   How does \(\simi_d\) behave?
   \begin{equation}
-    \simi_d(\top,D) = 1 \qquad D \in \mathcal{C}(\mathcal{ELH})
+    \simi_d(\top,D) = 1 \qquad D \in \celh
   \end{equation}
   Thus, \(D \sqsubseteq \top\) for all \elh-concepts.
   \begin{equation}
-    \simi_d(A,B) = \textcolor{red}{pm}(A,B) \qquad A,B \in \Conc
+    \simi_d(A,B) = \mypm(A,B) \qquad A,B \in \Conc
   \end{equation}
-  Concept names are measured according to \(\textcolor{red}{pm}\).
+  Concept names are measured according to \(\mypm\).
 \end{frame}
 
 \begin{frame}
   \frametitle{Directed similarity, ctd.}
   \begin{equation}
     \simi_d(\exists{}r.C,\exists{}s.D) =
-    \textcolor{red}{pm}(r,s) \cdot 
-    \left(\textcolor{magenta}{w} + 
-    (1-\textcolor{magenta}{w})\simi_d(C,D)\right)
+    \mypm(r,s) \cdot 
+    \left(\myw + 
+    (1-\myw)\simi_d(C,D)\right)
   \end{equation}
 
   The general case, for \(C,D \ne \top\), is
   \begin{equation}
     \simi_d(C,D) =
-    \frac{\sum_{C^\prime \in \widehat{C}}\left(\textcolor{blue}{g}(C^\prime) \cdot \textcolor{cyan}{\bigoplus_{D^\prime \in \widehat{D}}} \simi_d(C^\prime, D^\prime)\right)}%
-    {\sum_{C^\prime \in \widehat{C}}\textcolor{blue}{g}(C^\prime)}
+    \frac{\sum_{C^\prime \in \atom{C}}\left(\myg(C^\prime) \cdot \textcolor{cyan}{\bigoplus_{D^\prime \in \atom{D}}} \simi_d(C^\prime, D^\prime)\right)}%
+    {\sum_{C^\prime \in \atom{C}}\myg(C^\prime)}
   \end{equation}
   Otherwise, \(\simi_d(C,D) = 0\).
 \end{frame}
@@ -437,13 +452,4 @@
 \begin{frame}[standout]
   Thank you!
 \end{frame}
-%
-%\begin{frame}
-%  \frametitle{Similarity measures and the real world}
-%  \begin{enumerate}
-%    \item \emph{KB exploration}, e.g. discovery of genetic functionality;
-%    \item \emph{Ontology alignment}, i.e. how to match different ontologies.
-%  \end{enumerate}
-%\end{frame}
-%
 \end{document}
