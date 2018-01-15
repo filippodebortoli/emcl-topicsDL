@@ -44,11 +44,11 @@ In the \(\simi{}\) framework, the choice of a fuzzy operator provides \emph{symm
 The inspiration for \(\simi_d\) comes from the Jaccard Index, described in~\cite{Ja01};
 indeed, the starting point of its derivation is the function
 \begin{equation}
-  \label{simid:start}
+  \label{eqn:d}
   d(C,D) :=
 \frac{\abs{\atom{C} \cap \atom{D}}}{\abs{\atom{C}}}.
 \end{equation}
-The definition given in~\eqref{simid:start} can be rephrased to take into account the way \(C\) and \(D\) are built as concept descriptions, by making use of their atoms:
+The definition given in~\eqref{eqn:d} can be rephrased to take into account the way \(C\) and \(D\) are built as concept descriptions, by making use of their atoms:
 \begin{equation}
   \label{simid:rewr}
   \abs{\atom{C} \cap \atom{D}} := \sum_{C^\prime \in \atom{C}}\max_{D^\prime \in \atom{D}}
@@ -73,20 +73,22 @@ To solve these problems, the function \(\delta\) is generalised to a function ov
   \end{enumerate}
 \end{definition}
 The Definition~\ref{dfn:pm} is sufficient to ensure that \(\simi\) will be \emph{equivalence closed} and \emph{subsumption preserving}.
-\todo{Go on from here.}
-  To be able to deal with existential restrictions, all the possible cases should be covered:
-  \begin{enumerate}
-    \item When similarity between concept names is computed, the primitive measure \(pm\) is sufficient, since it handles this case directly.
-    \item If a concept name and an existential restriction are compared, the similarity will be \(0\).
-    \item In the final case, it would be needed two compute the similarity of two existential restrictions, namely \(\exists{}r.C^\star{}\) and \(\exists{}s.D^\star{}\).
-    To achieve this, both role names and concept names appearing should be considered.
-    While the roles are handled by \(pm\), a recursive call of the measure over \(C^\star\), \(D^\star\) is needed.
-    To combine these two values, and to establish how much influence does each one exert on the final measure, an affine combination is introduced, along with a value \(w \in (0,1)\):
-    \[
-    d(\exists{}r.C^\star,\exists{}s.D^\star) :=
-    pm(r,s) \cdot \left(w + (1-w)d(C^\star,D^\star)\right).
-    \]
-  \end{enumerate}
+
+Coming back to the similarity function \(d\) defined in~\eqref{eqn:d}, it is now possible to deal with existential restrictions.
+This is done, according to the following schema:
+
+\begin{enumerate}
+  \item When similarity between concept names is computed, the primitive measure \(pm\) is sufficient, since it handles this case directly.
+  \item If a concept name and an existential restriction are compared, the similarity will be \(0\).
+  \item In the final case, it would be needed two compute the similarity of two existential restrictions, namely \(\exists{}r.C^\star{}\) and \(\exists{}s.D^\star{}\).
+  To achieve this, both role names and concept names appearing should be considered.
+  While the roles are handled by \(pm\), a recursive call of the measure over \(C^\star\), \(D^\star\) is needed.
+  To combine these two values, and to establish how much influence does each one exert on the final measure, an affine combination is introduced, along with a value \(w \in (0,1)\):
+  \[
+  d(\exists{}r.C^\star,\exists{}s.D^\star) :=
+  pm(r,s) \cdot \left(w + (1-w)d(C^\star,D^\star)\right).
+  \]
+\end{enumerate}
   In this way, the case \(d(C^\star,D^\star) = 0\) allows one to understand whether the roles are similar --- then the similarity equals \(w\), otherwise it would be equal to \(0\).
   What is a \emph{good} value for \(w\)? By default, \(w = 0.01\).
   A feasible value for \(w\) may be proportionally decreasing with respect to the natural number \(n\) such that the two concepts \(C\), \(D\) of the form

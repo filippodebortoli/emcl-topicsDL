@@ -1,5 +1,5 @@
 %\documentclass[handout]{beamer}
-\documentclass{beamer}
+\documentclass[smaller]{beamer}
 
 \usepackage{microtype}
 \usepackage{xcolor,xspace}
@@ -11,6 +11,11 @@
        progressbar=foot%
        ]{metropolis} % Use metropolis theme
 \setbeamercovered{transparent}
+
+\newcounter{simprop}
+\newcommand{\propstop}{\setcounter{simprop}{\theenumi}}
+\newcommand{\propplay}{\setcounter{enumi}{\thesimprop}}
+
 \title{A Framework for Semantic-based Similarity Measures for ELH-Concepts}
 \author{Filippo De Bortoli}
 \institute{European Master's Program in Computational Logic, TU Dresden}
@@ -51,31 +56,32 @@
   \frametitle{Motivation for a new concept similarity measure}
   
   \begin{columns}
-    \begin{column}{0.61\textwidth}
+    \begin{column}{0.55\textwidth}
       \begin{enumerate}[<+->]
-        \item Would you claim that \(Mother\) and
+        \item Are \(Mother\) and
         \(Woman \sqcap \exists{}parentOf.Person\) are similar?
         \item Are \(Mother\) and \(Father\) as similar
         as \(Woman \sqcap Parent\) and \(Father\) are?
       \end{enumerate}
-      \begin{itemize}[<+->]
-        \item Equivalence \alert{invariance} and \alert{closure}
-        of concept similarity measures (\csm)
-        recognised as important properties\ldots
-        \item \ldots yet, many existing
-        \csm{}s fail to accomplish them!
-        %\footnote{Despite claiming those properties to hold.}
-      \end{itemize}
     \end{column}
-    \begin{column}{0.39\textwidth}
-      \begin{align*}
-        Parent &\equiv \exists{}parentOf.Person \\
-        Mother &\equiv Woman \sqcap Parent \\
-        Woman &\sqsubseteq Person \\
-        &\vdots         
-      \end{align*}
+    \begin{column}{0.45\textwidth}
+        \begin{align*}
+          Woman &\subsume{} Person \\
+          Man &\subsume{} Person \\
+          Parent &\equiv \exists{}parentOf.Person \\
+          Mother &\equiv Woman \sqcap Parent \\
+          Father &\equiv Man \sqcap Parent \\
+          &\vdots
+        \end{align*}
     \end{column}
   \end{columns}
+  \begin{itemize}[<+->]
+    \item Equivalence \alert{invariance} and \alert{closure}
+    of concept similarity measures (\csm)
+    recognised as important properties\ldots
+    \item \ldots yet, many existing
+    \csm{}s fail to accomplish them!
+  \end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -88,9 +94,9 @@
     \end{enumerate}
     \item Similarity in Description Logic
     \begin{enumerate}
-      \item Properties of a similarity measure
+      \item Properties of similarity measures
     \end{enumerate}
-    \item A new concept similarity measure
+    \item The concept similarity measure \(\simi\)
     \begin{enumerate}
       \item Derivation of \(\simi\)
       \item Definition of \(\simi\)
@@ -108,12 +114,13 @@
   \begin{itemize}[<+->]
     \item \alert{Role inclusion axioms} (\ria{}s) \(r \sqsubseteq s\)
     \item \alert{RBox} as a finite set of \ria{}s
-    \item \(\I \models r \sqsubseteq s\) iff \(r^\I \subseteq s^\I\)
+    \item Given an interpretation \(\I\), \(\I \models r \sqsubseteq s\) iff \(r^\I \subseteq s^\I\)
   \end{itemize}
+  \textbf{Knowledge base} \(\mathcal{K} = (\mathcal{T}, \mathcal{R})\), with \(\mathcal{T}\) a TBox, \(\mathcal{R}\) an RBox.
   \textbf{Assumption:} The TBox is \alert{unfoldable}.
   \begin{itemize}[<+->]
-    \item It is acyclic
-    \item It only contains axioms of the form
+    \item Acyclic
+    \item Only contains axioms of the form
     \(A \sqsubseteq C\) or \(A \equiv C\), with \(A \in \Conc\)
     \item Each concept name at most once in LHS of an axiom.
     \item This allows to operate without the TBox!
@@ -128,10 +135,10 @@
     \atom{C} := \lbrace C_1,\dotsc,C_n \rbrace
   \)
   as the set of its \alert{atoms}.
-  Intuitively, atoms are concepts not in
-  conjunction form.
+  \note{Intuitively, atoms are concepts not in
+  conjunction form.}
 
-  \elh-concepts admit an essentially unique \alert{normal form}!
+  \elh-concepts admit a unique (mod. commutativity) \alert{normal form}!
 
   This is obtained by applying exhaustively:
   \begin{itemize}[<+->]
@@ -149,7 +156,7 @@
 \end{frame}
 
 
-\section{What is similarity?}
+\section{Similarity measures}
 
 \begin{frame}
   \frametitle{Metric spaces and similarity}
@@ -166,39 +173,38 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Properties of similarity}
-  What are possible properties for a
-  \alert{similarity measure} \(\sme\)?
-
-  In the following, \(C,D,E\) are \elh-concepts.
-
-  Which properties were already in the literature?
-
-  \begin{description}[<+->]
-    \item[Symmetric] \(\sme(C,D) = \sme(D,C)\)
-    \item[Triangle inequality]
+  \frametitle{Properties of \csm{}s}
+  Desired properties for a 
+  \alert{similarity measure} \(\sme\) (where \(C,D,E\) are \elh-concepts):
+  \begin{enumerate}[<+->]
+    \item \alert{Symmetry}: \(\sme(C,D) = \sme(D,C)\)
+    \item \alert{Triangle inequality}:
       \(1 + \sme(D,E) \ge \sme(D,C) + \sme(C,E)\)
-    \item[Equivalence invariant]
+    \item\label{equ:1} \alert{Equivalence closed}:
+      \(\sme(C,D) = 1\) iff \(C \equiv D\)
+    \item\label{equ:2} \alert{Equivalence invariant}:
       if \(C \equiv D\), then
       \(\sme(C,E) = \sme(D,E)\)
-    \item[Equivalence closed]
-      \(\sme(C,D) = 1\) iff \(C \equiv D\)
-  \end{description}
-  The last two properties are the one that should
-  be guaranteed!
+    \propstop
+  \end{enumerate}
+  Properties~\ref{equ:1} and~\ref{equ:2} are the most desirable one!
+  \begin{itemize}
+    \item Equivalent concepts should be similar (property~\ref{equ:1})
+    \item They should similarly relate to other concepts (property~\ref{equ:2})
+  \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Properties of similarity, ctd.}
-
-  Which properties had been newly introduced?
-  \begin{description}[<+->]
-    \item[\(\sqsubseteq\)-preserving] if \(C \sqsubseteq D \sqsubseteq E\),
+  New properties are introduced:
+  \begin{enumerate}[<+->]
+    \propplay
+    \item \(\sqsubseteq\)-preserving if \(C \sqsubseteq D \sqsubseteq E\),
     then \(\sme(C,D) \ge \sme(C,E)\)
-    \item[Reverse \(\sqsubseteq\)-preserving]
+    \item Reverse \(\sqsubseteq\)-preserving 
     \(\sme(C,E) \le \sme(D,E)\) if
     \(C \sqsubseteq D \sqsubseteq E\)
-    \item[Structurally dependent]
+    \item Structurally dependent
     Let \({(C_n)}_n \subseteq \A\) of mutually
     non-subsuming atoms. Then, the concepts
     \(D_n\), \(E_n\) satisfy
@@ -207,7 +213,7 @@
       D_n := \bigsqcap_{i \le n} C_i \sqcap D \qquad
       E_n := \bigsqcap_{i \le n} C_i \sqcap E
     \end{equation*}
-  \end{description}
+  \end{enumerate}
   \begin{itemize}[<+->]
     \item Intuitively, the more \alert{features}
     two concepts share, the more similar they are.

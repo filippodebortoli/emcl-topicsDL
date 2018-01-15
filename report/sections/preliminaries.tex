@@ -72,7 +72,7 @@ Similarly, \(r \subsume{K} s\) if \(r^\I \subseteq s^\I\) for all models \(\I\) 
 A normal form for \el concepts is well described in~\cite{DLbook}; in~\cite{LeTu12}, this is extended to take into account the content of the RBox.
 Such a normal form can still be computed in polynomial time.
 Specifically, a choice function \(ch{}\) is devised such that every role is replaced by a picked representative of its \(\equiv_\mathcal{R}\)-equivalence class.
-\begin{definition}
+\begin{definition}[\elh-normal form]
   A concept \(C \in \mathcal{C}\)(\elh) is in \emph{\elh-normal form} w.r.t. a RBox \(\mathcal{R}\) if all its subconcepts are closed under the application of the following rules:
   \begin{align*}
     A \sqcap \top &\mapsto A & A \sqcap A &\mapsto A \tag{1--2}\\
