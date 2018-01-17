@@ -1,28 +1,28 @@
 % arara: xelatex
 % arara: xelatex
+%\documentclass[handout,smaller]{beamer}
+\documentclass[smaller, dvipsnames]{beamer}
+  \usetheme[numbering=fraction,%
+       block=fill,%
+       ]{metropolis} % Use metropolis theme
+\setbeamercovered{transparent}
 
-%\documentclass[handout]{beamer}
-\documentclass[smaller]{beamer}
+\usepackage{tcolorbox}
+\tcbuselibrary{theorems}
+\usepackage{mathspec}
+\setmathfont(Digits,Latin){Fira Sans Light}
 
 \usepackage{microtype}
 \usepackage{xcolor,xspace}
-\usepackage{appendixnumberbeamer}
 \usepackage{notation}
 \usepackage{textcomp}
-\usepackage{tcolorbox}
-\tcbuselibrary{theorems}
-
-\usetheme[numbering=fraction,%
-       block=fill,%
-       progressbar=foot%
-       ]{metropolis} % Use metropolis theme
-\setbeamercovered{transparent}
+\usepackage{fontawesome}
 
 \newcounter{simprop}
 \newcommand{\propstop}{\setcounter{simprop}{\theenumi}}
 \newcommand{\propplay}{\setcounter{enumi}{\thesimprop}}
 
-\title{A Framework for Semantic-based Similarity Measures for ELH-Concepts}
+\title{A Framework for Semantic-based Similarity Measures for \elh-Concepts}
 \author{Filippo De Bortoli}
 \institute{European Master's Program in Computational Logic, TU Dresden}
 \date{January 18th, 2018}
@@ -36,7 +36,7 @@
   \begin{thebibliography}
     \bibitem{}
      Lehmann, K. \& Turhan, A.
-	   \newblock{\em A Framework for Semantic-Based Similarity Measures for ELH-Concepts}.
+	   \newblock{\em A Framework for Semantic-Based Similarity Measures for \elh-Concepts}.
 	   \newblock{\bf Logics in Artificial Intelligence - 13th European Conference}, {JELIA} , 2012.
   \end{thebibliography}
 \end{frame}
@@ -45,7 +45,10 @@
   \frametitle{Concept similarity measures (\csm)}
   \begin{itemize}
     \item Functions that assess similarity between concept descriptions
-    \item Several applications, including:
+    \begin{itemize}
+      \item From 0 (totally dissimilar) to 1 (similar)
+    \end{itemize}
+    \item Several application areas:
     \begin{itemize}
       \item Bioinformatics: Gene Ontology
       \note{Bioinformatics: Semantic similarity measures employed to compare genes and proteins wrt to their functions, rather than their sequence similarity.}
@@ -54,44 +57,46 @@
       \item Ontology alignment
       \note{Ontology alignment: similarity measures used to determine corrispondences between concepts in different ontologies.}
     \end{itemize}
-    \item Based on concept structure or concept semantics
+    \item Different kinds of \csm{}s:
+    \begin{itemize}
+      \item \alert{Structural} measures: \textsc{sim-dl}, adaptations of Jaccard Index, \ldots
+      \item \alert{Interpretation-based} measures: Semantic Similarity measure, \ldots
+    \end{itemize}
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Motivation for a new concept similarity measure}
-  
   \begin{columns}
     \begin{column}{0.55\textwidth}
-      \begin{enumerate}[<+->]
-        \item Are \(Mother\) and
-        \(Woman \sqcap \exists{}parentOf.Person\) are similar?
+      \begin{enumerate}
+        \item Are \(Mother\) and \(\text{\faFemale}\, \sqcap \exists{}parentOf.\text{\faUser}\) similar?
         \item Are \(Mother\) and \(Father\) as similar
-        as \(Woman \sqcap Parent\) and \(Father\) are?
+        as \(\text{\faFemale}\, \sqcap Parent\) and \(Father\) are?
       \end{enumerate}
     \end{column}
     \begin{column}{0.45\textwidth}
         \begin{align*}
-          Woman &\subsume{} Person \\
-          Man &\subsume{} Person \\
-          Parent &\equiv \exists{}parentOf.Person \\
-          Mother &\equiv Woman \sqcap Parent \\
-          Father &\equiv Man \sqcap Parent \\
+          \text{\faFemale}\, &\subsume{} \text{\faUser} \\
+          \text{\faMale}\, &\subsume{} \text{\faUser} \\
+          Parent &\equiv \exists{}parentOf.\text{\faUser} \\
+          Mother &\equiv \text{\faFemale}\, \sqcap Parent \\
+          Father &\equiv \text{\faMale}\, \sqcap Parent \\
           &\vdots
         \end{align*}
     \end{column}
   \end{columns}
+  \onslide<+->
   \begin{itemize}[<+->]
     \item Equivalence \alert{invariance} and \alert{closure}
     of concept similarity measures (\csm)
-    recognised as important properties\ldots
-    \item \ldots yet, many existing
-    \csm{}s fail to accomplish them!
+    recognised as important properties.
+    \item Many existing \csm{}s do \alert{not} satisfy these properties.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Overview}
+  \frametitle{Outline}
   \begin{enumerate}
     \item Preliminaries
     \begin{enumerate}
@@ -108,7 +113,6 @@
       \item Definition of \(\simi\)
       \item Properties of \(\simi\)
     \end{enumerate}
-    \item Conclusion
   \end{enumerate}
 \end{frame}
 
@@ -116,65 +120,72 @@
 
 \begin{frame}
   \frametitle{The \elh{} Description Logic}
-  \begin{columns}
-    \begin{column}{0.5\textwidth}
-      \el concept descriptions
-      \begin{itemize}[<+->]
-        \item \(\Conc\) \alert{concept names}, \(\R\) \alert{roles}
-        \item \(C ::= \top \mid A \mid C \sqcap D \mid \exists{}r.C\)
-        \item \alert{TBox} a finite set of axioms \(A \subsume{} C\), \(C \equiv D\)
-        \item \(\I \models C \subsume{} D\) iff \(C^\I \subseteq D^\I\)
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \elh = \el + \alert{role hierarchy}
-      \begin{itemize}[<+->]
-        \item \alert{Role inclusion axioms} (\ria{}s) \(r \sqsubseteq s\)
-        \item \alert{RBox} as a finite set of \ria{}s
-        \item Given an interpretation \(\I\), \(\I \models r \sqsubseteq s\) iff \(r^\I \subseteq s^\I\)
-      \end{itemize}
-    \end{column}
-  \end{columns}
-  \pause
-  \textbf{Knowledge base} \(\mathcal{K} = (\mathcal{T}, \mathcal{R})\), with \(\mathcal{T}\) a TBox, \(\mathcal{R}\) an RBox.
+  \begin{block}{\elh}
+    \begin{itemize}
+      \item Concept names \(\Conc\), role names \(\R\), \elh-concepts \(\celh\)
+      \item \alert{Concept constructors}: \(C ::= \top \mid A \mid C \sqcap D \mid \exists{}r.C \quad A \in \Conc\)
+      \item (primitive) \alert{concept definitions}: \(A \subsume{} C\), \(A \equiv C\) in a \alert{TBox} \(\mathcal{T}\)
+      %\item general concept inclusions: \(C \subsume{} D\) in \(\mathcal{T}\) as well
+      \item \alert{role inclusion axioms}: \(r \subsume{} s\) in a \alert{RBox} \(\mathcal{R}\)
+    \end{itemize}
+  \end{block}
+  %\begin{columns}
+  %  \begin{column}{0.5\textwidth}
+  %    \el concept descriptions
+  %    \begin{itemize}[<+->]
+  %      \item \(\Conc\) \alert{concept names}, \(\R\) \alert{roles}
+  %      \item 
+  %      \item \alert{TBox} a finite set of axioms \(A \subsume{} C\), \(C \equiv D\)
+  %      \item \(\I \models C \subsume{} D\) iff \(C^\I \subseteq D^\I\)
+  %    \end{itemize}
+  %  \end{column}
+  %  \begin{column}{0.5\textwidth}
+  %    \elh = \el + \alert{role hierarchy}
+  %    \begin{itemize}[<+->]
+  %      \item \alert{Role inclusion axioms} (\ria{}s) \(r \sqsubseteq s\)
+  %      \item \alert{RBox} as a finite set of \ria{}s
+  %      \item Given an interpretation \(\I\), \(\I \models r \sqsubseteq s\) iff \(r^\I \subseteq s^\I\)
+  %    \end{itemize}
+  %  \end{column}
+  %\end{columns}
+  \onslide<+->
+  \textbf{Knowledge base}: \(\mathcal{K} = (\mathcal{T}, \mathcal{R})\), with \(\mathcal{T}\) a TBox, \(\mathcal{R}\) an RBox.
   
-  \pause
-  \textbf{Assumption:} The TBox is \alert{unfoldable}.
-  \begin{itemize}[<+->]
-    \item Acyclic
-    \item Only contains axioms of the form
-    \(A \sqsubseteq C\) or \(A \equiv C\), with \(A \in \Conc\)
-    \item Each concept name at most once in LHS of an axiom.
-    \item This allows to operate without the TBox!
+  \onslide<+->
+  \textbf{Assumption:} The TBox is \alert{unfoldable},
+  i.e. \textbf{acyclic} and:
+  \begin{itemize}
+    \item Only contains (primitive) concept definitions
+    \item Each concept name at most once in LHS of a definition.
   \end{itemize}
+  Unfoldable TBoxes can be \alert{normalized} and input concepts can be expanded, making it possible to work without the TBox.
 \end{frame}
 
 \begin{frame}
   \frametitle{Concepts, atoms and normal form}
-  For a \elh-concept in conjunction form
-  \(C = \bigsqcap_{i \le n} C_i\), define
+  For \(C = \bigsqcap_{i \le n} C_i \in \celh\),
+  the set of its \alert{atoms} is
   \(
     \atom{C} := \lbrace C_1,\dotsc,C_n \rbrace
-  \)
-  as the set of its \alert{atoms}.
+  \).
   \note{Intuitively, atoms are concepts not in
   conjunction form.}
-
-  \elh-concepts admit a unique (mod. commutativity) \alert{normal form}!
-
-  This is obtained by applying exhaustively:
-  \begin{itemize}[<+->]
+  \onslide<+->
+  \elh-concepts admit a unique (mod. commutativity) \alert{normal form}, obtained by applying exhaustively:
+  \begin{itemize}
     \item \(A \sqcap \top \mapsto A\)
     \item \(A \sqcap A \mapsto A\)
     \item \(\exists{}r.C^\prime \mapsto%
-           \exists{}ch([r]).C^\prime\),
-           where \(ch\) is a role choice function
+           \exists{}\textcolor{purple}{ch}([r]).C^\prime\),
+           where \(\textcolor{purple}{ch}\) is a role choice function
     \item \(\exists{}r.C^\prime \sqcap%
            \exists{}s.D^\prime \mapsto%
           \exists{}r.C^\prime\) if
           \(r\subsume{K}s\) and
           \(C^\prime \subsume{K} D^\prime\)
   \end{itemize}
+  \onslide<+->
+  \elh-NF incorporates the knowledge from \(\mathcal{R}\) and ensures equivalence \alert{invariance}, since equivalent concepts have the same normal form.
 \end{frame}
 
 
@@ -182,22 +193,26 @@
 
 \begin{frame}
   \frametitle{Metric spaces and similarity}
-  \begin{enumerate}
-    \item Metric spaces arise in many practical
-    applications!
-    \item Metrics as \alert{dissimilarity} measures!
-    \item Given a metric \(d\) over a normalized space,
+  \begin{enumerate}[<+->]
+    \item \alert{Metric spaces} arise in many application areas
+    \begin{itemize}
+      \item \textsc{Gis}, computer vision, biology,\ldots
+    \end{itemize}
+    \item Metrics over normalized spaces as \alert{dissimilarity} measures!
+    \begin{itemize}
+      \item \(d(A,B) = 0\) iff \(A = B\)
+      \item Wanted: \(s(A,B) = 1\) iff \(A \equiv B\)
+    \end{itemize}
+    \item Given metric \(d\) over a normalized space,
     the corresponding \alert{similarity} measure is
-    \(
-      s(a,b) := 1 - d(a,b)
-    \).
+    \(s(a,b) := 1 - d(a,b)\).
   \end{enumerate}  
 \end{frame}
 
 \begin{frame}
   \frametitle{Properties of \csm{}s}
   Desired properties for a 
-  \alert{similarity measure} \(\sme\) (where \(C,D,E\) are \elh-concepts):
+  \alert{similarity measure} \(\sme\) (\(C,D,E \in \celh\)):
   \begin{enumerate}[<+->]
     \item \alert{Symmetry}: \(\sme(C,D) = \sme(D,C)\)
     \item \alert{Triangle inequality}:
@@ -209,7 +224,8 @@
       \(\sme(C,E) = \sme(D,E)\)
     \propstop
   \end{enumerate}
-  Properties~\ref{equ:1} and~\ref{equ:2} are the most desirable one!
+  \onslide<+->
+  Properties~\ref{equ:1} and~\ref{equ:2} are useful:
   \begin{itemize}
     \item Equivalent concepts should be similar (property~\ref{equ:1})
     \item They should similarly relate to other concepts (property~\ref{equ:2})
@@ -227,8 +243,10 @@
     \(\sme(C,E) \le \sme(D,E)\) if
     \(C \subsume{} D \subsume{} E\)
     \item \alert{Structurally dependent}: 
-    Let \({(C_n)}_n \subseteq \A\) of mutually
-    non-subsuming atoms. Then, the concepts
+    Let \({(C_n)}_n \subseteq \A\) s.t. for \(i \ne j\),
+    \(C_i \not\sqsubseteq C_j\).
+    
+    Then, the concepts
     \(D_n\), \(E_n\) satisfy
     \(\lim_{n \to \infty} \sme(D_n,E_n) = 1\)
     \begin{equation*}
@@ -243,12 +261,61 @@
 \section{Deriving simi}
 
 \begin{frame}
-  \frametitle{Starting point for the derivation of \(\simi\): a set measure}
+  \frametitle{An intuition for simi}
+  \textbf{Recall:} \(C \equiv D\) iff \(C \subsume{} D\) and \(D \subsume{} C\).
+
+  \onslide<+->  
+  \alert{Idea} for the definition process:
+  \begin{enumerate}[<+->]
+    \item Define a measure \(\simi_d\) of \alert{directed similarity}
+    \item Ensure that \(\simi_d(C,D) = 1\) iff \(D \subsume{} C\)
+    \item Combine \(\simi_d(C,D)\) and \(\simi_d(D,C)\) in a suitable way
+  \end{enumerate}
+  \onslide<+->
+  \begin{definition}[Fuzzy connector]
+    Commutative operator
+    \(\otimes \colon%
+    {[0,1]}^2 \to [0,1]\) s.t. for all
+    \(x, y \in [0,1]\),
+    \begin{enumerate}%[<+->]
+      \item\label{fu:1} \alert{Equivalence closed}:
+      \(x \otimes y = 1\) iff \(x = y = 1\)
+      \item\label{fu:2} \alert{Weak monotonic}:
+      if \(x \le y\), then
+      \(1 \otimes x \le 1 \otimes y\) 
+      \item\label{fu:3} \alert{Bounded}:
+      if \(x \otimes y = 0\), then
+      \(x = 0\) or \(y = 0\)
+      \item\label{fu:4} \alert{Grounded}:
+      \(0 \otimes 0 = 0\)
+    \end{enumerate}
+  \end{definition}
+\end{frame}
+
+\begin{frame}
+  \frametitle{simi and equivalence closure}
+  \begin{equation}
+    \label{eqn:simi}
+    \tcboxmath{\simi(C,D) := \simi_d(C,D) \otimes \simi_d(D,C)}
+  \end{equation}
+  \onslide<+->
+  \begin{itemize}[<+->]
+    \item Commutativity of \(\otimes\) \textrightarrow{} \alert{symmetry} of \(\simi\)
+    \item \(\simi(C,D) = 1\) iff
+          \(\simi_d(C,D) = \simi_d(D,C) = 1\)
+    \item Thus, \(\simi(C,D) = 1\) iff \(C \subsume{} D\) and \(D \subsume{} C\)
+    \item As a consequence of~\eqref{eqn:simi} \(\simi\) is \alert{equivalence closed}! 
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Starting point for the derivation of \(\simi_d\): a set measure}
   First, introduce a variation of the \alert{Jaccard Index}:
   \begin{equation}
     d(C,D) := \frac{\abs{\atom{C} \cap \atom{D}}}%
                    {\abs{\atom{C}}}
   \end{equation}
+  \onslide<+->
   What about the numerator?
   \begin{equation}
     \abs{\atom{C} \cap \atom{D}} =
@@ -260,12 +327,14 @@
       1 & C^\prime = D^\prime \\ 0 & C^\prime \ne D^\prime
     \end{cases}
   \end{equation}
-  \pause
+  \onslide<+->
   The function \(\mydelta\) can be improved:
+  %\onslide<+->
   \begin{enumerate}[<+->]
-    \item Treats different concept names as totally dissimilar
-    \item Does not take into account role names
-    \item Cannot properly treat existential restrictions
+    \item it treats different concept names as totally dissimilar 
+    \item it ignores the structure of the atoms
+    %\item Does not take into account role names
+    %\item Cannot properly treat existential restrictions
   \end{enumerate}
 \end{frame}
 
@@ -274,54 +343,69 @@
   \begin{definition}[Primitive measure]
     Mapping \(\mypm \colon {(\Conc \cup \R)}^2 \to [0,1]\)
     satisfying:
-    \begin{enumerate}[<+->]
-      \item\label{pm:1} \(\mypm(A,B) = 1\) iff \(A = B\)
-      \item\label{pm:2} \(\mypm(r,s) = 1\) iff \(s \subsume{K} r\)
+    \begin{enumerate}
+      \item\label{pm:1} \(\mypm(A,B) = 1\) iff \(A = B\), where \(A,B \in \Conc\);
+      \item\label{pm:2} \(\mypm(r,s) = 1\) iff \(s \subsume{K} r\),
       \item\label{pm:3} if \(r \subsume{K} s\), then \(\mypm(r,s) > 0\),
-      \item\label{pm:4} if \(t \subsume{K} s\), then \(\mypm(r,s) \le \mypm(r,t)\).
+      \item\label{pm:4} if \(t \subsume{K} s\), then \(\mypm(r,s) \le \mypm(r,t)\), for \(r,s,t \in \R\).
     \end{enumerate}
-    for \(A,B \in \Conc\) and \(r,s,t \in \R\).
   \end{definition}
-  \begin{itemize}[<+->]
-    \item \ref{pm:1} +~\ref{pm:2} \textrightarrow Eq. closure
-    \item Rule~\ref{pm:4} guarantees
-    \(\subsume{}\)-preserving
+  \onslide<+->
+  \begin{itemize}%[<+->]
+    \item In conditions~\ref{pm:1} and~\ref{pm:2}, step toward \alert{equivalence closure}
+    %\item Rule~\ref{pm:4} needed to ensure
+    %\(\subsume{}\)-preserving
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Handling existential restrictions}
-  Case analysis (here, \(A,B \in \Conc\),
-  \(C,D \in \celh\),
-  \(r \in \R\)):
-  \begin{enumerate}[<+->]
-    \item \(d(A,B) = \mypm(A,B)\)
+  Case analysis (for all \(C,D \in \celh\), \(r,s \in \R\)):
+  \begin{enumerate}
+    \item \(d(A,B) = \mypm(A,B)\) for \(A,B \in \Conc\)
     \item \(d(\exists{}r.C,D) = d(D,\exists{}r.C) = 0\)
     \item \(d(\exists{}r.C,\exists{}s.D) =
     \mypm(r,s) \cdot \left(\myw + (1-\myw) \cdot d(C,D)\right)\)
   \end{enumerate}
+  %\onslide<+->
+  \(\myw \in (0,1)\): chooses if roles or concepts accounts more.
 
-  Parameter \(\myw \in (0,1)\) allows
-  to choose whether roles or concepts account more
-  in the similarity measure.
+  \pause
+  In \(\simi_d\), the cases where only \alert{atoms} are defined as:
+  \begin{tcolorbox}
+    \begin{enumerate}
+      \item \(\simi_d(A,B) := \mypm(A,B)\)
+      \item \(\simi_d(\exists{}r.C,D) = \simi_d(D,\exists{}r.C) = 0\) for \(D \ne \top\)
+      \item \(\simi_d(\exists{}r.C,\exists{}s.D) =
+      \mypm(r,s) \cdot \left(\myw + (1-\myw) \cdot \simi_d(C,D)\right)\)
+    \end{enumerate}
+  \end{tcolorbox}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Does ``max'' perform well w.r.t. similarity?}
-  The \(\textcolor{cyan}{\max}\) operator is the weakest \alert{t-conorm}.
-  \begin{itemize}
-    \item It is possible to make better use of
-          the given information!
-  \end{itemize}
+  \frametitle{Using more knowledge}
+  Assume \(\mypm(A,B) = \tfrac{1}{2}\) for all \(A,B \in \Conc\).
+  How similar are \(\colour{green}\) and \(\colour{blue} \sqcap \colour{yellow}\)?
+     \begin{equation*}
+      d(C,D) = \left(\textstyle{\sum_{C^\prime \in \atom{C}}%
+      \textcolor{cyan}{\max_{D^\prime \in \atom{D}}}}%
+      (\mypm(C^\prime, D^\prime)\right)/(\abs{\atom{C}})
+     \end{equation*}
+      \begin{equation*}
+          \simi(\colour{green}\,\text{\textbf{,}}\,\colour{blue} \sqcap \colour{yellow}) = d(\colour{green}\,\text{\textbf{,}}\,\colour{blue} \sqcap \colour{yellow}) \otimes_{avg} d(\colour{blue} \sqcap \colour{yellow}\,\text{\textbf{,}}\, \colour{green})= \tfrac12 \otimes_{avg} \frac{\tfrac12 + \tfrac12}{2} = \frac{1}{2}
+        %\frac{\textcolor{cyan}{\max}(\mypm(\colour{green},\colour{blue}),\mypm(\colour{green},\colour{yellow}))}{1} = \frac{1}{2}
+      \end{equation*}
+
+  \(\textcolor{cyan}{\max}\) picks best match, discarding other information on similarity.
   \pause
   \begin{definition}[Bounded t-conorm]
     Operator \(\myconorm \colon {[0,1]}^2 \to [0,1]\) which is
     commutative, associative and for all
     \(x, y, z, w \in [0,1]\):
-    \begin{enumerate}[<+->]
-      \item \alert{Unit element}: \(0 \myconorm x = x = x \myconorm 0\)
+    \begin{enumerate}
+      \item \alert{Unit element}: \(0 \myconorm x = x = x \myconorm 0\) (dissimilar are ininfluent)
       \item \alert{Monotonicity}: if \(x \le z\) and \(y \le w\), then \(x \myconorm y \le z \myconorm w\)
-      \item \alert{Boundedness}: if \(x \myconorm y = 1\), then \(x = 1\) or \(y = 1\).
+      \item \alert{Boundedness}: if \(x \myconorm y = 1\), then \(x = 1\) or \(y = 1\). (\(\ge 1\) similar)
     \end{enumerate}
   \end{definition}
 \end{frame}
@@ -338,42 +422,42 @@
     \(\myg \colon \mathbf{A} \to \mathbb{R}_+\),
      where \(\mathbf{A}\) is the set of \emph{atoms}.
   \end{definition}
-  With this definition, it is possible to partially
-  ensure structural dependence for the similarity
-  measure.
+  %With this definition, it is possible to partially
+  %ensure structural dependence for the similarity
+  %measure.
 \end{frame}
 
 \section{Definition of simi}
 
 \begin{frame}
   \frametitle{Directed similarity}
-  \alert{Directed similarity} as a measure of subsumption:
-  if \(\sme_d\) measures directed similarity and \(\sme_d(C,D) = 1\), then \(D \subsume{} C\).
+  %\alert{Directed similarity} as a measure of subsumption:
+  %if \(\sme_d\) measures directed similarity and \(\sme_d(C,D) = 1\), then \(D \subsume{} C\).
 
-  Introducing a measure of directed similarity:
+  %Introducing a measure of directed similarity:
   \begin{equation}
   \tcboxmath{\simi_d \colon \celh^2 \to [0,1]}
   \end{equation}
   How does \(\simi_d\) behave?
+  \pause
   \begin{equation}
     \simi_d(\top,D) = 1 \qquad D \in \celh
   \end{equation}
-  Thus, \(D \sqsubseteq \top\) for all \elh-concepts.
+  Thus, \(D \sqsubseteq \top\) for all \(D \in \celh\).
+  \pause
   \begin{equation}
     \simi_d(A,B) = \mypm(A,B) \qquad A,B \in \Conc
   \end{equation}
-  Concept names are measured according to \(\mypm\).
-\end{frame}
-
-\begin{frame}
-  \frametitle{Directed similarity, ctd.}
   \begin{equation}
     \simi_d(\exists{}r.C,\exists{}s.D) =
     \mypm(r,s) \cdot 
     \left(\myw + 
     (1-\myw)\simi_d(C,D)\right)
   \end{equation}
+\end{frame}
 
+\begin{frame}
+  \frametitle{Directed similarity, ctd.}
   The general case, for \(C,D \ne \top\), is
   \begin{equation}
     \simi_d(C,D) =
@@ -381,75 +465,79 @@
     {\sum_{C^\prime \in \atom{C}}\myg(C^\prime)}
   \end{equation}
   Otherwise, \(\simi_d(C,D) = 0\).
-\end{frame}
-
-\begin{frame}
-  \frametitle{Fuzzy connectors and simi}
-  \begin{equation}
-    \tcboxmath{\simi(C,D) := \simi_d(C,D) \otimes \simi_d(D,C)}
-  \end{equation}
-  Recall that \(C \equiv D\) iff \(C \subsume{} D\)
-  and \(D \subsume{} C\).
-  \begin{definition}[Fuzzy connector]
-    Commutative operator
-    \(\otimes \colon%
-    {[0,1]}^2 \to [0,1]\) s.t. for all
-    \(x, y \in [0,1]\),
-    \begin{enumerate}[<+->]
-      \item\label{fu:1} \alert{Equivalence closed}:
-      \(x \otimes y = 1\) iff \(x = y = 1\)
-      \item\label{fu:2} \alert{Weak monotonic}:
-      if \(x \le y\), then
-      \(1 \otimes x \le 1 \otimes y\) 
-      \item\label{fu:3} \alert{Bounded}:
-      if \(x \otimes y = 0\), then
-      \(x = 0\) or \(y = 0\)
-      \item\label{fu:4} \alert{Grounded}:
-      \(0 \otimes 0 = 0\)
-    \end{enumerate}
-  \end{definition}
+  \pause
+  \begin{lemma}[Properties of \(\simi_d\)]
+    Let \(C,D,E \in \celh\).
+    \begin{itemize}
+      \item \(\simi_d(C,D) = 1\) iff \(D \subsume{} C\),
+      \item if \(D \subsume{} E\), then \(\simi_d(C,D) \le \simi_d(C,E)\).
+    \end{itemize}
+  \end{lemma}
 \end{frame}
 
 \begin{frame}
   \frametitle{Properties of simi}
-  \begin{theorem}[Properties of \(\simi\)]
+  \begin{alertblock}{Properties of \(\simi\)}
     The function \(\simi\) is
-    symmetric,
-    equivalence invariant,
-    equivalence closed and
-    \(\subsume{}\)-preserving
+    \begin{itemize}
+      \item symmetric
+      \item equivalence invariant
+      \item equivalence closed
+      \item \(\subsume{}\)-preserving
+    \end{itemize}
     for all choices of its parameters.
-  \end{theorem}
+  \end{alertblock}
+  \pause
   \begin{theorem}[Computation of \(\simi\)]
-    The function \(\simi\) can be computed in time
-    polynomial to the size of the measured concepts,
-    if all its parameters can be computed in polynomial time.
+    \(\simi\) can be computed in time
+    polynomial in the size of measured concepts,
+    if each parameter can be computed in polynomial time.
   \end{theorem}
-  \begin{itemize}
-    \item The similarity measure \(\simi\)
-    achieved a large number of desired properties
-    (but not all of them\ldots)
-    \item Moreover, it can be computed efficiently!
-  \end{itemize}
+  \pause
+  \(\simi\) does not satisfy the triangle inequality and reverse \(\subsume{}\)-preserving.
 \end{frame}
 
-\section{Conclusion}
-
 \begin{frame}
-  \frametitle{How to go on from here?}
-  \begin{enumerate}[<+->]
-    \item Can the \(\simi\) approach be generalized
-    (e.g. general TBoxes)?
-    \item Can it be extended to
-    more expressive \dl{}s?
-    \item Can one guarantee more properties
-    (e.g. triangle inequality) without losing
-    equivalence-related ones?
-    \item How can \(\simi\) be implemented?
-  \end{enumerate}
+  \frametitle{Summary}
+  \begin{itemize}[<+->]
+    \item Many existing \csm don't satisfy equivalence invariance and closure
+    \item \(\simi\) has been introduced
+    \begin{itemize}
+      \item it satisfies both equivalence closure and invariance, together with other properties
+      \item it is \alert{parametric}, thus flexible
+      \item it is computable in polynomial time\(^\star\), thus it is \alert{efficient}
+    \end{itemize}
+  \end{itemize}
+  \onslide<+->
+  \scriptsize{\(\star\): if the parameters can be computed efficiently.}
 \end{frame}
 
 \begin{frame}[standout]
   Thank you!
+\end{frame}
+
+\appendix
+
+\begin{frame}
+  \frametitle{A counterexample for triangle inequality}
+  Let \(G\) and \(F_i\), \(0 \le i \le 4\) be atoms such that for \(i \ne j\), \(\simi_d(F_i,F_j) = \tfrac34\);
+  let \(\simi_d(G,F_i) = \simi_d(F_i,G) = 0\).
+  \begin{equation*}
+    C := G \sqcap \bigsqcap_{i=0}^5F_i
+    \quad
+    D := G \sqcap F_0
+    \quad
+    E := G
+  \end{equation*}
+  In this case, \(C \subsume{} D \subsume{} E\).
+  Using Hamacher product as \(\otimes\), \(\mypm_{def}\) and \(\myg_{def}\) as parameters,
+  \begin{equation*}
+    \simi(C,E) = \frac{1}{6} \quad
+    \simi(D,E) = \frac{1}{2} \quad
+    \simi(C,D) = \frac{5}{6}
+  \end{equation*}
+  Consequently, \(1 + \tfrac16 \not\ge \tfrac12 + \tfrac78\).
+
+  Triangle inequality, in general, is not fulfilled by \(\simi\).
 \end{frame}
 \end{document}
