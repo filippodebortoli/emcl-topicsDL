@@ -26,7 +26,7 @@ The syntax and the semantics of the elements of the set of \emph{\elh-concept de
 \end{table}
 
 In \elh, each concept description can be expressed in conjunctive form.
-This feature will be later exploited to compute the value of \(\simi\) by means of the so-called \emph{atoms} of the concepts there compared.
+This feature will be later exploited to compute the value of \simi by means of the so-called \emph{atoms} of the concepts there compared.
 \begin{definition}[Atoms]
   If \(\Conc\) and \(\R\) are the set of concept and role names (resp.), the set \(\A\) of \emph{\elh-atoms} (or \emph{atoms}) is defined as
   \begin{equation}
@@ -35,7 +35,7 @@ This feature will be later exploited to compute the value of \(\simi\) by means 
   Moreover, \(\widehat{\cdot} \colon \celh \to 2^{\celh}\) is defined as \(\widehat{C} := \lbrace C_i\rbrace_{i=1}^n\), where \(C = \bigsqcap_{i=1}^n C_i \in \celh\).
 \end{definition}
 
-The knowledge base (\kb) adopted hereafter has two components: the \emph{terminological} knowledge and another components, expressing information about the \emph{role hierarchy}.
+The \kb adopted hereafter has two components: the \emph{terminological} knowledge and another components, expressing information about the \emph{role hierarchy}.
 These are represented by a \emph{TBox} \(\mathcal{T}\) and an \emph{RBox} \(\mathcal{R}\), finite sets of axioms, which syntax and semantics are defined in the Table~\ref{tbl:boxes}.
 A concept name (resp. role name) that does not appear on the left-hand side (\lhs) of any axiom in a TBox (resp. RBox) is called \emph{primitive}.
 
@@ -47,11 +47,11 @@ A concept name (resp. role name) that does not appear on the left-hand side (\lh
     \toprule
     Family & Name & Syntax & Semantics \\
     \midrule
-    TBox & General concept inclusion (\gci) & \(C \sqsubseteq D\) &\(C^\I \subseteq D^\I\) \\
+    TBox & \gci & \(C \sqsubseteq D\) &\(C^\I \subseteq D^\I\) \\
     & Primitive concept definition & \(A \subsume{} C\) & \(A^\I \subseteq C^\I\) \\
     & Concept definition & \(A \equiv C\) & \(A^\I = C^\I\) \\
     \midrule
-    RBox & Role inclusion axiom (\ria) & \(r \sqsubseteq s\) & \(r^\I \subseteq s^\I\) \\
+    RBox & \ria & \(r \sqsubseteq s\) & \(r^\I \subseteq s^\I\) \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -73,6 +73,7 @@ A normal form for \el concepts is well described in~\cite{DLbook}; in~\cite{LeTu
 Such a normal form can still be computed in polynomial time.
 Specifically, a choice function \(ch{}\) is devised such that every role is replaced by a picked representative of its \(\equiv_\mathcal{R}\)-equivalence class.
 \begin{definition}[\elh-normal form]
+  \label{dfn:elh-nf}
   A concept \(C \in \mathcal{C}\)(\elh) is in \emph{\elh-normal form} w.r.t. a RBox \(\mathcal{R}\) if all its subconcepts are closed under the application of the following rules:
   \begin{align*}
     A \sqcap \top &\mapsto A & A \sqcap A &\mapsto A \tag{1--2}\\

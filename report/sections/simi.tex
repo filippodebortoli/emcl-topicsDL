@@ -5,9 +5,11 @@ In this section, the concept similarity measure (\csm) \(\simi\) is introduced.
 It belongs to the family of \emph{structural} measure, which are those measures defined according to the syntax of the concepts; they differ from \emph{interpretation-based} measures, where the definition relies on the interpretation of concepts (an example is the \emph{Semantic Similarity Measure} defined in~\cite{SemSim}).
 
   \paragraph{Preprocessing.}
-  The usage of \(\simi{}\) requires a preliminar processing of the involved knowledge base.
-  Since only unfoldable TBoxes are considered, it is possible to consider its \emph{expansion}, which is semantically equivalent to the non-expanded version and only contains primitive concept names on the right hand side of concept definitions.
-  Then, each concept is replaced by its \elh-normal form; being such a normal form unique up to associativity and commutativity, \emph{equivalence invariance} is ensured for any measure employed to test concept similarity on the \kb.
+  The usage of \simi requires a preliminar processing of the involved knowledge base.
+  Since the input TBox \(\mathcal{T}\) is assumed to be unfoldable, it can be first normalised applying the rules enumerated in Definition~\ref{dfn:elh-nf} and then expanded, yielding a conservative extension \(\mathcal{T}^\star\) of the non-expanded version \(\mathcal{T}\), that only contains primitive concept names on the right hand side of concept definitions.
+  Then, the input concepts are replaced by the expanded concepts, where only primitive concept names appear.
+  The TBox is thus not necessary anymore, since its knowledge has been incorporated in the input concepts.
+  Moreover, thanks to uniqueness (up to commutativity and associativity) of the \elh-normal form, \emph{equivalence invariance} is ensured for any measure employed to test concept similarity on the \kb.
 
   \paragraph{Directed and reverse similarity.}
   To test equivalence of two concepts \(C\) and \(D\), a possible way is to check whether subsumption holds in both directions, that is, \(C \sqsubseteq D\) and \(D \sqsubseteq C\).
@@ -31,7 +33,6 @@ It belongs to the family of \emph{structural} measure, which are those measures 
     \]
     is a fuzzy operator.
     The commutativity follows from the commutativity of the sum and the multiplication over \([0,1]\). Weak monotonicity holds, because \(x \le y\) implies that \((x \cdot (x+1))/2 \le (y \cdot (y+1))/2\).
-
     This operator is equivalence closed: assume that \(x \otimes_{ex} y = 1\) and \(x \ne 1\), \(y \ne 1\), and \(x \le y\) without loss of generality.
     Since \(x^2y = 2 - xy^2\) and \(x^2y \le xy^2\), it follows that \(2-xy^2 \le xy^2\), hence \(xy^2 \ge 1\); however, this is a contradiction to the hypothesis that \(x\), \(y \in [0,1]\), thus at least one between \(x\), \(y\) equals \(1\).
     Suppose that \(y = 1\): then, from \((x^2 + x)/2 = 1\) follows that \(x = 1\); analogously, it can be proved that \(x = 1\) implies \(y = 1\).
@@ -72,16 +73,16 @@ To solve these problems, the function \(\delta\) is generalised to a function ov
     \end{enumerate}
   \end{enumerate}
 \end{definition}
-The Definition~\ref{dfn:pm} is sufficient to ensure that \(\simi\) will be \emph{equivalence closed} and \emph{subsumption preserving}.
+The Definition~\ref{dfn:pm} is sufficient to ensure that \(\simi\) will be \emph{equivalence closed} and \emph{subsumption preserving}: indeed, the properties of \(pm\) to prove that these properties of \(\simi\) hold for ``atomic'' concepts, in particular, can be used in the proof of Lemma~\ref{lem:simid}.
 
 Coming back to the similarity function \(d\) defined in~\eqref{eqn:d}, it is now possible to deal with existential restrictions.
 This is done, according to the following schema:
 
 \begin{enumerate}
   \item When similarity between concept names is computed, the primitive measure \(pm\) is sufficient, since it handles this case directly.
-  \item If a concept name and an existential restriction are compared, the similarity will be \(0\).
+  \item If a concept name and an existential restriction are compared, the similarity is \(0\).
   \item In the final case, it would be needed two compute the similarity of two existential restrictions, namely \(\exists{}r.C^\star{}\) and \(\exists{}s.D^\star{}\).
-  To achieve this, both role names and concept names appearing should be considered.
+  To achieve this, both role names \(r,s\) and inner concepts \(C^\star,D^\star\) should be considered.
   While the roles are handled by \(pm\), a recursive call of the measure over \(C^\star\), \(D^\star\) is needed.
   To combine these two values, and to establish how much influence does each one exert on the final measure, an affine combination is introduced, along with a value \(w \in (0,1)\):
   \[
@@ -99,7 +100,7 @@ This is done, according to the following schema:
   with \(pm(A,B) = 0\) are almost, if not totally similar.
 
   \paragraph{Information on similarity.}
-  The last issue that was dealt with in~\cite{LeTu12} concerned the \(\max{}\) operator appearing in the definition of the similarity measure developed so far.
+  The last issue that was dealt with in~\cite{LeTu12} concerned the \(\mathbf{\max}\) operator appearing in the definition of the similarity measure developed so far.
   Indeed, the claim is that such an operator is not making full use of the available information, to compute the similarity of two concepts; that happens, because only the \emph{best matching} atom in the set \(\widehat{D}\) is kept, discarding all the others, which might still be similar to the considered atom of \(\widehat{C}\).
 
   The maximum operator fits into a class of functions called \emph{triangular conorms}; %, presented in \todo{Insert reference here.[14] on paper.};
@@ -111,58 +112,64 @@ This is done, according to the following schema:
       \item if \(x \oplus y = 1\), then \(x = 1\) or \(y = 1\), i.e. \(\oplus{}\) is \emph{bounded}.
     \end{itemize}
   \end{definition}
-  Moreover, \(\max\) is the strongest \(t\)-conorm, which means that all the other \(t\)--conorms yield a value equal or greater than \(\max\); this, intuitively, reflects the fact that \(\max\) does not make good use of the available information.
+  Moreover, \(\mathbf{\max}\) is the strongest \(t\)-conorm, which means that all the other \(t\)--conorms yield a value equal or greater than \(\mathbf{\max}\); this, intuitively, reflects the fact that \(\mathbf{\max}\) does not make good use of the available information.
   Finally, \(0\) is the unit element of \(t\)-conorms: this implies that totally dissimilar concepts are not influencing the final value of the measure.
-  Thus, in the final definition of \(\simi_d\), \(\max\) will be replaced by a \emph{bounded \(t\)-conorm}, which is a parameter of the framework.
+  Thus, in the final definition of \(\simi_d\), \(\mathbf{\max}\) will be replaced by a \emph{bounded \(t\)-conorm}, which is a parameter of the framework.
 
   \paragraph{Relevance of concept names.}
   Up until now, all the atoms of \(\mathcal{C}\)(\elh) had the same relevance, in determining how concepts differ from each other.
-  However, it is likely that some concepts might be prioritised in some use cases.
+  In practical application, however, it is often the case that different concepts have different relevance: an example in the medical context is that of operating at the cardiovascular level; in this case, concepts related to heart are more relevant then ones related to brain.
+
   Hence, another parameter that has been added to the framework is a function that specifies how much an atom influences the similarity between concepts.
   \begin{definition}%[Weighting function]
     A \emph{weighting function} is a mapping \(g \colon \mathbf{A} \to \mathbb{R}_+\), where \(\mathbf{A}\) is the set of \emph{atoms}.
   \end{definition}
 
-  Since \(\mathbf{A}\) can contain infinitely many elements, it would be desirable to find a way to define a weighting function by using only some "essential" information.
+  The weighting function \(g\) can be seen as a generalization of the cardinality of the set of atoms, introduced in the equation~\eqref{eqn:d}.
+  Indeed, \(g(\cdot) = 1\) would bring cardinality back into the definition of \(\simi_d\) that is given in the following section.
+  % Since \(\mathbf{A}\) can contain infinitely many elements, it would be desirable to find a way to define a weighting function by using only some "essential" information.
 
-  \paragraph{Primitive weighting.}
-  Thanks to the preprocessing phase, each concept in \elh-normal form does not contain any instance of \(\top\): hence, it is not needed to weigh it.
-  Another aspect of this normal form is that it is possible to weigh just a subset of \(\mathbf{R}\), that is the image of the function \(ch\) used to compute the \elh-normal form; in this way, at most \(\lvert \mathbf{R} \rvert\) roles would need to be weighted.
-  In this case, all the role names are used.
-  Finally, concept names can be either primitive or defined:
-  in the latter case, thanks to preprocessing again, a unique definition can be find in the expanded TBox, which right side contains exclusively primitive concept names.
+  % \paragraph{Primitive weighting.}
+  % Thanks to the preprocessing phase, only primitive concept names and role names appear in the input concepts.
+  % In particular, it is possible to reduce each concept in \elh-normal form that does not contain any instance of \(\top\): hence, it is not needed to weigh it.
+  % Another aspect of this normal form is that it is possible to weigh just a subset of \(\mathbf{R}\), that is the image of the function \(ch\) used to compute the \elh-normal form; in this way, at most \(\lvert \mathbf{R} \rvert\) roles would need to be weighted.
+  % In this case, all the role names are used.
+  % Finally, concept names can be either primitive or defined:
+  % in the latter case, thanks to preprocessing again, a unique definition can be find in the expanded TBox, which right side contains exclusively primitive concept names.
 
-  Using these facts, the following definition is introduced.
-  \begin{definition}[Primitive weighting function]
-    A \emph{primitive weighting function} is a mapping \(f \colon \mathbf{P} \cup \mathbf{R} \to \mathbb{R}_+\), where \(\mathbf{P}\) is the subset of \(\mathbf{C}\) of \emph{primitive} concept names.
-  \end{definition}
-  Given a weighting primitive function, it is possible to extend it to a weighting function \(g\) in the following way:
-  \begin{equation}\label{prim-weigh}
-    g(C) :=
-    \begin{cases}
-      f(C) & C \in \mathbf{P} \\
-      f(r) & C = \exists{}r.D, D \in \mathcal{C}(\mathcal{ELH}) \\
-      \max_{D^\prime \in \widehat{D}}f(D) & C \equiv D \; \text{appears in the expanded TBox.}
-    \end{cases}
-  \end{equation}
-  \begin{proposition}
-    With the expansion given in~\eqref{prim-weigh}, every primitive weighting function uniquely determines a weighting function.
-  \end{proposition}
-  \begin{proof}
-    Assume that the weighting functions \(g\), \(h\) are both derived from \(f\) as in~\eqref{prim-weigh}.
-    \begin{enumerate}
-      \item If \(C \in \mathbf{P}\), then
-      \(g(C) = f(C) = h(C)\) by definition;
-      \item if \(C =  \exists{}r.D, D \in \mathcal{C}(\mathcal{ELH})\), then \(g(C) = f(r) = h(C)\);
-      \item if \(C \equiv D\) is the \emph{unique} definition of \(C\) in the TBox \(\mathcal{T}\), then
-      \(g(C) = \max_{D^\prime \in \widehat{D}}f(D) = h(C)\).
-    \end{enumerate}
-    Thus, it is possible to conclude that \(g(C) = h(C)\) for all \(C \in \mathbf{A} \setminus \lbrace \top \rbrace\).
-  \end{proof}
-  This approach can be further refined, for example, by substituting the \(\max\) function with another, perhaps more suitable function.
-  %Notice that, given a primitive weighting function, this extension to a weighting function can be computed in polynomial time (this last claim needs to be verified).
+  % Using these facts, the following definition is introduced.
+  % \begin{definition}[Primitive weighting function]
+  %   A \emph{primitive weighting function} is a mapping \(f \colon \mathbf{P} \cup \mathbf{R} \to \mathbb{R}_+\), where \(\mathbf{P}\) is the subset of \(\mathbf{C}\) of \emph{primitive} concept names.
+  % \end{definition}
+  % Given a weighting primitive function, it is possible to extend it to a weighting function \(g\) in the following way:
+  % \begin{equation}\label{prim-weigh}
+  %   g(C) :=
+  %   \begin{cases}
+  %     f(C) & C \in \mathbf{P} \\
+  %     f(r) & C = \exists{}r.D, D \in \mathcal{C}(\mathcal{ELH}) \\
+  %     \max_{D^\prime \in \widehat{D}}f(D) & C \equiv D \; \text{appears in the expanded TBox.}
+  %   \end{cases}
+  % \end{equation}
+  % \begin{proposition}
+  %   With the expansion given in~\eqref{prim-weigh}, every primitive weighting function uniquely determines a weighting function.
+  % \end{proposition}
+  % \begin{proof}
+  %   Assume that the weighting functions \(g\), \(h\) are both derived from \(f\) as in~\eqref{prim-weigh}.
+  %   \begin{enumerate}
+  %     \item If \(C \in \mathbf{P}\), then
+  %     \(g(C) = f(C) = h(C)\) by definition;
+  %     \item if \(C =  \exists{}r.D, D \in \mathcal{C}(\mathcal{ELH})\), then \(g(C) = f(r) = h(C)\);
+  %     \item if \(C \equiv D\) is the \emph{unique} definition of \(C\) in the TBox \(\mathcal{T}\), then
+  %     \(g(C) = \max_{D^\prime \in \widehat{D}}f(D) = h(C)\).
+  %   \end{enumerate}
+  %   Thus, it is possible to conclude that \(g(C) = h(C)\) for all \(C \in \mathbf{A} \setminus \lbrace \top \rbrace\).
+  % \end{proof}
+  % This approach can be further refined, for example, by substituting the \(\max\) function with another, perhaps more suitable function.
+  % %Notice that, given a primitive weighting function, this extension to a weighting function can be computed in polynomial time (this last claim needs to be verified).
 
 \subsection{The measure of directed similarity: \(\simi_d\)}
+
+The final step of the derivation is presented in this section. A measure of \emph{directed similarity}, namely \(\simi_d\), is introduced, culminating the process started by using a variation of the Jaccard Index.
 
   \begin{definition}[\(\simi_d\)]\label{simi-d}
     The measure of \emph{directed similarity} \(\simi_d \colon {\mathcal{C}(\mathcal{ELH})}^2 \to [0,1]\), given the following parameters:
@@ -176,23 +183,30 @@ This is done, according to the following schema:
     \begin{align}
       \simi_d(\top,D) &= 1 \quad
       \text{for all}\; D \in \mathcal{C}(\mathcal{ELH}) \\
+      \intertext{which captures the fact that \(D \subsume{} \top\) for all \elh-concepts;}
+      \simi_d(A,B) &= pm(A,B) \quad A,B \in \Conc \\
+      \simi_d(\exists{}r.C,\exists{}s.D) &=
+      pm(r,s) \cdot \left(w + (1-w)\simi_d(C,D)\right) \\
+      \intertext{which are the cases dealing with atomic concepts, and for the general case:}
       \simi_d(C,D) &=
       \frac{\sum_{C^\prime \in \widehat{C}}\left(g(C^\prime) \cdot \bigoplus_{D^\prime \in \widehat{D}} \simi_d(C^\prime, D^\prime)\right)}%
       {\sum_{C^\prime \in \widehat{C}}g(C^\prime)} \quad \text{if}\; C \ne \top \label{simi:general}\\
-      \simi_d(A,B) &= pm(A,B) \quad \text{for atoms}\; A,B \\
-      \simi_d(\exists{}r.C,\exists{}s.D) &=
-      pm(r,s) \cdot \left(w + (1-w)\simi_d(C,D)\right) \\
       \simi_d(C,D) &= 0 \quad \text{otherwise}.
     \end{align}
   \end{definition}
+
+  As previously stated, the definition of the \csm \simi relies on connecting two values of \(\simi_d\), by means of a fuzzy connector. This terminates the process of derivation of \(\simi\).
 
   \begin{definition}[\(\simi\)]
     The similarity measure \(\simi\) is defined as \(\simi(C,D) := \simi_d(C,D) \otimes \simi_d(D,C)\), where \(\otimes{}\) is a fuzzy connector.
   \end{definition}
 
-  The following lemma shows an interesting property of \(\simi_d\), which can be used to prove some of its important features.
+  Up until now, many properties for the parameters have been specified, without explicitly using them in ensuring properties for \simi.
+
+  The following lemma shows an interesting property of \(\simi_d\), which can be later used to show some useful features of \simi.
 
   \begin{lemma}
+    \label{lem:simid}
     Let \(C\), \(D\) and \(E\) be \elh-concept descriptions.
     Then,
     \begin{enumerate}
@@ -203,6 +217,9 @@ This is done, according to the following schema:
   \begin{proof}
     The proof of this theorem can be found in~\cite{LeTu12}.
   \end{proof}
+
+  The following results, which make use of what introduced and defined so far, state that the defined \csm achieves a large number of desirable properties for similarity measures, including the ones that motivated this work in first place: equivalence invariance and equivalence closure.
+
   \begin{theorem}
     The \csm \(\simi\) is symmetric, closed and invariant under equivalence and preserves subsumption, for each instantiation of its parameters.
   \end{theorem}
@@ -231,14 +248,16 @@ This is done, according to the following schema:
   For adequates choice of the fuzzy connector and the weighting function, \emph{structural dependence} can be achieved.
   The only properties that cannot be guaranteed by \(\simi\) are \emph{triangle inequality} and \emph{reverse subsumption preserving}, since similarity values between the atoms of the involved concepts are not taken into account, in the computation of the similarity value of the concepts.
 
+  Finally, it is shown how \simi can be computed efficiently, under certain assumptions.
+
   \begin{proposition}
-    The \csm \(\simi\) can be computed efficiently: if the provided fuzzy connector, bounded \(t\)--conorm, primitive measure and weighting function can be computed in polytime, so can \(\simi\), with time polynomial in the size of the measured concepts.
+    The \csm \(\simi\) can be computed in time polynomial in the size of the measured concepts, assuming that the provided fuzzy connector, bounded t-conorm, primitive measure and weighting function can be computed in polynomial time. 
   \end{proposition}
   \begin{proof}
-    From the assumption that the fuzzy connector can be computed in polytime, it suffices to show that \(\simi_d\) can be computed in polytime.
-    The assumption that the primitive measure can be computed in polytime allows to conclude that all the cases of \(\simi\) where \emph{atoms} are measured run in polynomial time.
+    From the assumption that the fuzzy connector can be computed in polynomial time, it suffices to show that \(\simi_d\) can be computed in polynomial time.
+    The assumption that the primitive measure can be computed in polynomial time allows to conclude that all the cases of \(\simi\) where \emph{atoms} are measured run in polynomial time.
 
     In the most general case~\eqref{simi:general}, the number of similarity values that have to be computed amounts to \(\lvert \widehat{C} \rvert \cdot \lvert \widehat{D} \rvert\).
-    Moreover, the depth of the recursion tree is bounded by the size of the concepts \(C\) and \(D\).
-    Thus, we can conclude that \(\simi\) runs in polynomial time, in the size of the measured concepts.
+    The depth of the recursion call to \simi, in the case where \(\exists{}r.E\) and \(\exists{}s.F\) are atoms belonging to \(\atom{C}\) and \(\atom{D}\) respectively, is bounded by the size of the concepts \(C\) and \(D\).
+    Thus, we can conclude that \(\simi\) runs overall in polynomial time, in the size of the measured concepts.
   \end{proof}

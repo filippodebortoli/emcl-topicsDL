@@ -4,25 +4,25 @@
 Measuring the similarity of two or more concept descriptions is a task that frequently occurs in several real-world cases.
 These applications, where ontologies are employed, range from exploration of knowledge bases for information discovery --- as done in~\cite{GF13} --- to more technical activies, like ontology alignment, as in~\cite{CHu11}.
 
-
 As important as a \emph{good} measure for concept similarity is, one has to deal with several issues during the specification, implementation and usage phases of a tool of this kind.
-Most of these have been faced in the work done by Lehmann \& Turhan in~\cite{LeTu12}.
+Most of these have been faced in the work done by Lehmann and Turhan in~\cite{LeTu12}.
 
-Which are the intended properties for a concept similarity measure?
-The notion of similarity itself has been largely discussed in the literature (a remarkable reference is the work done in~\cite{Tve77}).
-Among the many, possibly different, existing approaches to similarity, the one shows in [] has been followed in this work.
-In particular, relevant properties of similarity have been described and formalised; some of these have been drawn from what has been already established in the literature, whereas others have been newly introduced.
-These properties are either concerning the mathematical side of a measure or its relation with the underlying representation of the concepts.
+The general notion of \emph{similarity} has been largely treated in the literature --- a remarkable reference is~\cite{Tve77} --- and several publications about similarity of concepts, like~\cite{SemSim} and~\cite{dSF08}, emphasized the need for measures that behave properly in the presence of semantical equivalence of concepts.
+However, a thorough analysis made in~\cite{LeTu12} pointed out that many \emph{concept similarity measures}, although claiming to possess such a behaviour, do not preserve \emph{equivalence closure} and \emph{invariance}.
 
-Description Logics (\dl) are a family of formal knowledge representation languages.
-The \dl \elh, upon which \(\simi\) has been defined, has a practical relevance: for example, the medical ontology \textsc{snomed ct}~\cite{snomed} employs a variant of \elh, and the Web standard \textsc{Owl-el}, described in~\cite{owlEL}, is originated from \elh.
-In this setting, it is shown how a concept similarity measure can be defined, which achieves \emph{power} --- thanks to \emph{equivalence invariance} and \emph{closure} ---, \emph{flexibility} in the choice of its parameters and \emph{efficiency} in its computation, assuming that the right tools are used in its construction.
+The analysis involved also the definition and formalisation of the desirable properties of a \csm.
+Some of these properties, like the mathematical-related or the equivalence-related ones,have been drawn from the literature, whereas others, concerning subsumption and structures of the concepts, have been newly introduced.
 
-This work also addresses another issue: the \emph{portability} and \emph{reliability} of concept similarity measures, across different contexts.
-Indeed, many existing measures are domain-related or depend too much on the dataset upon which they are first defined, assessed and evaluated.
-The choice, here, is that of defining a framework, a general concept similarity measure which can be specifically instantiated, by means of several parameters; this allows the user to tailor the measure to her particular application, without losing the desired properties, guaranteed to hold by the way the introduce measure \(\simi\) has been specified.
+Description Logics are a family of formal knowledge representation languages.
+The \dl \elh, upon which the \csm \simi has been defined, has a practical relevance: for example, the medical ontology \textsc{snomed ct}~\cite{snomed} employs a variant of \elh, and the Web standard profile \textsc{Owl-el}, described in~\cite{owlEL}, is originated from \elh.
+In this setting, it is shown how a \csm can be defined, which achieves \emph{power} --- thanks to \emph{equivalence invariance} and \emph{closure} ---, \emph{flexibility} in the choice of its parameters and \emph{efficiency} in its computation, assuming that the right tools are used in its construction.
 
-The report has the following structure:
+Indeed, this work also addresses another issue: the \emph{portability} and \emph{reliability} of concept similarity measures,across different contexts.
+Many existing measures are domain-related or depend too much on the dataset upon which they are first defined, assessed and evaluated.
+Contrary to this, the framework devised in~\cite{LeTu12} brings into play a \emph{parametric} concept similarity measure: this allows to tailor the measure to a specific scenario.
+If the user appropriately instanciates these parameters, the specification of \(\simi\) guarantees that equivalence closure and invariance, along with symmetry and other desirable properties, hold.
+
+This report has the following structure:
 first, some notions concerning \dl{}s are introduced;
 then, similarity measure are discussed, with their properties;
 next, the framework devised in~\cite{LeTu12} is derived and explained;
