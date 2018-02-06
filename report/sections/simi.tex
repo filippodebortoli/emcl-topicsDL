@@ -291,7 +291,7 @@ The final step of the derivation is presented in this section. A measure of \emp
   Given two input concepts \(C\) and \(D\), it is possible to define the following lazy unfolding strategy:
   \begin{enumerate}
     \item if \(C^\prime \in \atom{C} \cap \atom{D}\), then unfolding is not applied: if one of the atom of \(C\) appears also in \(D\), thanks to the t-conorm introduced in~\cref{dfn:conorm} and the definition of \(\simi_d\), the directed similarity between \(C^\prime\) and \(D\) will be maximal, without any need to look at the structure of \(C^\prime\).
-    \item if \(\exists{}r.C^\prime \in \atom{C}\), unfolding is applied to it if \(\atom{D}\) does not contain exclusively concept names. In fact, if only concept names are in \(\atom{D}\), then \(\simi_d(\exists{}r.C^\prime,D^\prime) = 0\) for all \(D^\prime \in \atom{D}\).
+    \item if \(\exists{}r.C^\prime \in \atom{C}\), unfolding is applied to it if \(\atom{D}\) does not contain exclusively concept names. In fact, if only concept names are in \(\atom{D}\), \(\simi_d(\exists{}r.C^\prime,D^\prime) = 0\) for all \(D^\prime \in \atom{D}\).
     Thus, inspecting the structure of \(C^\prime\) is not needed. 
   \end{enumerate}
   
