@@ -1,15 +1,15 @@
-\section{Properties of similarity measures}
+\section{Properties of Similarity Measures}
 \label{sec:properties}
 How may one quantitatively measure the amount of similarity between two concepts?
 In many real-world application areas, ranging from cognitive sciences, biology, physics, to computer vision, the underlying mathematical structure is that of a \emph{metric space}, which is endowed with a \emph{metric}.
 In particular, the similarity of two concepts can be interpreted as a relative measure: thus, it is possible to take normalised metric spaces, where distances are bound to live in the unit interval.
-In this view, the metric distance between two concepts expresses their dissimilarity: thus, two totally similar concepts will be in the same position in the space.
+In this view, the metric distance between two concepts expresses their dissimilarity: thus, two totally similar concepts are in the same position in the space.
 
 \begin{definition}[(concept) similarity function]
   \label{dfn:sim}
-  Given a normalised metric space \((D,d)\), the similarity function \(s\) induced by \(d\) corresponds to \(s(a,b) := 1 - d(a,b)\).
+  Given a normalized metric space \((D,d)\), where \(D\) is a normalized set and \(d\) a metric, the similarity function \(s\) induced by \(d\) corresponds to \(s(a,b) := 1 - d(a,b)\).
 
-  Generally speaking, a \emph{similarity function} \(s \colon D^2 \to [0,1]\) over a normalizes space \(D\) satisfies these conditions, for all \(a,b,c \in D\):
+  A \emph{similarity function} \(s \colon D^2 \to [0,1]\) over a normalized space \(D\) satisfies these conditions, for all \(a,b,c \in D\):
   \begin{enumerate}
     \item \(s(a,b) = 1\) iff \(a = b\),
     \item \(s(a,b) = s(b,a)\),
@@ -25,31 +25,30 @@ In this view, the metric distance between two concepts expresses their dissimila
 
   In the following, an overview of the desirable properties of a \csm is given. Hereafter, \(C\), \(D\) and \(E\) are arbitrary \elh-concept descriptions and \(\sme\) denotes a \csm.
 
-\subsection{Mathematics-related properties}
+\subsection{Mathematics-related properties of \csm{}s}
 
 \paragraph{Symmetry.}
 The \csm \(\sme\) is \emph{symmetric} if \(\sme(C,D) = \sme(D,C)\).
 This mathematical property is widely recognised as an essential feature of a similarity measure for a \dl.
-Indeed, it is the only property directly embedded in a \csm, in the Definition~\ref{dfn:sim}.
+Indeed, it is the only property directly embedded in a \csm, in~\cref{dfn:sim}.
 This necessity is not felt in other fields, more involved with the study of human reasoning, as seen in~\cite{Tve77}.
 
-This property is one of the most widely recognised as an essential feature in similarity measures for \dl{}s, although it has been contested in fields which are more involved with the study of human reasoning, as seen in~\cite{Tve77}.
-This is the only property that has been incorporated in the definition of a concept similarity measures in~\cite{LeTu12}.
+This property is one of the most widely recognised as an essential feature in similarity measures for \dl{}s, although it has been questioned in fields which are more involved with the study of human reasoning, as seen in~\cite{Tve77}.
 
 \paragraph{Triangle inequality.}
-The \csm \(\sme\) satisfies the \emph{triangle inequality} if \(1 + \sme(C,E) \ge \sme(C,D) + \sme(D,E)\) holds.
+If \(1 + \sme(C,E) \ge \sme(C,D) + \sme(D,E)\) holds for the \csm \(\sme\), then it satisfies the \emph{triangle inequality}.
 This is the other mathematical property which is inherited from the notion of a metric.
 Of all the similarity measures investigated in~\cite{LeTu12}, the only one who fulfills the triangle inequality is the Jaccard Index, proposed in~\cite{Ja01} and adapted to the \dl \(\mathcal{L}_0\); however, this is not meant to be a \csm, to begin with.
 Similarly to symmetry, the triangle inequality is  acknowledged as being not an essential feature of human reasoning in the work by Tversky in~\cite{Tve77}, while it is largely accepted in the context of description logics.
 
-\subsection{\dl-related properties}
+\subsection{\dl-related properties of \csm{}s}
 
 \paragraph{Equivalence closure.}
 A \csm \(\sme\) is \emph{equivalence closed} whenever \(\sme(C,D) = 1\) is equivalent to \(C \equiv D\).
 This property deeply relates with the semantical meaning of \elh-concept descriptions.
 
 \paragraph{Equivalence invariance.}
-A \csm \(\sme\) is \emph{equivalence invariant} if \(C \equiv D\) implies that \(\sme(C,E) = \sme(D,E)\)
+A \csm \(\sme\) is \emph{equivalence invariant} if \(C \equiv D\) implies that \(\sme(C,E) = \sme(D,E)\) for any \elh-concept \(E\).
 
 Equivalence closure and equivalence invariance have found little to no criticism in the literature.
 Indeed, it is regarded as necessary for two equivalent concepts to be totally similar, and equivalent concepts should share their similarity behaviour toward other concepts.
@@ -61,7 +60,7 @@ However, these properties have been not fulfilled in many concept similarity mea
   This, in turn, can be abstracted to the level of a concept similarity measure. How?
   Informally, if \(C\), \(D\) and \(E\) are \elh-concepts and \(C \subsume{K} D \subsume{K} E\), \(D\) is closer to \(E\) than \(C\), thus more similar;
   also, it can be noticed that \(D\) is closer to \(C\) than \(E\).
-  These two insights can be captured as \emph{subsumption preserving} and \emph{reverse subsumption preserving}, where the concept similarity measure \(s\) obeys to the constraints \(s(C,E) \le s(D,E)\) (reverse subs.\ preserving) and \(s(C,D) \ge s(C,E)\) (direct subs.\ preserving).
+  These two insights are captured as \emph{subsumption preserving} and \emph{reverse subsumption preserving}, where the \csm \(\sme\) obeys to the constraints \(\sme(C,E) \le \sme(D,E)\) (reverse subs.\ preserving) and \(\sme(C,D) \ge \sme(C,E)\) (direct subs.\ preserving).
 
   \paragraph{Structural dependence} is the last property that had been introduced for concept similarity measures.
   The idea behind structural dependence is that as the number of common \emph{features} of two concepts increases and the number of uncommon features is constant, then the similarity of these concepts must be increasing.

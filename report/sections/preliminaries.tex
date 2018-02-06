@@ -4,10 +4,10 @@ Hereafter, the reader must assume that the \elh description logic (\dl) is used 
 For a detailed treatment of the notions here introduced, the interested reader can go to~\cite{DLbook}.
 
 The syntax of a \dl makes use of two finite and disjoint sets of \emph{concept names}, \(\Conc\) and \emph{role names}, \(\R\) to build \emph{concept descriptions}, by means of \emph{concept constructors}.
-The semantics of such descriptions is defined with an interpretation \(\I = (\DeltaI,\dotI)\), where \(\DeltaI \ne \emptyset\) is the \emph{interpretation domain} and \(\dotI\) is a mapping which assigns subsets of \(\DeltaI{}\) to each concept and binary relations over \(\DeltaI\) to roles.
-The syntax and the semantics of the elements of the set of \emph{\elh-concept descriptions} \(\celh\) are introduced in the Table~\ref{tbl:el}.
+The semantics of such descriptions is defined with respect to an interpretation \(\I = (\DeltaI,\dotI)\), where \(\DeltaI \ne \emptyset\) is the \emph{interpretation domain} and \(\dotI\) is a mapping which assigns subsets of \(\DeltaI{}\) to each concept and binary relations over \(\DeltaI\) to roles.
+The syntax and the semantics of the elements of the set of \emph{\elh-concept descriptions} \(\celh\) are introduced in~\cref{tbl:el}.
 
-\begin{table}
+\begin{table}[b]
   \caption{Constructors of the \dl \el, along with their syntax and semantics w.r.t. an interpretation \(\I = (\DeltaI,\dotI)\). Here, \(A \in \Conc\), \(r \in \R\) and \(C, D \in \celh\).}
   \label{tbl:el}
   \centering
@@ -36,10 +36,10 @@ This feature will be later exploited to compute the value of \simi by means of t
 \end{definition}
 
 The \kb adopted hereafter has two components: the \emph{terminological} knowledge and another components, expressing information about the \emph{role hierarchy}.
-These are represented by a \emph{TBox} \(\mathcal{T}\) and an \emph{RBox} \(\mathcal{R}\), finite sets of axioms, which syntax and semantics are defined in the Table~\ref{tbl:boxes}.
+These are represented by finite sets of \emph{axioms}: the terminological knowledge with  a \emph{TBox} \(\mathcal{T}\) and the knowledge about role hierarchy in an \emph{RBox} \(\mathcal{R}\). The syntax and the semantics of the elements of these sets are defined in~\cref{tbl:boxes}.
 A concept name (resp. role name) that does not appear on the left-hand side (\lhs) of any axiom in a TBox (resp. RBox) is called \emph{primitive}.
 
-\begin{table}
+\begin{table}[b]
   \caption{Types of axioms that are found in a TBox or in an RBox, with their syntax and semantics w.r.t. an interpretation \(\I\). Here, \(A \in \Conc\), \(r,s \in \R\) and \(C, D \in \celh\).}
   \label{tbl:boxes}
   \centering
@@ -64,13 +64,14 @@ An unfoldable TBox \(\mathcal{T}\) can be expanded in a TBox \(\mathcal{T}^\star
 Additionally, primitive concept definitions can be transformed into concept definitions, adding new concept names to the TBox.
 In the definition of \(\simi\), the input concepts will be expanded by replacing each defined concept with its definition in the TBox; consequently, only primitive concept names will appear and the knowledge contained in the TBox will not be needed.
 
-An interpretation \(\I\) is a model for a TBox \(\mathcal{T}\) (resp. an RBox \(\mathcal{R}\)), in symbols \(\I \models \mathcal{T}\) (resp. \(\I \models \mathcal{R}\)), if it satisfies the semantic condition of all its \gci{}s and (primitive) concept definitions (resp. all its \ria{}s).
+An interpretation \(\I\) is a \emph{model} for a TBox \(\mathcal{T}\) if for all the axioms \(C \subsume{} D \in \mathcal{T}\) (resp. \(C \equiv D\)), \(C^\I \subseteq D^\I\) holds (resp. \(C^\I = D^\I\)).
+Similarly, \(\I\) is a model for an RBox \(\mathcal{R}\), if \(r^\I \subseteq s^\I\) holds for all \(r \subsume{} s \in \mathcal{R}\).
 
 Among the various reasoning services that can be applied over \elh \kb{}s, a commonly used one is the \emph{subsumption} of concepts: a concept \(C\) is \emph{subsumed} by \(D\) w.r.t.\ a \kb \(\mathcal{K}\) iff \(C^\I \subseteq D^\I\) for all models \(\I\) of \(\mathcal{K}\), in symbols \(C \subsume{K} D\); if \(C\) and \(D\) both subsume each other, then they are \emph{equivalent}, in symbols \(C \equiv_{\mathcal{K}} D\).
 Similarly, \(r \subsume{K} s\) if \(r^\I \subseteq s^\I\) for all models \(\I\) of \(\mathcal{R}\).
 
 A normal form for \el concepts is well described in~\cite{DLbook}; in~\cite{LeTu12}, this is extended to take into account the content of the RBox.
-Such a normal form can still be computed in polynomial time.
+Such a normal form is computable in polynomial time.
 Specifically, a choice function \(ch{}\) is devised such that every role is replaced by a picked representative of its \(\equiv_\mathcal{R}\)-equivalence class.
 \begin{definition}[\elh-normal form]
   \label{dfn:elh-nf}

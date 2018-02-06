@@ -1,10 +1,9 @@
-\section{Related work}
+\section{Related Work}
 
-\paragraph{Improving performances.}
+\paragraph{Improving performance.}
 Another \csm for \elh has been investigated in~\cite{simEL}, that outperforms \(\simi\), while maintaining the same similarity properties.
-The approach adopted by the authors involves the usage of the so-called \emph{\elh-concept description trees} as a preprocessing step, and its motivated by the homomorphism-based structural subsumption characterisation.
-Despite looking similar to \(\simi\) in its definition, this \csm takes a bottom-up approach, which allows for rejection of exceeding recursive calls and the reuse of partial solutions to subproblems.
-\(\simi\), with its top-down approach, can potentially have an increasing amount of repeated subroutines which are avoided by this new measure.
+Despite looking appearently different, with the authors using \emph{\elh-concept description trees} as a representational preprocessing step --- motivated by the homomorphism-based structural subsumption characterisation ---, this measure is an instantiation of \simi, where the \emph{best matching} strategy is adopted, by using the maximum operator as t-conorm.
+This \csm takes a bottom-up approach, which allows for rejection of exceeding recursive calls and the reuse of partial solutions to subproblems.
 
 \paragraph{The triangle inequality.}
 Among the desired properties for a \csm, triangle inequality is the least achieved.
@@ -21,11 +20,13 @@ This new dissimilarity measure respects the triangle inequality and fulfills all
 
   \section{Conclusion}
 
-  In this report, the concept similarity measure \(\simi\), which possesses some interesting and useful properties, has been introduced.
+  In this report, the concept similarity measure \simi, which possesses some interesting and useful properties, has been introduced.
 
   Some of its properties have been explored, such as invariance and closure under equivalence or symmetry, and it has been shown how its computation can be considered efficient.
 
   The path towards the definition of such a measure has been illustrated, with a focus on each single parameter, along with the motivations that justified their usage.
   Most of the desired properties have been successfully incorporated, while others, like triangle inequality, have been not included, but may be possibly achieved.
 
-  Finally, it would be interesting to obtain a full implementation of \(\simi\), in order to be able to assess it against other existing measures, as well as to start using it to evaluate concept similarity in ontologies.
+  An optimization by means of lazy unfolding has been introduced, and further improvements in this direction may be achieved by taking into account the properties of \simi and its parameters.
+
+  Finally, it would be interesting to obtain a full implementation of \simi, in order to be able to assess it against other existing measures, as well as to start using it to evaluate concept similarity in ontologies.

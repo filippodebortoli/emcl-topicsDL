@@ -30,6 +30,7 @@
 \usepackage{todonotes}
 
 \usepackage{hyperref}
+\usepackage{cleveref}
 
 \usepackage{notation}
 
@@ -41,11 +42,14 @@
   \maketitle
 
   \begin{abstract}
-    Measuring similarity of concept descriptions in different Description Logics is a challenging task, especially in expressive ones.
-    Moreover, many of the measures devised in the past years had been often defined with respect of a particular cluster of instance data, or they only considered the syntactical aspects of the concept descriptions.
+    Measuring similarity of concepts in different description logics is a recurrent task; for this purpose, it is desired to work with tools that guarantee useful properties, related to the semantical equivalence of the concepts.
+    However, most of the existing and documented measures, despite claiming these features, lack equivalence invariance and equivalence closure.
+    Moreover, many of the measures devised in the past had often been defined with respect to particular clusters of instance data, or they only considered the syntactical level of concept descriptions.
 
-    In this report, the \(\simi\) framework for designing concept similarity measures will be introduced and discussed, from desired properties of such functions to actual design choices.
-    Furthermore, a brief perspective into related work will be given, with concern to unsolved problems of \(\simi\) and general challenges for concept similarity measures.
+    In this report, the \simi framework for the instantiation of concept similarity measures over the \elh description logic is introduced and discussed.
+    This framework, instanciated with respect to several parameters, provides concept similarity measures that respect many desired properties, including concept equivalence and invariance.
+    Furthermore, these measures are proved to be efficiently computable, if the parameters are correctly instanciated.
+    A brief perspective into related work is finally given, to show other approaches to problems related to concept similarity measures in description logic.
   \end{abstract}
 
   \input{sections/intro}
@@ -53,12 +57,6 @@
   \input{sections/properties}
   \input{sections/simi}
   \input{sections/end}
-  % \begin{thebibliography}{1}
-  %   \bibitem{Lae15}
-  %     Lätsch, Paul and Turhan, Anni-Yasmin.
-  %     \textit{Simi-Framework for Concept-Similarity-Measures: property analysis and expansion to more powerful Description Logics}.
-  %     Diplomarbeit, Technische Universität Dresden, 2015.
-  % \end{thebibliography}
-  \bibliography{seminar_further-DL}%
+  \bibliography{seminar_further-DL}
 
 \end{document}

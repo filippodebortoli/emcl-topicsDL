@@ -151,7 +151,15 @@
   \onslide<+->
   \textbf{Knowledge base}: \(\mathcal{K} = (\mathcal{T}, \mathcal{R})\), with \(\mathcal{T}\) a TBox, \(\mathcal{R}\) an RBox.
   
-  \onslide<+->
+  \alert{Subsumption} (\(\I\) is an interpretation):
+  \begin{itemize}
+    \item \(C \subsume{K} D\) iff \(\I \models \mathcal{K}\) implies \(C^\I \subseteq D^\I\)
+    \item \(r \subsume{K} s\) iff \(\I \models \mathcal{K}\) implies \(r^\I \subseteq s^\I\)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Incorporating TBox knowledge}
   \textbf{Assumption:} The TBox is \alert{unfoldable},
   i.e. \textbf{acyclic} and:
   \begin{itemize}
@@ -159,6 +167,13 @@
     \item Each concept name at most once in LHS of a definition.
   \end{itemize}
   Unfoldable TBoxes can be \alert{normalized} and input concepts can be expanded, making it possible to work without the TBox.
+  \begin{itemize}[<+->]
+    \item Apply exhaustively \(A \subsume{} D \mapsto A \equiv A^\prime \sqcap D\), with \(A^\prime\) new concept name
+    \item This yields \(\mathcal{T}^\prime\) such that every model of \(\mathcal{T}^\prime\) satisfies \(\mathcal{T}\)
+    \item Expand \(\mathcal{T}^\prime\) into \(\mathcal{T}^\star\) where only primitive names (no definition) appear on RHS of definitions
+    \item Replace each concept name by its definition
+  \end{itemize}
+  Hereafter, the TBox \(\mathcal{T}\) is not necessary.
 \end{frame}
 
 \begin{frame}
